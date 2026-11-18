@@ -34,7 +34,6 @@ import com.wavlin.music.ui.screens.equalizer.wizard.WizardScreen
 import com.wavlin.music.ui.screens.library.LibraryScreen
 import com.wavlin.music.ui.screens.playlist.AutoPlaylistScreen
 import com.wavlin.music.ui.screens.playlist.CachePlaylistScreen
-import com.wavlin.music.ui.screens.mix.MixEditorScreen
 import com.wavlin.music.ui.screens.playlist.LocalPlaylistScreen
 import com.wavlin.music.ui.screens.playlist.SharedPlaylistScreen
 import com.wavlin.music.ui.screens.playlist.OnlinePlaylistScreen
@@ -324,18 +323,6 @@ fun NavGraphBuilder.navigationBuilder(
             ),
     ) {
         LocalPlaylistScreen(navController)
-    }
-
-    composable(
-        route = "mix_editor/{playlistId}",
-        arguments =
-            listOf(
-                navArgument("playlistId") {
-                    type = NavType.StringType
-                },
-            ),
-    ) { backStackEntry ->
-        MixEditorScreen(navController, backStackEntry.arguments?.getString("playlistId").orEmpty())
     }
 
     composable(
