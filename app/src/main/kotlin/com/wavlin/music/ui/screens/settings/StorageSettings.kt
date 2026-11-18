@@ -95,7 +95,7 @@ fun StorageSettings(
     )
     val (enableSongCache, onEnableSongCacheChange) = rememberPreference(
         key = EnableSongCacheKey,
-        defaultValue = true
+        defaultValue = false
     )
 
     var clearDownloads by remember { mutableStateOf(false) }

@@ -3448,34 +3448,41 @@ class MusicService :
         }
     }
 
-    private fun createCacheDataSource(): CacheDataSource.Factory =
-        CacheDataSource
+    private fun createCacheDataSource(): CacheDataSource.Factory {
+        val upstream =
+            DefaultDataSource.Factory(
+                this,
+                OkHttpDataSource.Factory(
+                    OkHttpClient
+                        .Builder()
+                        .proxy(YouTube.proxy)
+                        .proxyAuthenticator { _, response ->
+                            YouTube.proxyAuth?.let { auth ->
+                                response.request
+                                    .newBuilder()
+                                    .header("Proxy-Authorization", auth)
+                                    .build()
+                            } ?: response.request
+                        }.build(),
+                ),
+            )
+        val playerCacheSource =
+            CacheDataSource
+                .Factory()
+                .setCache(playerCache)
+                .setUpstreamDataSourceFactory(upstream)
+
+        return CacheDataSource
             .Factory()
             .setCache(downloadCache)
             .setUpstreamDataSourceFactory(
-                CacheDataSource
-                    .Factory()
-                    .setCache(playerCache)
-                    .setUpstreamDataSourceFactory(
-                        DefaultDataSource.Factory(
-                            this,
-                            OkHttpDataSource.Factory(
-                                OkHttpClient
-                                    .Builder()
-                                    .proxy(YouTube.proxy)
-                                    .proxyAuthenticator { _, response ->
-                                        YouTube.proxyAuth?.let { auth ->
-                                            response.request
-                                                .newBuilder()
-                                                .header("Proxy-Authorization", auth)
-                                                .build()
-                                        } ?: response.request
-                                    }.build(),
-                            ),
-                        ),
-                    ),
+                DataSource.Factory {
+                    // Streamed audio is written to and replayed from the on-disk cache only when the user enabled it.
+                    if (dataStore.get(EnableSongCacheKey, false)) playerCacheSource.createDataSource() else upstream.createDataSource()
+                },
             ).setCacheWriteDataSinkFactory(null)
             .setFlags(FLAG_IGNORE_CACHE_ON_ERROR)
+    }
 
     private var isSilenceSkipping = false
 
@@ -3786,7 +3793,7 @@ class MusicService :
             val shouldBypassCache = bypassCacheForQualityChange.contains(mediaId)
 
             if (!shouldBypassCache) {
-                val usePlayerCache = dataStore.get(EnableSongCacheKey, true)
+                val usePlayerCache = dataStore.get(EnableSongCacheKey, false)
 
                 val contentLength =
                     runBlocking(Dispatchers.IO) {
