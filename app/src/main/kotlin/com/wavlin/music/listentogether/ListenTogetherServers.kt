@@ -22,7 +22,7 @@ object ListenTogetherServers {
           {
             "name": "Wavlin Server",
             "url": "wss://wavlinserver.onrender.com/ws",
-            "location": "Poland",
+            "location": "Singapore",
             "operator": "Zenkai"
           }
         ]
