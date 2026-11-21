@@ -221,13 +221,13 @@
 
 #### Ko-fi
 
-<a href="https://ko-fi.com/zenkaidev">
-  <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Support me on Ko-fi" />
-</a>
+<img src="https://github.com/WavlinGroup/Wavlin/blob/main/assets/kofi-qr.png?raw=true" alt="Ko-fi QR code" width="200" />
 
 <br/><br/>
 
-<img src="https://github.com/WavlinGroup/Wavlin/blob/main/assets/kofi-qr.png?raw=true" alt="Ko-fi QR code" width="150" />
+<a href="https://ko-fi.com/zenkaidev">
+  <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Support me on Ko-fi" />
+</a>
 
 </div>
 
