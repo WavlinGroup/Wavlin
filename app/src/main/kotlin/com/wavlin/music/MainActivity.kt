@@ -359,6 +359,18 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private val cpuBoost by lazy { com.wavlin.music.utils.CpuBoost(this) }
+
+    override fun onResume() {
+        super.onResume()
+        cpuBoost.start()
+    }
+
+    override fun onPause() {
+        cpuBoost.stop()
+        super.onPause()
+    }
+
     override fun onStop() {
         // Keep the service binding, PlayerConnection and Listen Together wiring alive while
         // the Activity is backgrounded. The MusicService is a foreground service and keeps
