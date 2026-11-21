@@ -553,7 +553,14 @@ fun SongListItem(
     isSwipeable: Boolean = true,
     trailingContent: @Composable RowScope.() -> Unit = {},
 ) {
-    val swipeEnabled by rememberPreference(SwipeToSongKey, defaultValue = false)
+    // Only rows that can swipe need the preference; the rest skipped a DataStore collection per row.
+    val swipeEnabled =
+        if (isSwipeable) {
+            val enabled by rememberPreference(SwipeToSongKey, defaultValue = false)
+            enabled
+        } else {
+            false
+        }
 
     val content: @Composable () -> Unit = {
          ListItem(
