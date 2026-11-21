@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://github.com/dvaustria741-a11y/Wavlin/blob/main/fastlane/metadata/android/en-US/images/icon.png" alt="Wavlin app icon" width="200" />
+<img src="https://github.com/WavlinGroup/Wavlin/blob/main/fastlane/metadata/android/en-US/images/icon.png" alt="Wavlin app icon" width="200" />
 
 # Wavlin
 
@@ -9,14 +9,14 @@
 <br/>
 
 <a href="https://trendshift.io/repositories/20652" target="_blank">
-  <img src="https://trendshift.io/api/badge/repositories/20652" alt="dvaustria741-a11y/Wavlin | Trendshift" width="250" height="55" />
+  <img src="https://trendshift.io/api/badge/repositories/20652" alt="WavlinGroup/Wavlin | Trendshift" width="250" height="55" />
 </a>
 
 <br/>
 
-[![Latest release](https://img.shields.io/github/v/release/dvaustria741-a11y/Wavlin?style=for-the-badge&labelColor=0d1117)](https://github.com/dvaustria741-a11y/Wavlin/releases)
-[![License](https://img.shields.io/github/license/dvaustria741-a11y/Wavlin?style=for-the-badge&labelColor=0d1117)](https://github.com/dvaustria741-a11y/Wavlin/blob/main/LICENSE)
-[![Downloads](https://img.shields.io/github/downloads/dvaustria741-a11y/Wavlin/total?style=for-the-badge&labelColor=0d1117)](https://github.com/dvaustria741-a11y/Wavlin/releases)
+[![Latest release](https://img.shields.io/github/v/release/WavlinGroup/Wavlin?style=for-the-badge&labelColor=0d1117)](https://github.com/WavlinGroup/Wavlin/releases)
+[![License](https://img.shields.io/github/license/WavlinGroup/Wavlin?style=for-the-badge&labelColor=0d1117)](https://github.com/WavlinGroup/Wavlin/blob/main/LICENSE)
+[![Downloads](https://img.shields.io/github/downloads/WavlinGroup/Wavlin/total?style=for-the-badge&labelColor=0d1117)](https://github.com/WavlinGroup/Wavlin/releases)
 
 <br/>
 
@@ -43,19 +43,19 @@
 
 <h1><a id="screenshots"></a>Screenshots</h1>
 
-<img src="https://github.com/dvaustria741-a11y/Wavlin/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_1.png" alt="Discover - Home screen" width="80%" />
+<img src="https://github.com/WavlinGroup/Wavlin/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_1.png" alt="Discover - Home screen" width="80%" />
 
-<img src="https://github.com/dvaustria741-a11y/Wavlin/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_2.png" alt="Beautiful player - Now Playing" width="80%" />
+<img src="https://github.com/WavlinGroup/Wavlin/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_2.png" alt="Beautiful player - Now Playing" width="80%" />
 
-<img src="https://github.com/dvaustria741-a11y/Wavlin/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_3.png" alt="Live lyrics - Player lyrics" width="80%" />
+<img src="https://github.com/WavlinGroup/Wavlin/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_3.png" alt="Live lyrics - Player lyrics" width="80%" />
 
-<img src="https://github.com/dvaustria741-a11y/Wavlin/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_4.png" alt="Your sound - Player options" width="80%" />
+<img src="https://github.com/WavlinGroup/Wavlin/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_4.png" alt="Your sound - Player options" width="80%" />
 
-<img src="https://github.com/dvaustria741-a11y/Wavlin/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_5.png" alt="Better library - Library" width="80%" />
+<img src="https://github.com/WavlinGroup/Wavlin/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_5.png" alt="Better library - Library" width="80%" />
 
-<img src="https://github.com/dvaustria741-a11y/Wavlin/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_6.png" alt="Always in reach - Mini-player and tab bar" width="80%" />
+<img src="https://github.com/WavlinGroup/Wavlin/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_6.png" alt="Always in reach - Mini-player and tab bar" width="80%" />
 
-<img src="https://github.com/dvaustria741-a11y/Wavlin/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_7.png" alt="Make it yours - Theme and colors" width="80%" />
+<img src="https://github.com/WavlinGroup/Wavlin/blob/main/fastlane/metadata/android/en-US/images/screenshots/screenshot_7.png" alt="Make it yours - Theme and colors" width="80%" />
 
 </div>
 
@@ -144,7 +144,7 @@
   </tr>
   <tr>
     <td align="center">
-      <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/dvaustria741-a11y/Wavlin/">
+      <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/WavlinGroup/Wavlin/">
         <img src="https://github.com/ImranR98/Obtainium/blob/main/assets/graphics/badge_obtainium.png" alt="Download from Obtainium" height="40">
       </a>
     </td>
@@ -165,7 +165,7 @@
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/dvaustria741-a11y/Wavlin/releases/latest/download/Wavlin.apk">
+      <a href="https://github.com/WavlinGroup/Wavlin/releases/latest/download/Wavlin.apk">
         <img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" alt="Download from GitHub" height="60">
       </a>
     </td>
@@ -180,7 +180,7 @@
   </tr>
   <tr>
     <td align="center">
-      <a href="https://nightly.link/dvaustria741-a11y/Wavlin/workflows/build/main/app-with-Google-Cast.zip">
+      <a href="https://nightly.link/WavlinGroup/Wavlin/workflows/build/main/app-with-Google-Cast.zip">
         <img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" alt="Download from GitHub" height="75">
       </a>
     </td>
@@ -227,7 +227,7 @@
 
 #### Monero (XMR)
 
-<img src="https://github.com/dvaustria741-a11y/Wavlin/blob/main/assets/XMR.png" alt="Monero QR code" width="150" />
+<img src="https://github.com/WavlinGroup/Wavlin/blob/main/assets/XMR.png" alt="Monero QR code" width="150" />
 
 ```text
 44XjSELSWcgJTZiCKzjpCQWyXhokrH9RqH3rpp35FkSKi57T25hniHWHQNhLeXyFn3DDYqufmfRB1iEtENerZpJc7xJCcqt
@@ -236,7 +236,7 @@
 #### Buy Me a Coffee
 
 <a href="https://www.buymeacoffee.com/mostafaalagamy">
-  <img src="https://github.com/dvaustria741-a11y/Wavlin/blob/main/assets/buymeacoffee.png?raw=true" alt="Buy Me a Coffee" width="150" />
+  <img src="https://github.com/WavlinGroup/Wavlin/blob/main/assets/buymeacoffee.png?raw=true" alt="Buy Me a Coffee" width="150" />
 </a>
 
 </div>
@@ -285,7 +285,7 @@
       <td>Time-synced lyrics with word-by-word highlighting & YouTube Music integration</td>
     </tr>
     <tr>
-      <td align="center"><a href="https://github.com/dvaustria741-a11y/wavlinserver"><strong>wavlinserver</strong></a></td>
+      <td align="center"><a href="https://github.com/WavlinGroup/wavlinserver"><strong>wavlinserver</strong></a></td>
       <td>Listen-together real-time backend</td>
     </tr>
     <tr>
@@ -311,8 +311,8 @@
 
 <h3>This project wouldn't exist without these amazing people!</h3>
 
-<a href="https://github.com/dvaustria741-a11y/Wavlin/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=dvaustria741-a11y/Wavlin" alt="Contributors" />
+<a href="https://github.com/WavlinGroup/Wavlin/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=WavlinGroup/Wavlin" alt="Contributors" />
 </a>
 
 </div>

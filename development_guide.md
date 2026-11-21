@@ -13,7 +13,7 @@ This file outlines the process of setting up a local dev environment for Wavlin.
 This has been tested on Linux, but should work on other platforms with some adjustments.
 
 ```bash
-git clone https://github.com/dvaustria741-a11y/Wavlin
+git clone https://github.com/WavlinGroup/Wavlin
 cd Wavlin
 git submodule update --init --recursive
 cd app
