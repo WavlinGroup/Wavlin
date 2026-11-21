@@ -479,7 +479,7 @@ fun AboutScreen(
                                 contentColor = cs.onPrimary,
                             ),
                         ) {
-                            Icon(painterResource(R.drawable.buymeacoffee), contentDescription = null, modifier = Modifier.size(20.dp))
+                            Icon(painterResource(R.drawable.kofi), contentDescription = null, tint = Color.Unspecified, modifier = Modifier.size(width = 26.dp, height = 21.dp))
                             Spacer(Modifier.width(12.dp))
                             Text(stringResource(R.string.buy_mo_a_coffee), fontWeight = FontWeight.ExtraBold, fontSize = 16.sp)
                         }
