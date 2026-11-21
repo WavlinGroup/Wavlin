@@ -82,6 +82,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -1020,6 +1021,15 @@ class MainActivity : ComponentActivity() {
                 // A WebView can't be recorded into the glass backdrop layer (it crashes the page or the app),
                 // so the screens that host one run without the liquid-glass backdrop.
                 val webViewRoute = currentRoute == "login" || currentRoute == "spotify_signin"
+                // In Apple glass the tab bar, mini player and menus sample glassBackdrop, so on Home nothing reads
+                // the Haze source. Skipping it stops the whole screen being recorded a second time on every
+                // scroll frame. Other screens (and Secret Pink) still have Haze consumers and keep it.
+                // visibleEntries also covers exit animations, so a screen sliding away keeps its blur.
+                val visibleEntries by navController.visibleEntries.collectAsState()
+                val skipHazeSource =
+                    appleStyle && appleGlassSupported() && !webViewRoute && !pinkWallpaper &&
+                        visibleEntries.isNotEmpty() &&
+                        visibleEntries.all { it.destination.route == Screens.Home.route }
                 val glassOverlayHost = remember { com.wavlin.music.ui.component.GlassOverlayHostState() }
                 val glassBackdrop = rememberLayerBackdrop {
                     drawRect(baseBg)
@@ -1364,7 +1374,7 @@ class MainActivity : ComponentActivity() {
                         Row(
                             Modifier
                                 .fillMaxSize()
-                                .hazeSource(state = hazeState)
+                                .then(if (skipHazeSource) Modifier else Modifier.hazeSource(state = hazeState))
                                 .then(if (appleStyle && appleGlassSupported() && !webViewRoute) Modifier.layerBackdrop(glassBackdrop) else Modifier)
                                 .then(
                                     if (pinkWallpaper) {
