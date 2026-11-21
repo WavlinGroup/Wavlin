@@ -8,12 +8,6 @@
 
 <br/>
 
-<a href="https://trendshift.io/repositories/20652" target="_blank">
-  <img src="https://trendshift.io/api/badge/repositories/20652" alt="WavlinGroup/Wavlin | Trendshift" width="250" height="55" />
-</a>
-
-<br/>
-
 [![Latest release](https://img.shields.io/github/v/release/WavlinGroup/Wavlin?style=for-the-badge&labelColor=0d1117)](https://github.com/WavlinGroup/Wavlin/releases)
 [![License](https://img.shields.io/github/license/WavlinGroup/Wavlin?style=for-the-badge&labelColor=0d1117)](https://github.com/WavlinGroup/Wavlin/blob/main/LICENSE)
 [![Downloads](https://img.shields.io/github/downloads/WavlinGroup/Wavlin/total?style=for-the-badge&labelColor=0d1117)](https://github.com/WavlinGroup/Wavlin/releases)
@@ -225,19 +219,15 @@
 
 <h3>Wavlin is free and open-source. If it brings you joy, consider supporting its development!</h3>
 
-#### Monero (XMR)
-
-<img src="https://github.com/WavlinGroup/Wavlin/blob/main/assets/XMR.png" alt="Monero QR code" width="150" />
-
-```text
-44XjSELSWcgJTZiCKzjpCQWyXhokrH9RqH3rpp35FkSKi57T25hniHWHQNhLeXyFn3DDYqufmfRB1iEtENerZpJc7xJCcqt
-```
-
 #### Buy Me a Coffee
 
-<a href="https://www.buymeacoffee.com/mostafaalagamy">
+<a href="https://www.buymeacoffee.com/dvaustria7c">
   <img src="https://github.com/WavlinGroup/Wavlin/blob/main/assets/buymeacoffee.png?raw=true" alt="Buy Me a Coffee" width="150" />
 </a>
+
+<br/><br/>
+
+<img src="https://github.com/WavlinGroup/Wavlin/blob/main/assets/buymeacoffee-qr.png?raw=true" alt="Buy Me a Coffee QR code" width="150" />
 
 </div>
 
