@@ -285,7 +285,7 @@
       <td>Time-synced lyrics with word-by-word highlighting & YouTube Music integration</td>
     </tr>
     <tr>
-      <td align="center"><a href="https://github.com/MetrolistGroup/metroserver"><strong>metroserver</strong></a></td>
+      <td align="center"><a href="https://github.com/MetrolistGroup/wavlinserver"><strong>wavlinserver</strong></a></td>
       <td>Listen-together real-time backend</td>
     </tr>
     <tr>
@@ -335,6 +335,6 @@ All trademarks, service marks, and intellectual property rights referenced in th
 
 <br/>
 
-**Made with ❤️ by [Alias](https://github.com/dvaustria741-a11y)**
+**Made with ❤️ by [Zenkai](https://github.com/dvaustria741-a11y)**
 
 </div>
