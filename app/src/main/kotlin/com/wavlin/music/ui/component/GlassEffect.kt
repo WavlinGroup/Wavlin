@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -87,6 +88,12 @@ fun pinkLilyHazeStyle(): HazeStyle = HazeStyle(
 /** True when the user enabled reduced glass: [glassPanel] skips the border pass and halves the Haze blur radius. */
 val LocalReduceGlass = staticCompositionLocalOf { false }
 
+/**
+ * False while no screen content is recorded as a Haze source (Home in Apple glass). Haze glass then has
+ * nothing to blur, so [legacyGlassPanel] draws its flat fill and border without the Haze pass.
+ */
+val LocalHazeSourceActive = compositionLocalOf { true }
+
 val LocalHazeState = staticCompositionLocalOf<HazeState> {
     error("No HazeState provided - wrap the root content in Modifier.hazeSource(LocalHazeState.current)")
 }
@@ -138,10 +145,17 @@ fun Modifier.legacyGlassPanel(
     val hazeState = LocalHazeState.current
     val resolvedStyle = style ?: if (LocalPinkLilyTheme.current) pinkLilyHazeStyle() else HazeMaterials.thin()
     val reduce = LocalReduceGlass.current
+    val hazeSourceActive = LocalHazeSourceActive.current
     var m = this
         .clip(shape)
-        .hazeEffect(state = hazeState, style = resolvedStyle) {
-            if (reduce && resolvedStyle.blurRadius.isSpecified) blurRadius = resolvedStyle.blurRadius / 2
+        .let { base ->
+            if (hazeSourceActive) {
+                base.hazeEffect(state = hazeState, style = resolvedStyle) {
+                    if (reduce && resolvedStyle.blurRadius.isSpecified) blurRadius = resolvedStyle.blurRadius / 2
+                }
+            } else {
+                base
+            }
         }
     if (drawStroke) {
         m = m.border(strokeWidth, glassStrokeBrush(), shape)

@@ -524,7 +524,7 @@ private fun WordLevelLyrics(
             .height(with(density) { layoutResult.size.height.toDp() })
             .graphicsLayer(
                 clip = false,
-                compositingStrategy = CompositingStrategy.Offscreen,
+                compositingStrategy = if (isActiveLine) CompositingStrategy.Offscreen else CompositingStrategy.Auto,
             )
         ) {
             if (mainText.isEmpty()) return@Canvas

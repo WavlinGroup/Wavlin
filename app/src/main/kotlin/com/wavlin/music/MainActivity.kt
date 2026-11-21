@@ -1071,6 +1071,7 @@ class MainActivity : ComponentActivity() {
                     LocalListenTogetherManager provides listenTogetherManager,
                     LocalChangelogState provides showChangelog,
                     LocalHazeState provides hazeState,
+                    com.wavlin.music.ui.component.LocalHazeSourceActive provides !skipHazeSource,
                     LocalPinkLilyTheme provides pinkWallpaper,
                     com.wavlin.music.ui.component.LocalReduceGlass provides reduceGlassPref,
                     com.wavlin.music.ui.component.LocalLensEnabled provides !reduceGlassPref,
