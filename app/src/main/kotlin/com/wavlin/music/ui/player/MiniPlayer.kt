@@ -70,7 +70,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -677,7 +676,13 @@ private fun NewMiniPlayerPlayButton(
                     model = thumbnailUrl,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize().rotate(discRotation.value).clip(CircleShape),
+                    // Read the angle inside the layer block: same rotation as Modifier.rotate, but the
+                    // 8 s spin no longer recomposes this button on every frame while playing.
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .graphicsLayer { rotationZ = discRotation.value }
+                            .clip(CircleShape),
                 )
             }
 
