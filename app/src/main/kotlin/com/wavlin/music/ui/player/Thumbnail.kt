@@ -304,10 +304,6 @@ fun Thumbnail(
 
     Box(
         modifier = modifier
-            .graphicsLayer {
-                // Use hardware layer for entire Thumbnail to ensure smooth 120Hz animations
-                compositingStrategy = CompositingStrategy.Offscreen
-            }
     ) {
         // Error view
         AnimatedVisibility(
@@ -680,10 +676,6 @@ private fun ThumbnailImage(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .graphicsLayer {
-                // Use offscreen compositing for hardware acceleration during animations
-                compositingStrategy = CompositingStrategy.Offscreen
-            }
             .background(MaterialTheme.colorScheme.surfaceVariant)
     ) {
         AsyncImage(
