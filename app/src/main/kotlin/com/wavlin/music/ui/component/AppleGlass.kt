@@ -37,6 +37,9 @@ val LocalGlassBackdrop = staticCompositionLocalOf<LayerBackdrop?> { null }
 /** Source layer for glass drawn on top of the expanded player (its blurred artwork background). Null unless Apple style is on. */
 val LocalPlayerGlassBackdrop = staticCompositionLocalOf<LayerBackdrop?> { null }
 
+/** Per-surface switch for the lens AGSL shader. Provided as false when the user enables reduced glass. */
+val LocalLensEnabled = staticCompositionLocalOf { true }
+
 /** Lens refraction runs on a RuntimeShader (AGSL), which needs Android 13+. Older devices fall back to Haze. */
 fun appleGlassSupported(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
@@ -53,7 +56,7 @@ fun Modifier.appleGlass(
     tintAlpha: Float? = null,
     backdrop: LayerBackdrop? = LocalGlassBackdrop.current,
     /** The lens is an AGSL shader that runs on every pixel of the surface, so big surfaces (the menu sheet) turn it off. */
-    lensEnabled: Boolean = true,
+    lensEnabled: Boolean = LocalLensEnabled.current,
 ): Modifier {
     val isDark = MaterialTheme.colorScheme.surface.luminance() < 0.5f
     val pink = LocalPinkLilyTheme.current
@@ -75,7 +78,7 @@ fun Modifier.appleGlass(
                 contrast = 1f,
                 saturation = if (pink) 1.05f else 1.5f,
             )
-            blur(10f.dp.toPx())
+            blur(7f.dp.toPx())
             if (lensEnabled) {
                 lens(minOf(size.minDimension / 4f, 24.dp.toPx()), minOf(size.minDimension / 2f, 32.dp.toPx()), false)
             }

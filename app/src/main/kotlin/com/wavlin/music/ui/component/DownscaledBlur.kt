@@ -23,7 +23,7 @@ import kotlin.math.roundToInt
 fun DownscaledBlurBox(
     radius: Dp,
     modifier: Modifier = Modifier,
-    factor: Float = 8f,
+    factor: Float = 12f,
     content: @Composable () -> Unit,
 ) {
     Layout(

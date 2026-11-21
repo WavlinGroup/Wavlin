@@ -32,6 +32,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.isSpecified
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
@@ -47,7 +48,7 @@ import dev.chrisbanes.haze.materials.HazeMaterials
 fun pureBlackHazeStyle(): HazeStyle = HazeStyle(
     backgroundColor = Color.Black,
     tints = listOf(HazeTint(Color.Black.copy(alpha = 0.75f))),
-    blurRadius = 20.dp,
+    blurRadius = 14.dp,
     noiseFactor = 0.15f,
 )
 
@@ -68,7 +69,7 @@ fun pinkLilyNavHazeStyle(): HazeStyle = HazeStyle(
         HazeTint(Color(0xFFFFD3E2).copy(alpha = 0.62f)),
         HazeTint(Color.White.copy(alpha = 0.14f)),
     ),
-    blurRadius = 32.dp,
+    blurRadius = 20.dp,
     noiseFactor = 0.03f,
 )
 
@@ -79,9 +80,12 @@ fun pinkLilyHazeStyle(): HazeStyle = HazeStyle(
         HazeTint(Color(0xFFFFD0E0).copy(alpha = 0.40f)),
         HazeTint(Color.White.copy(alpha = 0.16f)),
     ),
-    blurRadius = 20.dp,
+    blurRadius = 14.dp,
     noiseFactor = 0.04f,
 )
+
+/** True when the user enabled reduced glass: [glassPanel] skips the border pass and halves the Haze blur radius. */
+val LocalReduceGlass = staticCompositionLocalOf { false }
 
 val LocalHazeState = staticCompositionLocalOf<HazeState> {
     error("No HazeState provided - wrap the root content in Modifier.hazeSource(LocalHazeState.current)")
@@ -120,7 +124,7 @@ fun Modifier.glassPanel(
         // Apple Music style: every glass surface uses the shared liquid-glass backdrop.
         this.appleGlass(shape, style)
     } else {
-        this.legacyGlassPanel(shape, style, strokeWidth, drawStroke)
+        this.legacyGlassPanel(shape, style, strokeWidth, drawStroke && !LocalReduceGlass.current)
     }
 
 /** The original Haze-based glass. Also the fallback for [appleGlass] when the backdrop is unavailable. */
@@ -132,12 +136,13 @@ fun Modifier.legacyGlassPanel(
     drawStroke: Boolean = true,
 ): Modifier = composed {
     val hazeState = LocalHazeState.current
+    val resolvedStyle = style ?: if (LocalPinkLilyTheme.current) pinkLilyHazeStyle() else HazeMaterials.thin()
+    val reduce = LocalReduceGlass.current
     var m = this
         .clip(shape)
-        .hazeEffect(
-            state = hazeState,
-            style = style ?: if (LocalPinkLilyTheme.current) pinkLilyHazeStyle() else HazeMaterials.thin(),
-        )
+        .hazeEffect(state = hazeState, style = resolvedStyle) {
+            if (reduce && resolvedStyle.blurRadius.isSpecified) blurRadius = resolvedStyle.blurRadius / 2
+        }
     if (drawStroke) {
         m = m.border(strokeWidth, glassStrokeBrush(), shape)
     }

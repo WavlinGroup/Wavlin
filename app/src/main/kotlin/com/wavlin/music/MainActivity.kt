@@ -165,6 +165,7 @@ import com.wavlin.music.constants.PauseSearchHistoryKey
 import com.wavlin.music.constants.PreferredLyricsProvider
 import com.wavlin.music.constants.PreferredLyricsProviderKey
 import com.wavlin.music.constants.PureBlackKey
+import com.wavlin.music.constants.ReduceGlassKey
 import com.wavlin.music.constants.SYSTEM_DEFAULT
 import com.wavlin.music.constants.SelectedThemeColorKey
 import com.wavlin.music.constants.SimpMusicMigrationDoneKey
@@ -549,6 +550,7 @@ class MainActivity : ComponentActivity() {
         val enableDynamicTheme by rememberPreference(DynamicThemeKey, defaultValue = true)
         val enableHighRefreshRate by rememberPreference(EnableHighRefreshRateKey, defaultValue = true)
         val cropAlbumArtPref by rememberPreference(com.wavlin.music.constants.CropAlbumArtKey, defaultValue = false)
+        val reduceGlassPref by rememberPreference(ReduceGlassKey, defaultValue = false)
 
         LaunchedEffect(enableHighRefreshRate) {
             val window = this@MainActivity.window
@@ -1058,6 +1060,8 @@ class MainActivity : ComponentActivity() {
                     LocalChangelogState provides showChangelog,
                     LocalHazeState provides hazeState,
                     LocalPinkLilyTheme provides pinkWallpaper,
+                    com.wavlin.music.ui.component.LocalReduceGlass provides reduceGlassPref,
+                    com.wavlin.music.ui.component.LocalLensEnabled provides !reduceGlassPref,
                     com.wavlin.music.ui.component.LocalCropAlbumArt provides cropAlbumArtPref,
                 ) {
                     if (showChangelog.value) {
