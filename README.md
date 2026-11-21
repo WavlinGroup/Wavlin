@@ -219,15 +219,15 @@
 
 <h3>Wavlin is free and open-source. If it brings you joy, consider supporting its development!</h3>
 
-#### Buy Me a Coffee
+#### Ko-fi
 
-<a href="https://www.buymeacoffee.com/dvaustria7c">
-  <img src="https://github.com/WavlinGroup/Wavlin/blob/main/assets/buymeacoffee.png?raw=true" alt="Buy Me a Coffee" width="150" />
+<a href="https://ko-fi.com/zenkaidev">
+  <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Support me on Ko-fi" />
 </a>
 
 <br/><br/>
 
-<img src="https://github.com/WavlinGroup/Wavlin/blob/main/assets/buymeacoffee-qr.png?raw=true" alt="Buy Me a Coffee QR code" width="150" />
+<img src="https://github.com/WavlinGroup/Wavlin/blob/main/assets/kofi-qr.png?raw=true" alt="Ko-fi QR code" width="150" />
 
 </div>
 
