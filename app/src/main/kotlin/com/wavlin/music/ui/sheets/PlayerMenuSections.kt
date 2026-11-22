@@ -1,4 +1,4 @@
-package com.wavlin.music.ui.menu
+package com.wavlin.music.ui.sheets
 
 import com.wavlin.music.ui.kit.LocalInterfaceAppleMusic
 import androidx.annotation.StringRes

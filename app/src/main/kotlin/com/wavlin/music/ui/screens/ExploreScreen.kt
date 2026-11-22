@@ -75,8 +75,8 @@ import com.wavlin.music.ui.kit.YouTubeListItem
 import com.wavlin.music.ui.kit.shimmer.GridItemPlaceHolder
 import com.wavlin.music.ui.kit.shimmer.ShimmerHost
 import com.wavlin.music.ui.kit.shimmer.TextPlaceholder
-import com.wavlin.music.ui.menu.YouTubeAlbumMenu
-import com.wavlin.music.ui.menu.YouTubeSongMenu
+import com.wavlin.music.ui.sheets.YouTubeAlbumMenu
+import com.wavlin.music.ui.sheets.YouTubeSongMenu
 import com.wavlin.music.ui.support.SnapLayoutInfoProvider
 import com.wavlin.music.ui.state.ChartsViewModel
 import com.wavlin.music.ui.state.ExploreViewModel

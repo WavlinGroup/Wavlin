@@ -150,7 +150,7 @@ import coil3.request.allowHardware
 import coil3.toBitmap
 import com.wavlin.music.LocalDatabase
 import com.wavlin.music.db.entities.Song
-import com.wavlin.music.ui.menu.DownloadDestinationDialog
+import com.wavlin.music.ui.sheets.DownloadDestinationDialog
 import com.wavlin.music.playback.ExoDownloadService
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.media3.exoplayer.offline.Download
@@ -197,7 +197,7 @@ import com.wavlin.music.ui.kit.SquigglySlider
 import com.wavlin.music.ui.kit.TempoPitchOverlay
 import com.wavlin.music.ui.kit.WavySlider
 import com.wavlin.music.ui.kit.rememberBottomSheetState
-import com.wavlin.music.ui.menu.PlayerMenu
+import com.wavlin.music.ui.sheets.PlayerMenu
 import com.wavlin.music.ui.screens.settings.DarkMode
 import com.wavlin.music.ui.style.PlayerColorExtractor
 import com.wavlin.music.ui.style.PlayerSliderColors
@@ -1223,7 +1223,7 @@ fun BottomSheetPlayer(
                                         .background(textButtonColor)
                                         .clickable {
                                             menuState.show {
-                                                com.wavlin.music.ui.menu.LyricsMenu(
+                                                com.wavlin.music.ui.sheets.LyricsMenu(
                                                     lyricsProvider = { currentLyrics },
                                                     songProvider = { currentSong?.song },
                                                     mediaMetadataProvider = { mediaMetadata },
@@ -1582,7 +1582,7 @@ fun BottomSheetPlayer(
                                 onClick = {
                                     if (showLyrics) {
                                         menuState.show {
-                                            com.wavlin.music.ui.menu.LyricsMenu(
+                                            com.wavlin.music.ui.sheets.LyricsMenu(
                                                 lyricsProvider = { currentLyrics },
                                                 songProvider = { currentSong?.song },
                                                 mediaMetadataProvider = { mediaMetadata },

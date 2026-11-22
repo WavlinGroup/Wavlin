@@ -83,7 +83,7 @@ import com.wavlin.music.media.queue.ListQueue
 import com.wavlin.music.ui.kit.IconButton
 import com.wavlin.music.ui.kit.LocalMenuState
 import com.wavlin.music.ui.kit.YouTubeListItem
-import com.wavlin.music.ui.menu.YouTubeSongMenu
+import com.wavlin.music.ui.sheets.YouTubeSongMenu
 import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.ui.state.OnlinePodcastViewModel
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalMaterial3ExpressiveApi::class)

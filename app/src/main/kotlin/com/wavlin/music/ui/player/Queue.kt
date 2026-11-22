@@ -142,9 +142,9 @@ import com.wavlin.music.ui.kit.BottomSheet
 import com.wavlin.music.ui.kit.BottomSheetState
 import com.wavlin.music.ui.kit.LocalBottomSheetPageState
 import com.wavlin.music.ui.kit.LocalMenuState
-import com.wavlin.music.ui.menu.PlayerMenu
-import com.wavlin.music.ui.menu.QueueMenu
-import com.wavlin.music.ui.menu.SelectionMediaMetadataMenu
+import com.wavlin.music.ui.sheets.PlayerMenu
+import com.wavlin.music.ui.sheets.QueueMenu
+import com.wavlin.music.ui.sheets.SelectionMediaMetadataMenu
 import com.wavlin.music.ui.support.ShowMediaInfo
 import com.wavlin.music.core.util.dataStore
 import com.wavlin.music.core.util.makeTimeString

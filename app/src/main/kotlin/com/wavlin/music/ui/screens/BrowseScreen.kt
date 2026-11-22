@@ -39,9 +39,9 @@ import com.wavlin.music.ui.kit.LocalMenuState
 import com.wavlin.music.ui.kit.YouTubeGridItem
 import com.wavlin.music.ui.kit.shimmer.GridItemPlaceHolder
 import com.wavlin.music.ui.kit.shimmer.ShimmerHost
-import com.wavlin.music.ui.menu.YouTubeAlbumMenu
-import com.wavlin.music.ui.menu.YouTubeArtistMenu
-import com.wavlin.music.ui.menu.YouTubePlaylistMenu
+import com.wavlin.music.ui.sheets.YouTubeAlbumMenu
+import com.wavlin.music.ui.sheets.YouTubeArtistMenu
+import com.wavlin.music.ui.sheets.YouTubePlaylistMenu
 import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.ui.state.BrowseViewModel

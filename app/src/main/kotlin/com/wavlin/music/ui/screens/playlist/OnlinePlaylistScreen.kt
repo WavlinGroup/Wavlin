@@ -101,9 +101,9 @@ import com.wavlin.music.ui.kit.glassStrokeBrush
 import com.wavlin.music.ui.kit.IconButton
 import com.wavlin.music.ui.kit.LocalMenuState
 import com.wavlin.music.ui.kit.YouTubeListItem
-import com.wavlin.music.ui.menu.YouTubePlaylistMenu
-import com.wavlin.music.ui.menu.YouTubeSelectionSongMenu
-import com.wavlin.music.ui.menu.YouTubeSongMenu
+import com.wavlin.music.ui.sheets.YouTubePlaylistMenu
+import com.wavlin.music.ui.sheets.YouTubeSelectionSongMenu
+import com.wavlin.music.ui.sheets.YouTubeSongMenu
 import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.ui.support.resize
 import com.wavlin.music.core.util.makeTimeString

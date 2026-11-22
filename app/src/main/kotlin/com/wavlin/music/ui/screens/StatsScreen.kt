@@ -85,9 +85,9 @@ import com.wavlin.music.ui.kit.LocalSongsGrid
 import com.wavlin.music.ui.kit.NavigationTitle
 import com.wavlin.music.ui.kit.PlaylistGridItem
 import com.wavlin.music.ui.kit.TimeTransfer
-import com.wavlin.music.ui.menu.AlbumMenu
-import com.wavlin.music.ui.menu.ArtistMenu
-import com.wavlin.music.ui.menu.SongMenu
+import com.wavlin.music.ui.sheets.AlbumMenu
+import com.wavlin.music.ui.sheets.ArtistMenu
+import com.wavlin.music.ui.sheets.SongMenu
 import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.joinByBullet
 import com.wavlin.music.core.util.makeTimeString

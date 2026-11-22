@@ -26,8 +26,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.systemBars
-import com.wavlin.music.ui.menu.PlayerMenuQuickActions
-import com.wavlin.music.ui.menu.PlayerQuickAction
+import com.wavlin.music.ui.sheets.PlayerMenuQuickActions
+import com.wavlin.music.ui.sheets.PlayerQuickAction
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer

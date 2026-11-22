@@ -76,10 +76,10 @@ import com.wavlin.music.media.queue.YouTubeQueue
 import com.wavlin.music.ui.kit.LocalMenuState
 import com.wavlin.music.ui.kit.CategoryCard
 import com.wavlin.music.ui.kit.YouTubeListItem
-import com.wavlin.music.ui.menu.YouTubeAlbumMenu
-import com.wavlin.music.ui.menu.YouTubeArtistMenu
-import com.wavlin.music.ui.menu.YouTubePlaylistMenu
-import com.wavlin.music.ui.menu.YouTubeSongMenu
+import com.wavlin.music.ui.sheets.YouTubeAlbumMenu
+import com.wavlin.music.ui.sheets.YouTubeArtistMenu
+import com.wavlin.music.ui.sheets.YouTubePlaylistMenu
+import com.wavlin.music.ui.sheets.YouTubeSongMenu
 import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.ui.state.OnlineSearchSuggestionViewModel
 import kotlinx.coroutines.FlowPreview

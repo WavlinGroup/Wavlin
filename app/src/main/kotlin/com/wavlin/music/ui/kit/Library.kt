@@ -20,10 +20,10 @@ import com.wavlin.music.R
 import com.wavlin.music.db.entities.Album
 import com.wavlin.music.db.entities.Artist
 import com.wavlin.music.db.entities.Playlist
-import com.wavlin.music.ui.menu.AlbumMenu
-import com.wavlin.music.ui.menu.ArtistMenu
-import com.wavlin.music.ui.menu.PlaylistMenu
-import com.wavlin.music.ui.menu.YouTubePlaylistMenu
+import com.wavlin.music.ui.sheets.AlbumMenu
+import com.wavlin.music.ui.sheets.ArtistMenu
+import com.wavlin.music.ui.sheets.PlaylistMenu
+import com.wavlin.music.ui.sheets.YouTubePlaylistMenu
 import kotlinx.coroutines.CoroutineScope
 
 @Composable

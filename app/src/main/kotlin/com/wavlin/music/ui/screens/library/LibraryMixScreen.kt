@@ -100,10 +100,10 @@ import com.wavlin.music.ui.kit.PlaylistListItem
 import com.wavlin.music.ui.kit.SongGridItem
 import com.wavlin.music.ui.kit.SongListItem
 import com.wavlin.music.ui.kit.SortHeader
-import com.wavlin.music.ui.menu.AlbumMenu
-import com.wavlin.music.ui.menu.ArtistMenu
-import com.wavlin.music.ui.menu.PlaylistMenu
-import com.wavlin.music.ui.menu.SongMenu
+import com.wavlin.music.ui.sheets.AlbumMenu
+import com.wavlin.music.ui.sheets.ArtistMenu
+import com.wavlin.music.ui.sheets.PlaylistMenu
+import com.wavlin.music.ui.sheets.SongMenu
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.ui.state.LibraryMixViewModel

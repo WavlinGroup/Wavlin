@@ -88,10 +88,10 @@ import com.wavlin.music.ui.kit.LocalMenuState
 import com.wavlin.music.ui.kit.NavigationTitle
 import com.wavlin.music.ui.kit.SongListItem
 import com.wavlin.music.ui.kit.YouTubeGridItem
-import com.wavlin.music.ui.menu.AlbumMenu
-import com.wavlin.music.ui.menu.SelectionSongMenu
-import com.wavlin.music.ui.menu.SongMenu
-import com.wavlin.music.ui.menu.YouTubeAlbumMenu
+import com.wavlin.music.ui.sheets.AlbumMenu
+import com.wavlin.music.ui.sheets.SelectionSongMenu
+import com.wavlin.music.ui.sheets.SongMenu
+import com.wavlin.music.ui.sheets.YouTubeAlbumMenu
 import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.ui.support.resize
 import com.wavlin.music.core.util.makeTimeString

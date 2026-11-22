@@ -86,7 +86,7 @@ import com.wavlin.music.ui.kit.Material3MenuGroup
 import com.wavlin.music.ui.kit.Material3MenuItemData
 import com.wavlin.music.ui.kit.SongListItem
 import com.wavlin.music.ui.kit.SortHeader
-import com.wavlin.music.ui.menu.SongMenu
+import com.wavlin.music.ui.sheets.SongMenu
 import com.wavlin.music.core.util.joinByBullet
 import com.wavlin.music.core.util.makeTimeString
 import com.wavlin.music.core.util.rememberEnumPreference

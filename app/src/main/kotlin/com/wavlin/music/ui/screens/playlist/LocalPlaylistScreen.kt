@@ -171,11 +171,11 @@ import com.wavlin.music.ui.kit.OverlayEditButton
 import com.wavlin.music.ui.kit.SongListItem
 import com.wavlin.music.ui.kit.SortHeader
 import com.wavlin.music.ui.kit.TextFieldDialog
-import com.wavlin.music.ui.menu.CustomThumbnailMenu
+import com.wavlin.music.ui.sheets.CustomThumbnailMenu
 import com.wavlin.music.ui.style.PlayerColorExtractor
-import com.wavlin.music.ui.menu.LocalPlaylistMenu
-import com.wavlin.music.ui.menu.SelectionSongMenu
-import com.wavlin.music.ui.menu.SongMenu
+import com.wavlin.music.ui.sheets.LocalPlaylistMenu
+import com.wavlin.music.ui.sheets.SelectionSongMenu
+import com.wavlin.music.ui.sheets.SongMenu
 import com.wavlin.music.ui.screens.settings.DarkMode
 import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.makeTimeString

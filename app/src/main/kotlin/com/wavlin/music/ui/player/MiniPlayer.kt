@@ -143,7 +143,7 @@ import com.wavlin.music.ui.kit.LilySlicedBackground
 import com.wavlin.music.ui.kit.pinkLilyHazeStyle
 import com.wavlin.music.ui.kit.LocalMenuState
 import com.wavlin.music.ui.kit.glassStrokeBrush
-import com.wavlin.music.ui.menu.AddToPlaylistDialog
+import com.wavlin.music.ui.sheets.AddToPlaylistDialog
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.HazeMaterials

@@ -3,7 +3,7 @@
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
-package com.wavlin.music.ui.menu
+package com.wavlin.music.ui.sheets
 
 import android.content.Intent
 import android.content.res.Configuration
@@ -66,7 +66,7 @@ import com.wavlin.music.ui.kit.NewAction
 import com.wavlin.music.ui.kit.NewActionGrid
 import com.wavlin.music.ui.kit.PlaylistListItem
 import com.wavlin.music.ui.kit.TextFieldDialog
-import com.wavlin.music.ui.menu.ExportDialog
+import com.wavlin.music.ui.sheets.ExportDialog
 import com.wavlin.music.core.util.PlaylistExporter
 import com.wavlin.music.core.util.getExportFileUri
 import com.wavlin.music.core.util.saveToPublicDocuments

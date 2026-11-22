@@ -4,7 +4,7 @@
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
-package com.wavlin.music.ui.menu
+package com.wavlin.music.ui.sheets
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

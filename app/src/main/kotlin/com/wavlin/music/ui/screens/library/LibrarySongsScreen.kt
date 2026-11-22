@@ -96,8 +96,8 @@ import com.wavlin.music.ui.kit.LibrarySearchHeader
 import com.wavlin.music.ui.kit.LocalMenuState
 import com.wavlin.music.ui.kit.SongListItem
 import com.wavlin.music.ui.kit.SortHeader
-import com.wavlin.music.ui.menu.SelectionSongMenu
-import com.wavlin.music.ui.menu.SongMenu
+import com.wavlin.music.ui.sheets.SelectionSongMenu
+import com.wavlin.music.ui.sheets.SongMenu
 import com.wavlin.music.ui.support.isScrollingUp
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.core.util.rememberPreference

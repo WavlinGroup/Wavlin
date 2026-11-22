@@ -64,7 +64,7 @@ import com.wavlin.music.ui.kit.EmptyPlaceholder
 import com.wavlin.music.ui.kit.LocalMenuState
 import com.wavlin.music.ui.kit.PlaylistListItem
 import com.wavlin.music.ui.kit.SongListItem
-import com.wavlin.music.ui.menu.SongMenu
+import com.wavlin.music.ui.sheets.SongMenu
 import com.wavlin.music.ui.state.LocalFilter
 import com.wavlin.music.ui.state.LocalSearchViewModel
 import kotlinx.coroutines.flow.drop

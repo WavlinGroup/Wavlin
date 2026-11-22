@@ -83,8 +83,8 @@ import com.wavlin.music.integration.spotify.SpotifyMatcher
 import com.wavlin.music.data.local.LocalSongs
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.media.queue.ListQueue
-import com.wavlin.music.ui.menu.AddToPlaylistDialog
-import com.wavlin.music.ui.menu.DownloadDestinationDialog
+import com.wavlin.music.ui.sheets.AddToPlaylistDialog
+import com.wavlin.music.ui.sheets.DownloadDestinationDialog
 import com.wavlin.music.db.entities.Song
 import kotlinx.coroutines.flow.first
 import io.ktor.client.HttpClient
