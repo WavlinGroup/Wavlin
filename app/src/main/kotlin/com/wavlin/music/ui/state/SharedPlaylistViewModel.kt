@@ -97,7 +97,7 @@ class SharedPlaylistViewModel
 
         private companion object {
             const val BATCH_SIZE = 50
-            const val SHARE_PAGE_HOST = "wavlin-share.dvaustria741.workers.dev"
+            const val SHARE_PAGE_HOST = "wavlinsite.dvaustria741.workers.dev"
             val CODE_REGEX = Regex("[A-Za-z0-9]{4,32}")
         }
     }

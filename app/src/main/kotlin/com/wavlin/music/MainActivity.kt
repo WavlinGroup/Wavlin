@@ -1668,7 +1668,7 @@ class MainActivity : ComponentActivity() {
         val route =
             when {
                 uri.scheme == "wavlin" -> uri.host
-                uri.host == SHARE_PAGE_HOST ->
+                uri.host == SHARE_PAGE_HOST || uri.host == LEGACY_SHARE_PAGE_HOST ->
                     when {
                         uri.getQueryParameter("ids") != null -> "shared"
                         uri.getQueryParameter("list") != null -> "playlist"
@@ -1795,7 +1795,8 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-private const val SHARE_PAGE_HOST = "wavlin-share.dvaustria741.workers.dev"
+private const val SHARE_PAGE_HOST = "wavlinsite.dvaustria741.workers.dev"
+private const val LEGACY_SHARE_PAGE_HOST = "wavlin-share.dvaustria741.workers.dev"
 
 val LocalDatabase = staticCompositionLocalOf<MusicDatabase> { error("No database provided") }
 val LocalNavController = staticCompositionLocalOf<NavController> { error("No NavController provided") }

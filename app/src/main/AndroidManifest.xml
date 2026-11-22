@@ -110,6 +110,7 @@
 
                 <data android:scheme="https" />
                 <data android:host="wavlin-share.dvaustria741.workers.dev" />
+                <data android:host="wavlinsite.dvaustria741.workers.dev" />
                 <data android:pathPrefix="/" />
             </intent-filter>
 
