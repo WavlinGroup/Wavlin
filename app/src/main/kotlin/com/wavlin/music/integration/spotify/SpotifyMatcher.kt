@@ -63,6 +63,42 @@ object SpotifyMatcher {
         return best()?.first
     }
 
+    private const val VIDEO_MAX_DURATION_DIFF_SECONDS = 5
+
+    /**
+     * Plain-YouTube fallback for tracks YouTube Music doesn't list. A result is only accepted when its
+     * title has the Spotify title, the main artist is in the title or channel, it adds no remix/live/
+     * slowed-style words, and its length is within [VIDEO_MAX_DURATION_DIFF_SECONDS] of the Spotify
+     * length. Returns null instead of a merely similar upload.
+     */
+    suspend fun matchVideoId(title: String, artist: String, durationSeconds: Int): String? {
+        val fullSong = normalize(title)
+        val coreSong = normalize(stripExtras(title))
+        val mainArtist = artist.split(",").firstOrNull()?.let { normalize(it) }.orEmpty()
+        if (coreSong.isEmpty()) return null
+        val query = "$artist $title".replace(Regex("[!,]"), "").trim()
+        val candidates = YouTube.searchVideoCandidates(query).getOrNull().orEmpty()
+
+        return candidates
+            .mapNotNull { video ->
+                val resultTitle = normalize(video.title)
+                val channel = normalize(video.channel)
+                if (!containsWords(resultTitle, coreSong)) return@mapNotNull null
+                if (forbiddenHits(fullSong, resultTitle) > 0) return@mapNotNull null
+                if (mainArtist.isNotEmpty() && !containsWords("$channel $resultTitle", mainArtist)) return@mapNotNull null
+                val diff =
+                    if (durationSeconds > 0) {
+                        val length = video.durationSeconds ?: return@mapNotNull null
+                        abs(durationSeconds - length).also { if (it > VIDEO_MAX_DURATION_DIFF_SECONDS) return@mapNotNull null }
+                    } else {
+                        0
+                    }
+                // Closest length first; an auto-generated "Artist - Topic" channel wins ties
+                video.videoId to (diff * 10 - if (channel.endsWith(" topic")) 5 else 0)
+            }.minByOrNull { it.second }
+            ?.first
+    }
+
     private fun score(track: SpotifyTrack, item: SongItem): Double? {
         val fullSong = normalize(track.title)
         val fullResult = normalize(item.title)

@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
-import com.wavlin.innertube.YouTube
 import com.wavlin.innertube.models.SongItem
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.playback.ExoDownloadService
@@ -180,8 +179,7 @@ object SpotifyImporter {
 
     private suspend fun ytFallbackMatch(database: MusicDatabase, track: SpotifyTrack): String? =
         try {
-            val query = "${track.title} ${track.artist}".replace(Regex("[!,]"), "").trim()
-            val videoId = YouTube.searchFirstVideoId(query).getOrNull() ?: return null
+            val videoId = SpotifyMatcher.matchVideoId(track.title, track.artist, track.durationSeconds) ?: return null
             val coverUrl = track.coverUrl ?: "https://i.ytimg.com/vi/$videoId/hqdefault.jpg"
             saveWithCover(
                 database,

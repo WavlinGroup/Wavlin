@@ -69,7 +69,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil3.compose.AsyncImage
-import com.wavlin.innertube.YouTube
 import com.wavlin.innertube.models.SongItem
 import com.wavlin.music.R
 import com.wavlin.music.core.config.ListThumbnailSize
@@ -130,10 +129,9 @@ fun SpotifyPlaylistPreviewDialog(
                     if (song != null) {
                         matches[index] = MatchState.Found(song)
                     } else {
-                        val query = "${track.title} ${track.artist}".replace(Regex("[!,]"), "").trim()
                         val videoId =
                             try {
-                                withContext(Dispatchers.IO) { YouTube.searchFirstVideoId(query).getOrNull() }
+                                withContext(Dispatchers.IO) { SpotifyMatcher.matchVideoId(track.title, track.artist, track.durationSeconds) }
                             } catch (e: CancellationException) {
                                 throw e
                             } catch (e: Exception) {

@@ -8,7 +8,6 @@
 
 package com.wavlin.music.integration.spotify.account
 
-import com.wavlin.innertube.YouTube
 import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.models.toMediaMetadata
@@ -72,8 +71,7 @@ object SpotifyPlayback {
     }
 
     private suspend fun fallbackMatch(track: SpotifyWebTrack): MediaMetadata? {
-        val query = "${track.name} ${track.artistNames}".replace(Regex("[!,]"), "").trim()
-        val videoId = YouTube.searchFirstVideoId(query).getOrNull() ?: return null
+        val videoId = SpotifyMatcher.matchVideoId(track.name, track.artistNames, track.durationMs / 1000) ?: return null
         return MediaMetadata(
             id = videoId,
             title = track.name,

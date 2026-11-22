@@ -3739,6 +3739,62 @@ object YouTube {
      * video ID found in the response.  Used as a fallback when a track is absent from YouTube
      * Music so that a plain YouTube upload can still be queued for download.
      */
+    /** One video result of a plain YouTube (WEB client) search. [durationSeconds] is null for live or unparsed lengths. */
+    data class VideoCandidate(
+        val videoId: String,
+        val title: String,
+        val channel: String,
+        val durationSeconds: Int?,
+    )
+
+    /**
+     * Plain YouTube (WEB client) search returning every videoRenderer with its title, channel and
+     * length, so callers can verify a result instead of trusting the first one.
+     */
+    suspend fun searchVideoCandidates(query: String): Result<List<VideoCandidate>> =
+        runCatching {
+            val root = Json.parseToJsonElement(innerTube.search(WEB, query).bodyAsText())
+            val out = mutableListOf<VideoCandidate>()
+
+            fun text(element: kotlinx.serialization.json.JsonElement?): String? {
+                val obj = element as? kotlinx.serialization.json.JsonObject ?: return null
+                obj["simpleText"]?.jsonPrimitive?.contentOrNull?.let { return it }
+                return (obj["runs"] as? kotlinx.serialization.json.JsonArray)
+                    ?.mapNotNull { (it as? kotlinx.serialization.json.JsonObject)?.get("text")?.jsonPrimitive?.contentOrNull }
+                    ?.joinToString("")
+            }
+
+            fun seconds(length: String?): Int? {
+                val parts = length?.split(":")?.map { it.trim().toIntOrNull() ?: return null } ?: return null
+                if (parts.isEmpty() || parts.size > 3) return null
+                return parts.fold(0) { acc, part -> acc * 60 + part }
+            }
+
+            fun walk(element: kotlinx.serialization.json.JsonElement) {
+                when (element) {
+                    is kotlinx.serialization.json.JsonObject -> {
+                        (element["videoRenderer"] as? kotlinx.serialization.json.JsonObject)?.let { video ->
+                            val id = video["videoId"]?.jsonPrimitive?.contentOrNull
+                            val title = text(video["title"])
+                            if (id != null && id.length == 11 && !title.isNullOrBlank()) {
+                                out += VideoCandidate(
+                                    videoId = id,
+                                    title = title,
+                                    channel = text(video["ownerText"]) ?: text(video["longBylineText"]).orEmpty(),
+                                    durationSeconds = seconds(text(video["lengthText"])),
+                                )
+                            }
+                        }
+                        element.values.forEach { walk(it) }
+                    }
+                    is kotlinx.serialization.json.JsonArray -> element.forEach { walk(it) }
+                    else -> Unit
+                }
+            }
+            walk(root)
+            out.distinctBy { it.videoId }
+        }
+
     suspend fun searchFirstVideoId(query: String): Result<String?> =
         runCatching {
             val raw = innerTube.search(WEB, query).bodyAsText()

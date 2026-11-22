@@ -385,14 +385,13 @@ fun SearchScreen(
                         // of a raw HTTP call with a stale API key.  The WEB client searches all of
                         // YouTube — not just YouTube Music — so it can find tracks that are only
                         // available as regular YouTube uploads.
-                        val cleanQuery = "${track.title} ${track.artist}".replace(Regex("[!,]"), "").trim()
-                        val videoId = com.wavlin.innertube.YouTube.searchFirstVideoId(cleanQuery).getOrNull()
+                        val videoId = SpotifyMatcher.matchVideoId(track.title, track.artist, track.durationSeconds)
 
                         if (videoId == null) {
                             withContext(Dispatchers.Main) {
                                 Toast.makeText(
                                     context,
-                                    "Could not find \"${track.title}\" on YouTube — try searching manually",
+                                    "No exact YouTube match for \"${track.title}\" — try searching manually",
                                     Toast.LENGTH_LONG,
                                 ).show()
                                 isDownloadingSpotify = false
