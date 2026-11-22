@@ -52,6 +52,9 @@ class SpotifyViewModel
         fun logout() = session.logout()
 
         fun dismissError() = session.dismissError()
+
+        /** Returns the current valid Spotify access token, or null when not signed in. */
+        suspend fun validAccessToken(): String? = session.validAccessToken()
     }
 
 sealed interface SpotifyPlaylistState {

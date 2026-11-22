@@ -79,8 +79,10 @@ import com.wavlin.music.media.queue.YouTubeQueue
 import com.wavlin.music.ui.kit.HideOnScrollFAB
 import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.integration.spotify.SpotifyDirectDownloader
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wavlin.music.integration.spotify.SpotifyImporter
 import com.wavlin.music.integration.spotify.SpotifyMatcher
+import com.wavlin.music.ui.state.SpotifyViewModel
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.media.queue.ListQueue
 import com.wavlin.music.ui.sheets.AddToPlaylistDialog
@@ -117,6 +119,7 @@ fun SearchScreen(
         }
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+    val spotifyViewModel: SpotifyViewModel = hiltViewModel()
     val spotifyProvider = remember { SpotifyProvider() }
     var spotifyCollection by remember { mutableStateOf<SpotifyResult.Tracks?>(null) }
     var showSpotifyImport by remember { mutableStateOf(false) }
@@ -293,9 +296,9 @@ fun SearchScreen(
                 isDownloadingSpotify = true
                 coroutineScope.launch(Dispatchers.IO) {
                     try {
-                        // Delegate entirely to SpotifyDirectDownloader which tries api.spotifydown.com
-                        // (Spotify CDN — exact track) before falling back to spotifydown.com (YouTube-sourced).
-                        val added = SpotifyDirectDownloader.downloadAsLocalSong(context, database, track)
+                        // Try Spotify CDN first (requires signed-in session), then third-party fallbacks.
+                        val token = spotifyViewModel.validAccessToken()
+                        val added = SpotifyDirectDownloader.downloadAsLocalSong(context, database, track, token)
                         withContext(Dispatchers.Main) {
                             if (added != null) {
                                 playerConnection?.playQueue(

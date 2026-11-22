@@ -37,6 +37,7 @@ import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.media.session.PlayerConnection
 import com.wavlin.music.integration.spotify.SpotifyDirectDownloader
 import com.wavlin.music.integration.spotify.account.SpotifyPlayback
+import com.wavlin.music.integration.spotify.account.SpotifySession
 import com.wavlin.music.integration.spotify.account.SpotifyWebTrack
 import com.wavlin.music.integration.spotify.account.artistNames
 import com.wavlin.music.integration.spotify.account.thumbnailUrl
@@ -54,10 +55,12 @@ suspend fun playSpotifyTracks(
     tracks: List<SpotifyWebTrack>,
     startIndex: Int = 0,
     shuffle: Boolean = false,
+    spotifySession: SpotifySession? = null,
 ) {
+    val accessToken = spotifySession?.validAccessToken()
     val played =
         SpotifyPlayback.play(playerConnection, title, tracks, startIndex, shuffle) { track ->
-            SpotifyDirectDownloader.downloadAsLocalSong(context, database, track.toImportTrack())
+            SpotifyDirectDownloader.downloadAsLocalSong(context, database, track.toImportTrack(), accessToken)
         }
     if (!played) {
         Toast.makeText(context, context.getString(R.string.spotify_no_match), Toast.LENGTH_SHORT).show()
