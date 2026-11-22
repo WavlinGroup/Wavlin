@@ -132,18 +132,44 @@ private suspend fun resolveShortShareLink(
     songs: List<PlaylistSong>,
     cardJpeg: ByteArray?,
 ): Result<String> {
-    val ids =
+    val online =
         songs
             .asSequence()
-            .map { it.song.song }
-            .filter { !it.isLocal && YOUTUBE_VIDEO_ID.matches(it.id) }
-            .map { it.id }
-            .distinct()
+            .map { it.song }
+            .filter { !it.song.isLocal && YOUTUBE_VIDEO_ID.matches(it.song.id) }
+            .distinctBy { it.song.id }
             .toList()
+    val ids = online.map { it.song.id }
     if (ids.isEmpty()) return Result.failure(IllegalStateException("no online tracks"))
 
+    // Ship each track's own title, artists and picture too, so the receiver shows exactly these versions
+    // instead of whatever YouTube's queue lookup returns for the id.
+    val tracks =
+        JSONArray().also { array ->
+            online.forEach { track ->
+                array.put(
+                    JSONObject()
+                        .put("id", track.song.id)
+                        .put("title", track.song.title)
+                        .put(
+                            "artists",
+                            JSONArray().also { artists ->
+                                track.orderedArtists.forEach { artist ->
+                                    artists.put(JSONObject().put("name", artist.name).put("id", artist.id))
+                                }
+                            },
+                        ).put("album", track.album?.title ?: track.song.albumName ?: "")
+                        .put("albumId", track.album?.id ?: track.song.albumId ?: "")
+                        .put("duration", track.song.duration)
+                        .put("thumbnail", track.song.thumbnailUrl ?: "")
+                        .put("explicit", track.song.explicit),
+                )
+            }
+        }
+
     val prefs = context.getSharedPreferences(SHARE_LINKS_PREFS, Context.MODE_PRIVATE)
-    val cacheKey = "v2:${playlist.id}:${(playlist.playlist.name + ids.joinToString(",")).hashCode()}"
+    val cacheKey =
+        "v3:${playlist.id}:${(playlist.playlist.name + online.joinToString(",") { it.song.id + it.song.title }).hashCode()}"
     prefs.getString(cacheKey, null)?.let { code ->
         cardJpeg?.let { uploadShareCard(code, it) }
         return Result.success("${SHARE_PAGE_URL}p/$code")
@@ -155,6 +181,7 @@ private suspend fun resolveShortShareLink(
                 JSONObject()
                     .put("name", playlist.playlist.name)
                     .put("ids", JSONArray(ids))
+                    .put("tracks", tracks)
                     .apply { cardJpeg?.let { put("card", Base64.encodeToString(it, Base64.NO_WRAP)) } }
                     .toString()
             val connection = URL("${SHARE_PAGE_URL}p").openConnection() as HttpURLConnection

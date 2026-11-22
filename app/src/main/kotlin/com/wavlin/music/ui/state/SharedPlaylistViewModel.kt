@@ -9,6 +9,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wavlin.innertube.YouTube
+import com.wavlin.innertube.models.Album
+import com.wavlin.innertube.models.Artist
 import com.wavlin.innertube.models.SongItem
 import com.wavlin.music.core.util.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -57,7 +59,12 @@ class SharedPlaylistViewModel
         fun load() {
             _state.value = SharedPlaylistState.Loading
             viewModelScope.launch(Dispatchers.IO) {
-                val (name, ids) = fetchSource()
+                val (name, ids, tracks) = fetchSource()
+                // Links made by newer builds carry each track's own metadata: show exactly those versions.
+                if (!tracks.isNullOrEmpty()) {
+                    _state.value = SharedPlaylistState.Loaded(name, tracks)
+                    return@launch
+                }
                 val videoIds = ids.filter { it.isNotBlank() }.distinct()
                 if (videoIds.isEmpty()) {
                     _state.value = SharedPlaylistState.Failed
@@ -77,9 +84,45 @@ class SharedPlaylistViewModel
             }
         }
 
-        private fun fetchSource(): Pair<String, List<String>> {
-            if (code.isEmpty()) return linkName to linkIds.split(",")
-            if (!code.matches(CODE_REGEX)) return "" to emptyList()
+        private data class Source(
+            val name: String,
+            val ids: List<String>,
+            val tracks: List<SongItem>? = null,
+        )
+
+        private fun parseTracks(array: org.json.JSONArray?): List<SongItem>? {
+            if (array == null) return null
+            val songs =
+                List(array.length()) { index ->
+                    val item = array.optJSONObject(index) ?: return@List null
+                    val id = item.optString("id")
+                    val title = item.optString("title")
+                    if (id.isBlank() || title.isBlank()) return@List null
+                    val artistArray = item.optJSONArray("artists")
+                    val artists =
+                        List(artistArray?.length() ?: 0) { i ->
+                            val artist = artistArray?.optJSONObject(i) ?: return@List null
+                            val artistName = artist.optString("name")
+                            if (artistName.isBlank()) null else Artist(artistName, artist.optString("id").ifBlank { null })
+                        }.filterNotNull()
+                    val albumName = item.optString("album")
+                    val albumId = item.optString("albumId")
+                    SongItem(
+                        id = id,
+                        title = title,
+                        artists = artists,
+                        album = if (albumName.isNotBlank() && albumId.isNotBlank()) Album(albumName, albumId) else null,
+                        duration = item.optInt("duration", -1).takeIf { it >= 0 },
+                        thumbnail = item.optString("thumbnail").ifBlank { "https://i.ytimg.com/vi/$id/hqdefault.jpg" },
+                        explicit = item.optBoolean("explicit", false),
+                    )
+                }.filterNotNull()
+            return songs.ifEmpty { null }
+        }
+
+        private fun fetchSource(): Source {
+            if (code.isEmpty()) return Source(linkName, linkIds.split(","))
+            if (!code.matches(CODE_REGEX)) return Source("", emptyList())
             return runCatching {
                 val connection = URL("https://$SHARE_PAGE_HOST/p/$code.json").openConnection() as HttpURLConnection
                 try {
@@ -87,12 +130,16 @@ class SharedPlaylistViewModel
                     connection.readTimeout = 8000
                     val json = JSONObject(connection.inputStream.bufferedReader().use { it.readText() })
                     val idArray = json.getJSONArray("ids")
-                    json.optString("name") to List(idArray.length()) { idArray.getString(it) }
+                    Source(
+                        json.optString("name"),
+                        List(idArray.length()) { idArray.getString(it) },
+                        parseTracks(json.optJSONArray("tracks")),
+                    )
                 } finally {
                     connection.disconnect()
                 }
             }.onFailure { reportException(it) }
-                .getOrDefault("" to emptyList())
+                .getOrDefault(Source("", emptyList()))
         }
 
         private companion object {
