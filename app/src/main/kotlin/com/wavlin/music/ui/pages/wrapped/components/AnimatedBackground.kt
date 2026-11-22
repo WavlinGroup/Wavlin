@@ -1,5 +1,7 @@
 package com.wavlin.music.ui.pages.wrapped.components
 
+import com.wavlin.music.ui.kit.flutter.FlutterVisuals
+import com.wavlin.music.ui.kit.flutter.FlutterWrappedBackground
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -35,6 +37,32 @@ private data class AnimatedElement(
 internal fun AnimatedBackground(
     elementCount: Int = 20,
     shapeTypes: List<ShapeType> = listOf(ShapeType.Circle)
+) {
+    // The Flutter background is used only while its single engine is free; otherwise (or when the
+    // build has no Flutter) the Compose version below draws.
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val token = remember { Any() }
+    val useFlutter = remember { FlutterVisuals.acquireWrappedBackground(context, token) }
+    androidx.compose.runtime.DisposableEffect(token) {
+        onDispose { FlutterVisuals.releaseWrappedBackground(token) }
+    }
+    if (useFlutter) {
+        val seed = remember { System.currentTimeMillis() }
+        FlutterWrappedBackground(
+            elementCount = elementCount,
+            shapes = shapeTypes.map { it.name.lowercase() },
+            seed = seed,
+            modifier = Modifier.fillMaxSize(),
+        )
+        return
+    }
+    ComposeAnimatedBackground(elementCount, shapeTypes)
+}
+
+@Composable
+private fun ComposeAnimatedBackground(
+    elementCount: Int,
+    shapeTypes: List<ShapeType>,
 ) {
     val random = remember { Random(System.currentTimeMillis()) }
     val elements = remember {

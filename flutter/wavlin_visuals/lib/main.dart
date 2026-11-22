@@ -6,8 +6,10 @@ import 'package:flutter/services.dart';
 
 import 'reverb_params.dart';
 import 'reverb_room_visualizer.dart';
+import 'wrapped_background.dart';
 
 const hostChannelName = 'com.wavlin.visuals/reverb';
+const wrappedBackgroundChannelName = 'com.wavlin.visuals/wrapped_background';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,6 +63,55 @@ class _ReverbHostAppState extends State<_ReverbHostApp> {
         tertiary: p.tertiary ?? const Color(0xFFFFFFFF),
         muted: p.muted ?? const Color(0xFFFFFFFF),
       ),
+    );
+  }
+}
+
+/// Second entrypoint, run by its own FlutterEngine for the Wrapped pages' background.
+@pragma('vm:entry-point')
+void wrappedBackgroundMain() {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const _WrappedBackgroundHostApp());
+}
+
+class _WrappedBackgroundHostApp extends StatefulWidget {
+  const _WrappedBackgroundHostApp();
+
+  @override
+  State<_WrappedBackgroundHostApp> createState() => _WrappedBackgroundHostAppState();
+}
+
+class _WrappedBackgroundHostAppState extends State<_WrappedBackgroundHostApp> {
+  static const _channel = MethodChannel(wrappedBackgroundChannelName);
+  List<BgElement> _elements = const [];
+
+  @override
+  void initState() {
+    super.initState();
+    _channel.setMethodCallHandler(_onCall);
+    _channel.invokeMethod<void>('ready').catchError((Object _) {});
+  }
+
+  @override
+  void dispose() {
+    _channel.setMethodCallHandler(null);
+    super.dispose();
+  }
+
+  Future<Object?> _onCall(MethodCall call) async {
+    if (call.method != 'update') throw MissingPluginException(call.method);
+    final p = WrappedBackgroundParams.tryParse(call.arguments);
+    if (p == null) throw PlatformException(code: 'bad_args', message: 'invalid background params');
+    final next = generateBgElements(count: p.elementCount, shapes: p.shapes, seed: p.seed);
+    if (mounted) setState(() => _elements = next);
+    return null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: WrappedBackground(elements: _elements),
     );
   }
 }
