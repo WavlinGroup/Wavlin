@@ -37,7 +37,6 @@ import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.media.session.PlayerConnection
 import com.wavlin.music.integration.spotify.SpotifyDirectDownloader
 import com.wavlin.music.integration.spotify.account.SpotifyPlayback
-import com.wavlin.music.integration.spotify.account.SpotifySession
 import com.wavlin.music.integration.spotify.account.SpotifyWebTrack
 import com.wavlin.music.integration.spotify.account.artistNames
 import com.wavlin.music.integration.spotify.account.thumbnailUrl
@@ -46,6 +45,9 @@ import com.wavlin.music.ui.kit.ListItem
 /**
  * Plays [tracks] through YouTube Music. A track YouTube doesn't have is fetched from Spotify and
  * saved on the device instead (see [SpotifyDirectDownloader]). Tells the person when nothing could be played.
+ *
+ * Pass [spotifyAccessToken] from the signed-in [SpotifySession] to enable full-track CDN downloads
+ * for unmatched tracks; without it the downloader falls back to third-party providers.
  */
 suspend fun playSpotifyTracks(
     context: Context,
@@ -55,12 +57,11 @@ suspend fun playSpotifyTracks(
     tracks: List<SpotifyWebTrack>,
     startIndex: Int = 0,
     shuffle: Boolean = false,
-    spotifySession: SpotifySession? = null,
+    spotifyAccessToken: String? = null,
 ) {
-    val accessToken = spotifySession?.validAccessToken()
     val played =
         SpotifyPlayback.play(playerConnection, title, tracks, startIndex, shuffle) { track ->
-            SpotifyDirectDownloader.downloadAsLocalSong(context, database, track.toImportTrack(), accessToken)
+            SpotifyDirectDownloader.downloadAsLocalSong(context, database, track.toImportTrack(), spotifyAccessToken)
         }
     if (!played) {
         Toast.makeText(context, context.getString(R.string.spotify_no_match), Toast.LENGTH_SHORT).show()

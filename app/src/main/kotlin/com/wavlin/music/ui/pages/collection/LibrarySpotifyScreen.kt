@@ -135,6 +135,7 @@ fun LibrarySpotifyScreen(
                                             context.getString(R.string.spotify_liked_songs_tab),
                                             likedTracks,
                                             startIndex = index,
+                                            spotifyAccessToken = viewModel.validAccessToken(),
                                         )
                                     }
                                 },

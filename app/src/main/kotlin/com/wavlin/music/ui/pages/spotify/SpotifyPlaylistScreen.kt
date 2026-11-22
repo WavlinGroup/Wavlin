@@ -164,7 +164,10 @@ fun SpotifyPlaylistScreen(
         shuffle: Boolean = false,
     ) {
         val connection = playerConnection ?: return
-        scope.launch { playSpotifyTracks(context, database, connection, title, tracks, startIndex, shuffle) }
+        scope.launch {
+            playSpotifyTracks(context, database, connection, title, tracks, startIndex, shuffle,
+                spotifyAccessToken = viewModel.validAccessToken())
+        }
     }
 
     val listState = rememberLazyListState()

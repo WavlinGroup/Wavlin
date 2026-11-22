@@ -91,6 +91,8 @@ class SpotifyPlaylistViewModel
             load()
         }
 
+        suspend fun validAccessToken(): String? = session.validAccessToken()
+
         fun load() {
             viewModelScope.launch {
                 // Show the copy saved on the device straight away while the fresh one loads
