@@ -5,7 +5,7 @@
 
 package com.wavlin.music.core.inject
 
-import com.wavlin.music.lyrics.LyricsHelper
+import com.wavlin.music.integration.lyrics.LyricsHelper
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent

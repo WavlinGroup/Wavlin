@@ -176,7 +176,7 @@ import com.wavlin.music.core.config.UpdateNotificationsEnabledKey
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.db.entities.SearchHistory
 import com.wavlin.music.core.ext.toEnum
-import com.wavlin.music.lyrics.LyricsProviderRegistry
+import com.wavlin.music.integration.lyrics.LyricsProviderRegistry
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.playback.DownloadUtil
 import com.wavlin.music.playback.MusicService

@@ -76,7 +76,7 @@ import coil3.request.ImageRequest
 import coil3.request.allowHardware
 import coil3.toBitmap
 import com.wavlin.music.R
-import com.wavlin.music.lyrics.LyricsTranslationHelper
+import com.wavlin.music.integration.lyrics.LyricsTranslationHelper
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.ui.screens.settings.LyricsPosition
 import com.wavlin.music.core.util.ComposeToImage

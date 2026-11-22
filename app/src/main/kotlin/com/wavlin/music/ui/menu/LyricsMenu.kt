@@ -66,8 +66,8 @@ import com.wavlin.music.LocalDatabase
 import com.wavlin.music.R
 import com.wavlin.music.db.entities.LyricsEntity
 import com.wavlin.music.db.entities.SongEntity
-import com.wavlin.music.lyrics.LyricsTranslationHelper
-import com.wavlin.music.lyrics.LyricsUtils
+import com.wavlin.music.integration.lyrics.LyricsTranslationHelper
+import com.wavlin.music.integration.lyrics.LyricsUtils
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.ui.component.DefaultDialog
 import com.wavlin.music.ui.component.ListDialog

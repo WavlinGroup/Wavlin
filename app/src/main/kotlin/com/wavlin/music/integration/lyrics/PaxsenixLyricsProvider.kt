@@ -3,7 +3,7 @@
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
-package com.wavlin.music.lyrics
+package com.wavlin.music.integration.lyrics
 
 import android.content.Context
 import com.wavlin.paxsenix.Paxsenix

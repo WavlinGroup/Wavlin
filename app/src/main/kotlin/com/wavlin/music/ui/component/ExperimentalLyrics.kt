@@ -109,10 +109,10 @@ import com.wavlin.music.core.config.ShowIntervalIndicatorKey
 import com.wavlin.music.core.config.TranslateLanguageKey
 import com.wavlin.music.core.config.TranslateModeKey
 import com.wavlin.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
-import com.wavlin.music.lyrics.LyricsResyncHelper
-import com.wavlin.music.lyrics.LyricsTranslationHelper
-import com.wavlin.music.lyrics.LyricsUtils.findActiveLineIndices
-import com.wavlin.music.lyrics.lyricsTextLooksSynced
+import com.wavlin.music.integration.lyrics.LyricsResyncHelper
+import com.wavlin.music.integration.lyrics.LyricsTranslationHelper
+import com.wavlin.music.integration.lyrics.LyricsUtils.findActiveLineIndices
+import com.wavlin.music.integration.lyrics.lyricsTextLooksSynced
 import com.wavlin.music.ui.component.shimmer.ShimmerHost
 import com.wavlin.music.ui.component.shimmer.TextPlaceholder
 import com.wavlin.music.ui.screens.settings.LyricsPosition

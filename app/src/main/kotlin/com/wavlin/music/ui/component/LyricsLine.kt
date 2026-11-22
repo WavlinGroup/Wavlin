@@ -61,8 +61,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.wavlin.music.lyrics.LyricsEntry
-import com.wavlin.music.lyrics.WordTimestamp
+import com.wavlin.music.integration.lyrics.LyricsEntry
+import com.wavlin.music.integration.lyrics.WordTimestamp
 import com.wavlin.music.playback.PlayerConnection
 import com.wavlin.music.ui.screens.settings.LyricsPosition
 import kotlinx.coroutines.isActive

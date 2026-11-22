@@ -26,8 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import com.wavlin.music.lyrics.LyricsEntry
-
+import com.wavlin.music.integration.lyrics.LyricsEntry
 sealed class LyricsListItem {
     data class Line(val index: Int, val entry: LyricsEntry) : LyricsListItem()
     data class Indicator(

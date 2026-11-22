@@ -12,8 +12,8 @@ import androidx.lifecycle.viewModelScope
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.db.entities.LyricsEntity
 import com.wavlin.music.db.entities.Song
-import com.wavlin.music.lyrics.LyricsHelper
-import com.wavlin.music.lyrics.LyricsResult
+import com.wavlin.music.integration.lyrics.LyricsHelper
+import com.wavlin.music.integration.lyrics.LyricsResult
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.core.util.NetworkConnectivityObserver
 import dagger.hilt.android.lifecycle.HiltViewModel

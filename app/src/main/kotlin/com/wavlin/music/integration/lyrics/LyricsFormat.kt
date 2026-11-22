@@ -3,7 +3,7 @@
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
-package com.wavlin.music.lyrics
+package com.wavlin.music.integration.lyrics
 
 private val LRC_TIMESTAMP_HINT = Regex("""\[\d{1,2}:\d{2}""")
 
