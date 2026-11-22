@@ -244,11 +244,11 @@ fun AutoPlaylistScreen(
     val (screenDarkMode, _) =
         rememberEnumPreference(
             com.wavlin.music.core.config.DarkModeKey,
-            defaultValue = com.wavlin.music.ui.screens.settings.DarkMode.AUTO,
+            defaultValue = com.wavlin.music.ui.pages.settings.DarkMode.AUTO,
         )
     val screenDarkTheme =
-        screenDarkMode == com.wavlin.music.ui.screens.settings.DarkMode.ON ||
-            (screenDarkMode == com.wavlin.music.ui.screens.settings.DarkMode.AUTO && androidx.compose.foundation.isSystemInDarkTheme())
+        screenDarkMode == com.wavlin.music.ui.pages.settings.DarkMode.ON ||
+            (screenDarkMode == com.wavlin.music.ui.pages.settings.DarkMode.AUTO && androidx.compose.foundation.isSystemInDarkTheme())
 
     // Upload state
     var showUploadDialog by remember { mutableStateOf(false) }

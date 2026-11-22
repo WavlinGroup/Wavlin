@@ -166,9 +166,9 @@ import com.wavlin.music.integration.lyrics.LyricsUtils.romanizeKorean
 import com.wavlin.music.integration.lyrics.lyricsTextLooksSynced
 import com.wavlin.music.ui.kit.shimmer.ShimmerHost
 import com.wavlin.music.ui.kit.shimmer.TextPlaceholder
-import com.wavlin.music.ui.screens.settings.DarkMode
-import com.wavlin.music.ui.screens.settings.LyricsPosition
-import com.wavlin.music.ui.screens.settings.defaultList
+import com.wavlin.music.ui.pages.settings.DarkMode
+import com.wavlin.music.ui.pages.settings.LyricsPosition
+import com.wavlin.music.ui.pages.settings.defaultList
 import com.wavlin.music.ui.support.fadingEdge
 import com.wavlin.music.core.util.ComposeToImage
 import com.wavlin.music.core.util.rememberEnumPreference

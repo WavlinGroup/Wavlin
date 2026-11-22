@@ -1,4 +1,4 @@
-package com.wavlin.music.ui.screens.settings
+package com.wavlin.music.ui.pages.settings
 
 import android.app.AlarmManager
 import android.content.ActivityNotFoundException

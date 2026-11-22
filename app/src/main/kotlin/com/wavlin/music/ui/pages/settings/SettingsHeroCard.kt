@@ -3,7 +3,7 @@
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
-package com.wavlin.music.ui.screens.settings
+package com.wavlin.music.ui.pages.settings
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background

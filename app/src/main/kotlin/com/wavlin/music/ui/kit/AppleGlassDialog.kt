@@ -49,7 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.material3.MaterialTheme
 import com.kyant.backdrop.backdrops.LayerBackdrop
 import com.wavlin.music.LocalNavController
-import com.wavlin.music.ui.screens.settings.AccountSettings
+import com.wavlin.music.ui.pages.settings.AccountSettings
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.HazeMaterials
 

@@ -67,7 +67,7 @@ import com.wavlin.innertube.utils.parseCookieString
 import com.wavlin.music.BuildConfig
 import com.wavlin.music.core.config.InnerTubeCookieKey
 import com.wavlin.music.integration.spotify.account.SpotifyAuthState
-import com.wavlin.music.ui.screens.settings.AccountTokenEntry
+import com.wavlin.music.ui.pages.settings.AccountTokenEntry
 import com.wavlin.music.core.util.Updater
 import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.ui.state.HomeViewModel

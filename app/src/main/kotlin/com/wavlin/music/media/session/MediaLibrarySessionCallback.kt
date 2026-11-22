@@ -62,9 +62,9 @@ import kotlinx.coroutines.plus
 import javax.inject.Inject
 import com.wavlin.music.core.config.AndroidAutoSectionsOrderKey
 import com.wavlin.music.core.config.AndroidAutoYouTubePlaylistsKey
-import com.wavlin.music.ui.screens.settings.AndroidAutoSection
-import com.wavlin.music.ui.screens.settings.deserializeSections
-import com.wavlin.music.ui.screens.settings.serializeSections
+import com.wavlin.music.ui.pages.settings.AndroidAutoSection
+import com.wavlin.music.ui.pages.settings.deserializeSections
+import com.wavlin.music.ui.pages.settings.serializeSections
 import com.wavlin.music.media.download.DownloadUtil
 import com.wavlin.music.playback.MusicService
 

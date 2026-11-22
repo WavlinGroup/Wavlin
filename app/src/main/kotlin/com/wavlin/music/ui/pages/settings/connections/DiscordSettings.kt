@@ -1,4 +1,4 @@
-package com.wavlin.music.ui.screens.settings.integrations
+package com.wavlin.music.ui.pages.settings.connections
 
 import com.wavlin.music.ui.kit.pinkTopBarColors
 import android.app.Activity

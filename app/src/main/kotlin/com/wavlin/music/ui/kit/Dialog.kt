@@ -62,7 +62,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.wavlin.music.LocalNavController
 import com.wavlin.music.R
-import com.wavlin.music.ui.screens.settings.AccountSettings
+import com.wavlin.music.ui.pages.settings.AccountSettings
 import kotlinx.coroutines.delay
 
 @Composable

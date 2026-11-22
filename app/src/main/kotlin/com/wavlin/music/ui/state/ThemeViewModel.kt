@@ -6,7 +6,7 @@
 package com.wavlin.music.ui.state
 
 import androidx.lifecycle.ViewModel
-import com.wavlin.music.ui.screens.settings.DarkMode
+import com.wavlin.music.ui.pages.settings.DarkMode
 import com.wavlin.music.ui.style.DefaultThemeColor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

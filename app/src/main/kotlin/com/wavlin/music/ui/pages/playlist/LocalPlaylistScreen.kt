@@ -176,7 +176,7 @@ import com.wavlin.music.ui.style.PlayerColorExtractor
 import com.wavlin.music.ui.sheets.LocalPlaylistMenu
 import com.wavlin.music.ui.sheets.SelectionSongMenu
 import com.wavlin.music.ui.sheets.SongMenu
-import com.wavlin.music.ui.screens.settings.DarkMode
+import com.wavlin.music.ui.pages.settings.DarkMode
 import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.makeTimeString
 import com.wavlin.music.core.util.rememberEnumPreference

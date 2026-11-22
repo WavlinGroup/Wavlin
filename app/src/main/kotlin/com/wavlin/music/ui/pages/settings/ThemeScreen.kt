@@ -1,4 +1,4 @@
-package com.wavlin.music.ui.screens.settings
+package com.wavlin.music.ui.pages.settings
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility

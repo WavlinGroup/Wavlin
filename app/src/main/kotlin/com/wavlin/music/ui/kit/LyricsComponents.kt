@@ -78,7 +78,7 @@ import coil3.toBitmap
 import com.wavlin.music.R
 import com.wavlin.music.integration.lyrics.LyricsTranslationHelper
 import com.wavlin.music.models.MediaMetadata
-import com.wavlin.music.ui.screens.settings.LyricsPosition
+import com.wavlin.music.ui.pages.settings.LyricsPosition
 import com.wavlin.music.core.util.ComposeToImage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

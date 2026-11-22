@@ -198,7 +198,7 @@ import com.wavlin.music.ui.kit.TempoPitchOverlay
 import com.wavlin.music.ui.kit.WavySlider
 import com.wavlin.music.ui.kit.rememberBottomSheetState
 import com.wavlin.music.ui.sheets.PlayerMenu
-import com.wavlin.music.ui.screens.settings.DarkMode
+import com.wavlin.music.ui.pages.settings.DarkMode
 import com.wavlin.music.ui.style.PlayerColorExtractor
 import com.wavlin.music.ui.style.PlayerSliderColors
 import com.wavlin.music.ui.support.ShowMediaInfo

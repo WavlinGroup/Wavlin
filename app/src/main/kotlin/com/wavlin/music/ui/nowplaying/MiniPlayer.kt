@@ -112,7 +112,7 @@ import com.wavlin.music.integration.together.ListenTogetherManager
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.media.cast.CastConnectionHandler
 import com.wavlin.music.media.session.PlayerConnection
-import com.wavlin.music.ui.screens.settings.DarkMode
+import com.wavlin.music.ui.pages.settings.DarkMode
 import com.wavlin.music.ui.support.resize
 import com.wavlin.music.core.util.joinToArtistString
 import com.wavlin.music.core.util.rememberEnumPreference

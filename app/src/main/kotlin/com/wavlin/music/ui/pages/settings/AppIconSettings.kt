@@ -1,4 +1,4 @@
-package com.wavlin.music.ui.screens.settings
+package com.wavlin.music.ui.pages.settings
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image

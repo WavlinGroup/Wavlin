@@ -202,9 +202,9 @@ import com.wavlin.music.ui.sheets.YouTubeSongMenu
 import com.wavlin.music.ui.nowplaying.BottomSheetPlayer
 import com.wavlin.music.ui.pages.nav.Screens
 import com.wavlin.music.ui.pages.nav.navigationBuilder
-import com.wavlin.music.ui.screens.settings.ChangelogScreen
-import com.wavlin.music.ui.screens.settings.DarkMode
-import com.wavlin.music.ui.screens.settings.NavigationTab
+import com.wavlin.music.ui.pages.settings.ChangelogScreen
+import com.wavlin.music.ui.pages.settings.DarkMode
+import com.wavlin.music.ui.pages.settings.NavigationTab
 import com.wavlin.music.ui.style.ColorSaver
 import com.wavlin.music.ui.style.DefaultThemeColor
 import com.wavlin.music.ui.style.SecretPinkThemeColor
