@@ -197,8 +197,8 @@ import com.wavlin.music.core.ext.toEnum
 import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.core.ext.toPersistQueue
 import com.wavlin.music.core.ext.toQueue
-import com.wavlin.music.local.LocalRoutingDataSource
-import com.wavlin.music.local.LocalSongs
+import com.wavlin.music.data.local.LocalRoutingDataSource
+import com.wavlin.music.data.local.LocalSongs
 import com.wavlin.music.lyrics.LyricsHelper
 import com.wavlin.music.models.PersistPlayerState
 import com.wavlin.music.models.PersistQueue

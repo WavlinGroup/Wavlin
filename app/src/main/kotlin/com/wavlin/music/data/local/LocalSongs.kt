@@ -3,7 +3,7 @@
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
-package com.wavlin.music.local
+package com.wavlin.music.data.local
 
 import android.content.Context
 import android.content.Intent

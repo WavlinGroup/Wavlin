@@ -9,10 +9,10 @@ import android.content.Context
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.db.entities.LyricsEntity
 import com.wavlin.music.db.entities.SongEntity
-import com.wavlin.music.api.DeepLService
-import com.wavlin.music.api.MistralService
-import com.wavlin.music.api.OpenRouterService
-import com.wavlin.music.api.OpenRouterStreamingService
+import com.wavlin.music.integration.ai.DeepLService
+import com.wavlin.music.integration.ai.MistralService
+import com.wavlin.music.integration.ai.OpenRouterService
+import com.wavlin.music.integration.ai.OpenRouterStreamingService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

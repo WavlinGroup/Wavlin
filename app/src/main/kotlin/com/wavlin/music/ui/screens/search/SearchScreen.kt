@@ -80,7 +80,7 @@ import com.wavlin.music.ui.component.HideOnScrollFAB
 import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.spotify.SpotifyImporter
 import com.wavlin.music.spotify.SpotifyMatcher
-import com.wavlin.music.local.LocalSongs
+import com.wavlin.music.data.local.LocalSongs
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.playback.queues.ListQueue
 import com.wavlin.music.ui.menu.AddToPlaylistDialog

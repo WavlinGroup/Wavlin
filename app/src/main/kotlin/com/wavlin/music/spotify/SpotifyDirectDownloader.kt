@@ -9,7 +9,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import com.wavlin.music.db.MusicDatabase
-import com.wavlin.music.local.LocalSongs
+import com.wavlin.music.data.local.LocalSongs
 import com.wavlin.music.models.MediaMetadata
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO

@@ -3,7 +3,7 @@
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
-package com.wavlin.music.api
+package com.wavlin.music.integration.ai
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
