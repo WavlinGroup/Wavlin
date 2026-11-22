@@ -29,8 +29,8 @@ import com.wavlin.music.ui.pages.artist.ArtistAlbumsScreen
 import com.wavlin.music.ui.pages.artist.ArtistItemsScreen
 import com.wavlin.music.ui.pages.artist.ArtistScreen
 import com.wavlin.music.ui.pages.artist.ArtistSongsScreen
-import com.wavlin.music.ui.screens.equalizer.EqScreen
-import com.wavlin.music.ui.screens.equalizer.wizard.WizardScreen
+import com.wavlin.music.ui.pages.sound.EqScreen
+import com.wavlin.music.ui.pages.sound.wizard.WizardScreen
 import com.wavlin.music.ui.pages.collection.LibraryScreen
 import com.wavlin.music.ui.pages.playlist.AutoPlaylistScreen
 import com.wavlin.music.ui.pages.playlist.CachePlaylistScreen
@@ -69,7 +69,7 @@ import com.wavlin.music.ui.pages.settings.connections.ListenTogetherSettings
 import com.wavlin.music.ui.pages.settings.connections.SpotifySettings
 import com.wavlin.music.ui.pages.spotify.SpotifyPlaylistScreen
 import com.wavlin.music.ui.pages.spotify.SpotifySignInScreen
-import com.wavlin.music.ui.screens.wrapped.WrappedScreen
+import com.wavlin.music.ui.pages.wrapped.WrappedScreen
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.ui.pages.account.AccountHubScreen

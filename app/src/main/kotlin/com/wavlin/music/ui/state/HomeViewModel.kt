@@ -42,8 +42,8 @@ import com.wavlin.music.db.entities.SpeedDialItem
 import com.wavlin.music.core.ext.filterVideoSongs
 import com.wavlin.music.core.ext.toEnum
 import com.wavlin.music.models.SimilarRecommendation
-import com.wavlin.music.ui.screens.wrapped.WrappedAudioService
-import com.wavlin.music.ui.screens.wrapped.WrappedManager
+import com.wavlin.music.ui.pages.wrapped.WrappedAudioService
+import com.wavlin.music.ui.pages.wrapped.WrappedManager
 import com.wavlin.music.core.util.SyncUtils
 import com.wavlin.music.core.util.dataStore
 import com.wavlin.music.core.util.safeDataStoreEdit

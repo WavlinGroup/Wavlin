@@ -2,8 +2,8 @@ package com.wavlin.music.core.inject
 
 import android.content.Context
 import com.wavlin.music.db.DatabaseDao
-import com.wavlin.music.ui.screens.wrapped.WrappedAudioService
-import com.wavlin.music.ui.screens.wrapped.WrappedManager
+import com.wavlin.music.ui.pages.wrapped.WrappedAudioService
+import com.wavlin.music.ui.pages.wrapped.WrappedManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
