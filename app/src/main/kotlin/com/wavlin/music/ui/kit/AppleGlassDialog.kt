@@ -18,7 +18,6 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.layout.layout
 import kotlin.math.roundToInt
@@ -199,7 +198,7 @@ fun AppleGlassMenuSheet(
             withFrameNanos { }
             sheetProgress.animateTo(1f, tween(300, easing = FastOutSlowInEasing))
         } else {
-            sheetProgress.animateTo(0f, tween(220, easing = FastOutLinearInEasing))
+            sheetProgress.animateTo(0f, tween(260, easing = FastOutSlowInEasing))
             sheetComposed = false
         }
     }
