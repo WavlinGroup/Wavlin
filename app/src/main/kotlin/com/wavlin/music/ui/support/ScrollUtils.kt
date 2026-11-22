@@ -10,24 +10,24 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 
 @Composable
 fun LazyListState.isScrollingUp(): Boolean {
-    var previousIndex by remember(this) { androidx.compose.runtime.mutableIntStateOf(firstVisibleItemIndex) }
-    var previousScrollOffset by remember(this) { androidx.compose.runtime.mutableIntStateOf(firstVisibleItemScrollOffset) }
+    // Plain array, not state: the derivation below runs on every scroll frame, and writing snapshot
+    // state from inside it re-triggered the derivation and the apply observers each frame.
+    val previous = remember(this) { intArrayOf(firstVisibleItemIndex, firstVisibleItemScrollOffset) }
     return remember(this) {
         derivedStateOf {
-            if (previousIndex != firstVisibleItemIndex) {
-                previousIndex > firstVisibleItemIndex
+            val index = firstVisibleItemIndex
+            val offset = firstVisibleItemScrollOffset
+            if (previous[0] != index) {
+                previous[0] > index
             } else {
-                previousScrollOffset >= firstVisibleItemScrollOffset
+                previous[1] >= offset
             }.also {
-                previousIndex = firstVisibleItemIndex
-                previousScrollOffset = firstVisibleItemScrollOffset
+                previous[0] = index
+                previous[1] = offset
             }
         }
     }.value
@@ -35,17 +35,20 @@ fun LazyListState.isScrollingUp(): Boolean {
 
 @Composable
 fun LazyGridState.isScrollingUp(): Boolean {
-    var previousIndex by remember(this) { androidx.compose.runtime.mutableIntStateOf(firstVisibleItemIndex) }
-    var previousScrollOffset by remember(this) { androidx.compose.runtime.mutableIntStateOf(firstVisibleItemScrollOffset) }
+    // Plain array, not state: the derivation below runs on every scroll frame, and writing snapshot
+    // state from inside it re-triggered the derivation and the apply observers each frame.
+    val previous = remember(this) { intArrayOf(firstVisibleItemIndex, firstVisibleItemScrollOffset) }
     return remember(this) {
         derivedStateOf {
-            if (previousIndex != firstVisibleItemIndex) {
-                previousIndex > firstVisibleItemIndex
+            val index = firstVisibleItemIndex
+            val offset = firstVisibleItemScrollOffset
+            if (previous[0] != index) {
+                previous[0] > index
             } else {
-                previousScrollOffset >= firstVisibleItemScrollOffset
+                previous[1] >= offset
             }.also {
-                previousIndex = firstVisibleItemIndex
-                previousScrollOffset = firstVisibleItemScrollOffset
+                previous[0] = index
+                previous[1] = offset
             }
         }
     }.value
@@ -53,11 +56,12 @@ fun LazyGridState.isScrollingUp(): Boolean {
 
 @Composable
 fun ScrollState.isScrollingUp(): Boolean {
-    var previousScrollOffset by remember(this) { mutableIntStateOf(value) }
+    val previousScrollOffset = remember(this) { intArrayOf(value) }
     return remember(this) {
         derivedStateOf {
-            (previousScrollOffset >= value).also {
-                previousScrollOffset = value
+            val offset = value
+            (previousScrollOffset[0] >= offset).also {
+                previousScrollOffset[0] = offset
             }
         }
     }.value

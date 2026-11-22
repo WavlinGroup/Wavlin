@@ -1340,7 +1340,7 @@ fun HomeScreen(
                                             .only(WindowInsetsSides.Horizontal)
                                             .asPaddingValues(),
                                 ) {
-                                    items(sectionData.items.distinctBy { it.id }, key = { "home_chip_section_${it.id}" }) { item ->
+                                    items(sectionData.items.distinctBy { it.id }, key = { "home_chip_section_${it.id}" }, contentType = { it::class }) { item ->
                                         ytGridItem(item)
                                     }
                                 }
@@ -1990,7 +1990,7 @@ fun HomeScreen(
                                                     ) * rows,
                                                 ),
                                     ) {
-                                        items(keepListeningDistinct, key = { "home_keep_listening_${it.id}" }) {
+                                        items(keepListeningDistinct, key = { "home_keep_listening_${it.id}" }, contentType = { it::class }) {
                                             localGridItem(it)
                                         }
                                     }
@@ -2048,6 +2048,7 @@ fun HomeScreen(
                                         items(
                                             items = accountPlaylists.distinctBy { it.id },
                                             key = { "home_account_playlist_${it.id}" },
+                                            contentType = { it::class },
                                         ) { item ->
                                             ytGridItem(item)
                                         }
@@ -2111,7 +2112,7 @@ fun HomeScreen(
                                                 .only(WindowInsetsSides.Horizontal)
                                                 .asPaddingValues(),
                                     ) {
-                                        items(recommendation.items.distinctBy { it.id }, key = { "home_similar_${it.id}" }) { item ->
+                                        items(recommendation.items.distinctBy { it.id }, key = { "home_similar_${it.id}" }, contentType = { it::class }) { item ->
                                             ytGridItem(item)
                                         }
                                     }
@@ -2291,6 +2292,7 @@ fun HomeScreen(
                                             items(
                                                 items = sectionData.items.distinctBy { it.id },
                                                 key = { "home_section_${section.index}_item_${it.id}" },
+                                                contentType = { it::class },
                                             ) { item ->
                                                 ytGridItem(item)
                                             }
