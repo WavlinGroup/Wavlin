@@ -16,6 +16,15 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.runtime.withFrameNanos
+import androidx.compose.ui.layout.layout
+import kotlin.math.roundToInt
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -23,8 +32,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
@@ -181,15 +188,28 @@ fun AppleGlassMenuSheet(
     val shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
     BackHandler(enabled = state.isVisible) { state.dismiss() }
 
+    val sheetProgress = remember { Animatable(0f) }
+    var sheetComposed by remember { mutableStateOf(false) }
+    LaunchedEffect(state.isVisible) {
+        if (state.isVisible) {
+            sheetComposed = true
+            // Two frames to compose and measure the menu while it is still off screen, so that work is not
+            // charged to the first frames of the slide (which made the animation jump).
+            withFrameNanos { }
+            withFrameNanos { }
+            sheetProgress.animateTo(1f, tween(300, easing = FastOutSlowInEasing))
+        } else {
+            sheetProgress.animateTo(0f, tween(220, easing = FastOutLinearInEasing))
+            sheetComposed = false
+        }
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
-        AnimatedVisibility(
-            visible = state.isVisible,
-            enter = fadeIn(),
-            exit = fadeOut(),
-        ) {
+        if (sheetComposed) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
+                    .graphicsLayer { alpha = sheetProgress.value }
                     .background(Color.Black.copy(alpha = 0.35f))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
@@ -198,14 +218,16 @@ fun AppleGlassMenuSheet(
                     ),
             )
         }
-        AnimatedVisibility(
-            visible = state.isVisible,
-            modifier = Modifier.align(Alignment.BottomCenter),
-            enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
-            exit = slideOutVertically(targetOffsetY = { it }) + fadeOut(),
-        ) {
+        if (sheetComposed) {
             Box(
                 modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .layout { measurable, constraints ->
+                        val placeable = measurable.measure(constraints)
+                        layout(placeable.width, placeable.height) {
+                            placeable.place(0, ((1f - sheetProgress.value) * placeable.height).roundToInt())
+                        }
+                    }
                     .fillMaxWidth()
                     .fillMaxHeight(state.heightFraction)
                     .clip(shape)
