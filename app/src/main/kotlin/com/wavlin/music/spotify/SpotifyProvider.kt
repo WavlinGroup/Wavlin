@@ -171,12 +171,39 @@ class SpotifyProvider {
         }.onFailure { Timber.e(it, "SpotifyProvider.getNewReleases failed") }.getOrElse { emptyList() }
     }
 
+    /** REST first; when it fails (HTTP 429 on the web-player token) fall back to oEmbed + search. */
+    private suspend fun resolveTrack(id: String, token: String): SpotifyTrack =
+        runCatching { json.decodeFromString<SpotifyTrack>(http("https://api.spotify.com/v1/tracks/$id", authHeaders(token))) }
+            .onFailure { Timber.w(it, "SpotifyProvider: REST track lookup failed for $id, trying oEmbed") }
+            .getOrNull() ?: resolveTrackViaOEmbed(id, token)
+
+    private suspend fun resolveTrackViaOEmbed(id: String, token: String): SpotifyTrack {
+        val trackUrl = "https://open.spotify.com/track/$id"
+        val raw = http(
+            "https://open.spotify.com/oembed?url=${URLEncoder.encode(trackUrl, "UTF-8")}",
+            mapOf("Accept" to "application/json", "User-Agent" to UA),
+        )
+        val obj = json.parseToJsonElement(raw).jsonObject
+        val title = obj["title"]?.jsonPrimitive?.contentOrNull?.takeIf { it.isNotBlank() } ?: error("Spotify link has no title")
+        val thumbnail = obj["thumbnail_url"]?.jsonPrimitive?.contentOrNull
+        // oEmbed carries no artist or duration; recover them from search by matching the track id.
+        val found = runCatching { searchPathfinder(token, title, 20) }
+            .onFailure { Timber.w(it, "SpotifyProvider: oEmbed enrichment search failed for $id") }
+            .getOrNull()?.firstOrNull { it.id == id }
+        return found ?: SpotifyTrack(
+            id = id,
+            title = title,
+            album = thumbnail?.let { SpotifyAlbum(images = listOf(SpotifyImage(url = it))) },
+            externalUrls = SpotifyExternalUrls(spotify = trackUrl),
+        )
+    }
+
     /** Resolves a pasted Spotify track / playlist / album link. */
     suspend fun resolve(url: String): SpotifyResult = withContext(Dispatchers.IO) {
         val (id, type) = extractIdAndType(url) ?: throw IllegalArgumentException("Couldn't parse Spotify URL: $url")
         val token = fetchToken() ?: throw IllegalStateException("Sign in to Spotify to open Spotify links")
         when (type) {
-            "track" -> SpotifyResult.Track(json.decodeFromString<SpotifyTrack>(http("https://api.spotify.com/v1/tracks/$id", authHeaders(token))))
+            "track" -> SpotifyResult.Track(resolveTrack(id, token))
             "playlist" -> {
                 val fields = URLEncoder.encode("name,tracks(items(track(id,name,artists,album,duration_ms,external_urls)),next)", "UTF-8")
                 val playlist = json.decodeFromString<SpotifyPlaylistResponse>(http("https://api.spotify.com/v1/playlists/$id?fields=$fields&limit=50", authHeaders(token)))
