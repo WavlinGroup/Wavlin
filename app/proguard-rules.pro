@@ -188,7 +188,7 @@
 -dontwarn io.ktor.**
 
 ## Listen Together Protobuf
-# NOTE: metroproto/listentogether.proto declares
+# NOTE: wavlinproto/listentogether.proto declares
 # `option java_package = "com.metrolist.music.listentogether.proto"` (inherited from the
 # upstream Metrolist project this was forked from, never updated for the Wavlin rebrand),
 # so the generated classes live under com.metrolist.*, NOT com.wavlin.*. Keeping the wrong

@@ -288,7 +288,7 @@ fun getProtocUrl(): String {
     return "https://repo1.maven.org/maven2/com/google/protobuf/protoc/$protocVersion/protoc-$protocVersion-$osName-$archName.exe"
 }
 
-val protoDir = rootProject.file("metroproto")
+val protoDir = rootProject.file("wavlinproto")
 val protoFile = protoDir.resolve("listentogether.proto")
 
 val generateProto = if (protoFile.exists()) {
