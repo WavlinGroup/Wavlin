@@ -3,14 +3,14 @@ use super::*;
 fn ok(json: &str) -> (Vec<Entry>, Vec<String>) {
     match parse(json) {
         Outcome::Success { entries, skipped } => (entries, skipped),
-        Outcome::Failure(r) => panic!("expected success, got failure: {r}"),
+        other => panic!("expected success, got {other:?}"),
     }
 }
 
 fn fail(json: &str) -> String {
     match parse(json) {
         Outcome::Failure(r) => r,
-        Outcome::Success { .. } => panic!("expected failure"),
+        other => panic!("expected failure, got {other:?}"),
     }
 }
 
@@ -40,11 +40,9 @@ fn accepts_dollar_and_underscore_identifiers() {
 
 #[test]
 fn file_level_failures() {
-    assert!(fail("not json").starts_with("malformed JSON"));
     assert_eq!(fail("[]"), "root is not a JSON object");
     assert_eq!(fail(r#"{"players":{}}"#), "schemaVersion missing or not an int");
     assert_eq!(fail(r#"{"schemaVersion":"1","players":{}}"#), "schemaVersion missing or not an int");
-    assert_eq!(fail(r#"{"schemaVersion":1.0,"players":{}}"#), "schemaVersion missing or not an int");
     assert_eq!(fail(r#"{"schemaVersion":true,"players":{}}"#), "schemaVersion missing or not an int");
     assert_eq!(fail(r#"{"schemaVersion":null,"players":{}}"#), "schemaVersion missing or not an int");
     assert_eq!(fail(r#"{"schemaVersion":0,"players":{}}"#), "schemaVersion must be positive");
@@ -52,6 +50,41 @@ fn file_level_failures() {
     assert_eq!(fail(r#"{"schemaVersion":2,"players":{}}"#), "unsupported schemaVersion 2 (supported: 1)");
     assert_eq!(fail(r#"{"schemaVersion":1}"#), "players missing or not an object");
     assert_eq!(fail(r#"{"schemaVersion":1,"players":[]}"#), "players missing or not an object");
+}
+
+#[test]
+fn ambiguous_inputs_defer_to_kotlin() {
+    for json in [
+        "not json",
+        "",
+        r#"{"schemaVersion":01,"players":{}}"#,
+        r#"{"schemaVersion":1.0,"players":{}}"#,
+        r#"{"schemaVersion":1e0,"players":{}}"#,
+        r#"{"schemaVersion":+1,"players":{}}"#,
+        r#"{"schemaVersion":1,"players":{"abcd1234":{"sig":"a(1,2,INPUT)","nClass":"A","sts":1.5}}}"#,
+        r#"{"schemaVersion":1,"players":{"abcd1234":{"sig":"a(1,2,INPUT)","nClass":"A","sts":2e4}}}"#,
+        r#"{"schemaVersion":1,"players":{"abcd1234":{"sig":"a(1,2,INPUT)","nClass":"A","sts":020613}}}"#,
+        r#"{"schemaVersion":1,"players":{"abcd1234":{"sig":"a(1,2,INPUT)","nClass":"A","sts":1,}}}"#,
+    ] {
+        assert_eq!(parse(json), Outcome::Unsure, "input: {json}");
+    }
+}
+
+#[test]
+fn an_unreadable_sts_on_an_already_invalid_entry_is_not_ambiguous() {
+    let (e, s) = ok(r#"{"schemaVersion":1,"players":{"abcd1234":{"sig":"bad","nClass":"A","sts":1.5}}}"#);
+    assert!(e.is_empty());
+    assert_eq!(s, ["abcd1234"]);
+}
+
+#[test]
+fn plain_integer_literals_match_to_int_or_null() {
+    assert_eq!(fail(r#"{"schemaVersion":-0,"players":{}}"#), "schemaVersion must be positive");
+    let (e, _) = ok(r#"{"schemaVersion":1,"players":{"abcd1234":{"sig":"a(1,2,INPUT)","nClass":"A","sts":2147483647}}}"#);
+    assert_eq!(e[0].sts, i32::MAX);
+    let (e, s) = ok(r#"{"schemaVersion":1,"players":{"abcd1234":{"sig":"a(1,2,INPUT)","nClass":"A","sts":2147483648}}}"#);
+    assert!(e.is_empty());
+    assert_eq!(s, ["abcd1234"]);
 }
 
 #[test]
@@ -88,7 +121,6 @@ fn bad_entries_are_skipped_not_fatal() {
         r#"{"sig":"mP(4,155,INPUT)","nClass":"Yx","sts":"1"}"#,
         r#"{"sig":"mP(4,155,INPUT)","nClass":"Yx","sts":0}"#,
         r#"{"sig":"mP(4,155,INPUT)","nClass":"Yx","sts":-5}"#,
-        r#"{"sig":"mP(4,155,INPUT)","nClass":"Yx","sts":1.5}"#,
         r#"{"sig":"mP(4,155,INPUT)","nClass":"Yx","sts":3000000000}"#,
         r#"{"sig":"mP(4,155,INPUT)","nClass":"Yx","sts":true}"#,
         r#"{"sig":"mP(4,155,INPUT)","nClass":"Yx","sts":null}"#,
@@ -162,6 +194,11 @@ fn a_skipped_entry_reserves_no_keys() {
     );
     assert_eq!(e.len(), 1);
     assert_eq!(s, ["aaaaaaaa"]);
+}
+
+#[test]
+fn wire_unsure() {
+    assert_eq!(to_wire(&Outcome::Unsure), ["U"]);
 }
 
 #[test]

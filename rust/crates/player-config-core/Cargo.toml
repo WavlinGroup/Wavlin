@@ -9,4 +9,4 @@ description = "Wavlin player-config core: validation of the cipher player-config
 crate-type = ["rlib"]
 
 [dependencies]
-serde_json = { version = "1", features = ["preserve_order"] }
+serde_json = { version = "1", features = ["preserve_order", "arbitrary_precision"] }

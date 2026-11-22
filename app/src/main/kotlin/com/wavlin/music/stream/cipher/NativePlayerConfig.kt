@@ -16,6 +16,7 @@ package com.wavlin.music.stream.cipher
  * object without the library and fall back.
  *
  * Wire format (flat `String[]`, mirrors `player_config_core::to_wire`):
+ * - `["U"]`: Rust is unsure (input where serde_json and kotlinx could differ), so Kotlin parses
  * - `["F", reason]`
  * - `["S", skippedCount, skipped..., entryCount, (hash, sig, nClass, sts, aliasCount, aliases...)*]`
  */
@@ -66,7 +67,7 @@ object NativePlayerConfig {
                 return if (pos == wire.size) Decoded.Failure(reason) else null
             }
             "S" -> Unit
-            else -> return null
+            else -> return null // includes "U": decode yields null and the Kotlin parser decides
         }
 
         val skippedCount = nextCount() ?: return null

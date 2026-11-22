@@ -8,12 +8,15 @@
 //! Semantics copied from the Kotlin parser: file-level problems return `Failure`; an invalid single
 //! entry is skipped and reported; any hash/alias collision rejects the whole file.
 //!
-//! Known, unverified differences from kotlinx.serialization's JSON reader: malformed-JSON reason
-//! text, nesting depth limit (serde_json stops at 128 and returns `Failure`), and number literals
-//! with leading zeros or `-0`, which serde_json rejects or reads as non-integers. Reason strings are
-//! only logged. None of this has been checked against a real remote config.
+//! Where serde_json and kotlinx.serialization could disagree, this crate does not decide: it returns
+//! `Unsure` and Kotlin runs its own parser. That covers any text serde_json rejects (malformed JSON,
+//! leading zeros, nesting past its depth limit) and any `schemaVersion` or `sts` number that is not
+//! a plain integer literal (`0` or `-?[1-9][0-9]*`), such as `1.0`, `1e0` or `01`. For plain
+//! integer literals both readers apply `toIntOrNull` semantics, so the results are identical.
+//! Not checked against kotlinx here: duplicate object keys (serde_json keeps the last value at the
+//! first key's position, which is what a `LinkedHashMap` put does).
 
-use serde_json::Value;
+use serde_json::{Number, Value};
 use std::collections::HashSet;
 
 pub const SUPPORTED_SCHEMA_VERSION: i32 = 1;
@@ -31,7 +34,11 @@ pub struct Entry {
 pub enum Outcome {
     Success { entries: Vec<Entry>, skipped: Vec<String> },
     Failure(String),
+    /// The input is in a corner where the Kotlin parser must decide.
+    Unsure,
 }
+
+struct Unsure;
 
 fn is_ident_byte(b: u8) -> bool {
     b.is_ascii_alphanumeric() || b == b'$' || b == b'_'
@@ -65,81 +72,88 @@ fn is_sig(s: &str) -> bool {
     rest == ",INPUT)"
 }
 
-fn string_of(v: &Value) -> Option<&str> {
-    v.as_str()
+/// `0` or `-?[1-9][0-9]*`, judged on the literal text (serde_json `arbitrary_precision`).
+fn is_plain_int_literal(n: &Number) -> bool {
+    let text = n.to_string();
+    let digits = text.strip_prefix('-').unwrap_or(&text);
+    match digits.as_bytes() {
+        [b'0'] => true,
+        [b'1'..=b'9', rest @ ..] => rest.iter().all(u8::is_ascii_digit),
+        _ => false,
+    }
 }
 
-fn parse_entry(hash: &str, value: &Value) -> Option<Entry> {
-    let obj = value.as_object()?;
+/// `content.toIntOrNull()` for a JSON number: `Ok(None)` is out of `i32` range, `Err` is a literal
+/// the two readers might treat differently.
+fn int_of(n: &Number) -> Result<Option<i32>, Unsure> {
+    if !is_plain_int_literal(n) {
+        return Err(Unsure);
+    }
+    Ok(n.as_i64().and_then(|v| i32::try_from(v).ok()))
+}
+
+fn parse_aliases(value: Option<&Value>) -> Option<Vec<String>> {
+    match value {
+        None => Some(Vec::new()),
+        Some(Value::Array(items)) => items
+            .iter()
+            .map(|item| item.as_str().filter(|a| is_hash(a)).map(str::to_owned))
+            .collect(),
+        Some(_) => None,
+    }
+}
+
+/// `Ok(None)` means the entry is invalid and skipped, exactly as in Kotlin.
+fn parse_entry(hash: &str, value: &Value) -> Result<Option<Entry>, Unsure> {
+    let Some(obj) = value.as_object() else { return Ok(None) };
     if !is_hash(hash) {
-        return None;
+        return Ok(None);
     }
-    let sig = string_of(obj.get("sig")?)?;
+    let Some(sig) = obj.get("sig").and_then(Value::as_str) else { return Ok(None) };
     if !is_sig(sig) {
-        return None;
+        return Ok(None);
     }
-    let n_class = string_of(obj.get("nClass")?)?;
+    let Some(n_class) = obj.get("nClass").and_then(Value::as_str) else { return Ok(None) };
     if !is_n_class(n_class) {
-        return None;
+        return Ok(None);
     }
-    let sts = int_of(obj.get("sts")?)?;
-    if sts <= 0 {
-        return None;
-    }
-    let aliases = match obj.get("aliases") {
-        None => Vec::new(),
-        Some(Value::Array(items)) => {
-            let mut out = Vec::with_capacity(items.len());
-            for item in items {
-                let alias = string_of(item)?;
-                if !is_hash(alias) {
-                    return None;
-                }
-                out.push(alias.to_owned());
-            }
-            out
-        }
-        Some(_) => return None,
-    };
-    Some(Entry { hash: hash.to_owned(), sig: sig.to_owned(), n_class: n_class.to_owned(), sts, aliases })
-}
-
-/// An integer JSON number that fits `i32`. Strings, booleans, null, fractions and exponent forms are
-/// all rejected, matching `content.toIntOrNull()` on a non-string primitive.
-fn int_of(v: &Value) -> Option<i32> {
-    match v {
-        Value::Number(n) => i32::try_from(n.as_i64()?).ok(),
+    let sts = match obj.get("sts") {
+        Some(Value::Number(n)) => int_of(n)?,
         _ => None,
-    }
+    };
+    let Some(sts) = sts.filter(|&n| n > 0) else { return Ok(None) };
+    let Some(aliases) = parse_aliases(obj.get("aliases")) else { return Ok(None) };
+    Ok(Some(Entry { hash: hash.to_owned(), sig: sig.to_owned(), n_class: n_class.to_owned(), sts, aliases }))
 }
 
 pub fn parse(json_text: &str) -> Outcome {
-    let root: Value = match serde_json::from_str(json_text) {
-        Ok(v) => v,
-        Err(e) => return Outcome::Failure(format!("malformed JSON: {e}")),
-    };
+    parse_inner(json_text).unwrap_or(Outcome::Unsure)
+}
+
+fn parse_inner(json_text: &str) -> Result<Outcome, Unsure> {
+    let Ok(root) = serde_json::from_str::<Value>(json_text) else { return Err(Unsure) };
     let Some(root) = root.as_object() else {
-        return Outcome::Failure("root is not a JSON object".to_owned());
+        return Ok(Outcome::Failure("root is not a JSON object".to_owned()));
     };
 
     let version = match root.get("schemaVersion") {
-        Some(v @ (Value::Number(_) | Value::Bool(_) | Value::Null)) => int_of(v),
+        Some(Value::Number(n)) => int_of(n)?,
         _ => None,
     };
     let Some(version) = version else {
-        return Outcome::Failure("schemaVersion missing or not an int".to_owned());
+        return Ok(Outcome::Failure("schemaVersion missing or not an int".to_owned()));
     };
     if version <= 0 {
-        return Outcome::Failure("schemaVersion must be positive".to_owned());
+        return Ok(Outcome::Failure("schemaVersion must be positive".to_owned()));
     }
     if version > SUPPORTED_SCHEMA_VERSION {
-        return Outcome::Failure(format!(
+        return Ok(Outcome::Failure(format!(
             "unsupported schemaVersion {version} (supported: {SUPPORTED_SCHEMA_VERSION})"
-        ));
+        )));
     }
 
     let Some(players) = root.get("players").and_then(Value::as_object) else {
-        return Outcome::Failure("players missing or not an object".to_owned());
+        return Ok(Outcome::Failure("players missing or not an object".to_owned()));
     };
 
     let mut entries = Vec::new();
@@ -147,7 +161,7 @@ pub fn parse(json_text: &str) -> Outcome {
     let mut seen: HashSet<String> = HashSet::new();
 
     for (hash, element) in players {
-        let Some(entry) = parse_entry(hash, element) else {
+        let Some(entry) = parse_entry(hash, element)? else {
             skipped.push(hash.clone());
             continue;
         };
@@ -157,13 +171,13 @@ pub fn parse(json_text: &str) -> Outcome {
 
         let duplicate = keys.iter().find(|k| seen.contains(**k)).copied().or_else(|| first_repeated(&keys));
         if let Some(dup) = duplicate {
-            return Outcome::Failure(format!("duplicate hash/alias '{dup}' (entry {hash})"));
+            return Ok(Outcome::Failure(format!("duplicate hash/alias '{dup}' (entry {hash})")));
         }
         seen.extend(keys.iter().map(|k| (*k).to_owned()));
         entries.push(entry);
     }
 
-    Outcome::Success { entries, skipped }
+    Ok(Outcome::Success { entries, skipped })
 }
 
 /// First key, in order of first appearance, that occurs more than once.
@@ -176,10 +190,12 @@ fn first_repeated<'a>(keys: &[&'a str]) -> Option<&'a str> {
 
 /// Flat `String[]` wire format read by `NativePlayerConfig.decode` in Kotlin:
 ///
+/// * `["U"]`: unsure, Kotlin parses
 /// * `["F", reason]`
 /// * `["S", skippedCount, skipped..., entryCount, (hash, sig, nClass, sts, aliasCount, aliases...)*]`
 pub fn to_wire(outcome: &Outcome) -> Vec<String> {
     match outcome {
+        Outcome::Unsure => vec!["U".to_owned()],
         Outcome::Failure(reason) => vec!["F".to_owned(), reason.clone()],
         Outcome::Success { entries, skipped } => {
             let mut out = vec!["S".to_owned(), skipped.len().to_string()];

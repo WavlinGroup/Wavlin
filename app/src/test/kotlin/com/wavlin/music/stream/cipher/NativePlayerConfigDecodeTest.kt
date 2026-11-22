@@ -52,6 +52,7 @@ class NativePlayerConfigDecodeTest {
     fun `malformed replies decode to null`() {
         assertNull(NativePlayerConfig.decode(wire()))
         assertNull(NativePlayerConfig.decode(wire("X")))
+        assertNull(NativePlayerConfig.decode(wire("U")))
         assertNull(NativePlayerConfig.decode(wire(null)))
         assertNull(NativePlayerConfig.decode(wire("F")))
         assertNull(NativePlayerConfig.decode(wire("F", "reason", "extra")))
