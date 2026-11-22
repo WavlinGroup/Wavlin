@@ -6,6 +6,7 @@
 package com.wavlin.music.spotify
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -29,6 +30,9 @@ import java.util.zip.GZIPInputStream
  * No CLIENT_ID / CLIENT_SECRET. When the user is not signed in to Spotify there is no
  * token and every call returns an empty result.
  */
+/** Same message as before ("HTTP code: body"); also carries the Retry-After delay when Spotify sent one. */
+class SpotifyHttpException(val code: Int, val retryAfterMs: Long?, body: String) : IllegalStateException("HTTP $code: $body")
+
 class SpotifyProvider {
 
     companion object {
@@ -37,6 +41,8 @@ class SpotifyProvider {
         private const val SEARCH_HASH = "bc1ca2fcd0ba1013a0fc88e6cc4f190af501851e3dafd3e1ef85840297694428"
         private const val CLIENT_ID = "d8a5ed958d274c2e8ee717e6a4b0971d"
         private const val TIMEOUT_MS = 15_000
+        private const val TRACK_REST_ATTEMPTS = 3
+        private const val TRACK_RETRY_MAX_DELAY_MS = 5_000L
         private const val UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
 
         private val json = Json { ignoreUnknownKeys = true; isLenient = true }
@@ -70,7 +76,10 @@ class SpotifyProvider {
                 if (data.size > 2 && data[0] == 0x1f.toByte() && data[1] == 0x8b.toByte()) {
                     data = GZIPInputStream(data.inputStream()).use { it.readBytes() }
                 }
-                if (code !in 200..299) error("HTTP $code: ${String(data, Charsets.UTF_8).take(300)}")
+                if (code !in 200..299) {
+                    val retryAfterMs = c.getHeaderField("Retry-After")?.trim()?.toLongOrNull()?.times(1000L)
+                    throw SpotifyHttpException(code, retryAfterMs, String(data, Charsets.UTF_8).take(300))
+                }
                 return String(data, Charsets.UTF_8)
             } finally {
                 c.disconnect()
@@ -171,11 +180,27 @@ class SpotifyProvider {
         }.onFailure { Timber.e(it, "SpotifyProvider.getNewReleases failed") }.getOrElse { emptyList() }
     }
 
-    /** REST first; when it fails (HTTP 429 on the web-player token) fall back to oEmbed + search. */
-    private suspend fun resolveTrack(id: String, token: String): SpotifyTrack =
-        runCatching { json.decodeFromString<SpotifyTrack>(http("https://api.spotify.com/v1/tracks/$id", authHeaders(token))) }
-            .onFailure { Timber.w(it, "SpotifyProvider: REST track lookup failed for $id, trying oEmbed") }
-            .getOrNull() ?: resolveTrackViaOEmbed(id, token)
+    /**
+     * api.spotify.com/v1/tracks/{id}, retried on HTTP 429 (honouring Retry-After, capped).
+     * Only if it still fails does it fall back to oEmbed + search.
+     */
+    private suspend fun resolveTrack(id: String, token: String): SpotifyTrack {
+        var lastError: Throwable? = null
+        for (attempt in 1..TRACK_REST_ATTEMPTS) {
+            try {
+                return json.decodeFromString<SpotifyTrack>(http("https://api.spotify.com/v1/tracks/$id", authHeaders(token)))
+            } catch (e: SpotifyHttpException) {
+                lastError = e
+                if (e.code != 429 || attempt == TRACK_REST_ATTEMPTS) break
+                delay((e.retryAfterMs ?: (attempt * 1_000L)).coerceIn(500L, TRACK_RETRY_MAX_DELAY_MS))
+            } catch (e: Exception) {
+                lastError = e
+                break
+            }
+        }
+        Timber.w(lastError, "SpotifyProvider: REST track lookup failed for $id, trying oEmbed")
+        return resolveTrackViaOEmbed(id, token)
+    }
 
     private suspend fun resolveTrackViaOEmbed(id: String, token: String): SpotifyTrack {
         val trackUrl = "https://open.spotify.com/track/$id"
