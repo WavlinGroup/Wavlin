@@ -6,12 +6,12 @@
 package com.wavlin.music.spotify
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonArray
@@ -19,6 +19,7 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.longOrNull
 import timber.log.Timber
+import java.math.BigInteger
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
@@ -30,9 +31,6 @@ import java.util.zip.GZIPInputStream
  * No CLIENT_ID / CLIENT_SECRET. When the user is not signed in to Spotify there is no
  * token and every call returns an empty result.
  */
-/** Same message as before ("HTTP code: body"); also carries the Retry-After delay when Spotify sent one. */
-class SpotifyHttpException(val code: Int, val retryAfterMs: Long?, body: String) : IllegalStateException("HTTP $code: $body")
-
 class SpotifyProvider {
 
     companion object {
@@ -41,8 +39,6 @@ class SpotifyProvider {
         private const val SEARCH_HASH = "bc1ca2fcd0ba1013a0fc88e6cc4f190af501851e3dafd3e1ef85840297694428"
         private const val CLIENT_ID = "d8a5ed958d274c2e8ee717e6a4b0971d"
         private const val TIMEOUT_MS = 15_000
-        private const val TRACK_REST_ATTEMPTS = 3
-        private const val TRACK_RETRY_MAX_DELAY_MS = 5_000L
         private const val UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
 
         private val json = Json { ignoreUnknownKeys = true; isLenient = true }
@@ -76,10 +72,7 @@ class SpotifyProvider {
                 if (data.size > 2 && data[0] == 0x1f.toByte() && data[1] == 0x8b.toByte()) {
                     data = GZIPInputStream(data.inputStream()).use { it.readBytes() }
                 }
-                if (code !in 200..299) {
-                    val retryAfterMs = c.getHeaderField("Retry-After")?.trim()?.toLongOrNull()?.times(1000L)
-                    throw SpotifyHttpException(code, retryAfterMs, String(data, Charsets.UTF_8).take(300))
-                }
+                if (code !in 200..299) error("HTTP $code: ${String(data, Charsets.UTF_8).take(300)}")
                 return String(data, Charsets.UTF_8)
             } finally {
                 c.disconnect()
@@ -105,6 +98,47 @@ class SpotifyProvider {
         private fun extractIdAndType(url: String): Pair<String, String>? {
             val m = Regex("""open\.spotify\.com/(track|playlist|album)/([A-Za-z0-9]+)""").find(url) ?: return null
             return m.groupValues[2] to m.groupValues[1]
+        }
+
+        private const val BASE62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+        /** Spotify base62 track id (22 chars) to the 32-char hex gid used by spclient metadata; null if malformed. */
+        internal fun spotifyIdToGidHex(id: String): String? {
+            if (id.length != 22) return null
+            var value = BigInteger.ZERO
+            val base = BigInteger.valueOf(62)
+            for (ch in id) {
+                val digit = BASE62.indexOf(ch)
+                if (digit < 0) return null
+                value = value.multiply(base).add(BigInteger.valueOf(digit.toLong()))
+            }
+            if (value.bitLength() > 128) return null
+            return value.toString(16).padStart(32, '0')
+        }
+
+        private fun parseSpclientTrack(id: String, raw: String): SpotifyTrack {
+            val obj = json.parseToJsonElement(raw).jsonObject
+            val name = obj["name"]?.jsonPrimitive?.contentOrNull?.takeIf { it.isNotBlank() } ?: error("spclient track metadata has no name")
+            val artists = obj["artist"]?.jsonArray
+                ?.mapNotNull { it.jsonObject["name"]?.jsonPrimitive?.contentOrNull }
+                ?.map { SpotifyArtist(name = it) }
+                ?: emptyList()
+            val album = obj["album"]?.jsonObject
+            val coverFileId = album?.get("cover_group")?.jsonObject?.get("image")?.jsonArray
+                ?.maxByOrNull { it.jsonObject["width"]?.jsonPrimitive?.intOrNull ?: 0 }
+                ?.jsonObject?.get("file_id")?.jsonPrimitive?.contentOrNull
+            return SpotifyTrack(
+                id = id,
+                title = name,
+                artists = artists,
+                album = SpotifyAlbum(
+                    name = album?.get("name")?.jsonPrimitive?.contentOrNull.orEmpty(),
+                    images = coverFileId?.let { listOf(SpotifyImage(url = "https://i.scdn.co/image/$it")) } ?: emptyList(),
+                ),
+                durationMs = obj["duration"]?.jsonPrimitive?.intOrNull ?: 0,
+                explicit = obj["explicit"]?.jsonPrimitive?.booleanOrNull ?: false,
+                externalUrls = SpotifyExternalUrls(spotify = "https://open.spotify.com/track/$id"),
+            )
         }
 
         private fun parsePathfinderTracks(raw: String): List<SpotifyTrack> {
@@ -181,46 +215,23 @@ class SpotifyProvider {
     }
 
     /**
-     * api.spotify.com/v1/tracks/{id}, retried on HTTP 429 (honouring Retry-After, capped).
-     * Only if it still fails does it fall back to oEmbed + search.
+     * api.spotify.com/v1/tracks/{id} first. When Spotify rejects it (HTTP 429 on the web-player token),
+     * read the same track from the web player's own metadata endpoint (spclient) by id. No search.
      */
     private suspend fun resolveTrack(id: String, token: String): SpotifyTrack {
-        var lastError: Throwable? = null
-        for (attempt in 1..TRACK_REST_ATTEMPTS) {
-            try {
-                return json.decodeFromString<SpotifyTrack>(http("https://api.spotify.com/v1/tracks/$id", authHeaders(token)))
-            } catch (e: SpotifyHttpException) {
-                lastError = e
-                if (e.code != 429 || attempt == TRACK_REST_ATTEMPTS) break
-                delay((e.retryAfterMs ?: (attempt * 1_000L)).coerceIn(500L, TRACK_RETRY_MAX_DELAY_MS))
-            } catch (e: Exception) {
-                lastError = e
-                break
-            }
+        val restError = try {
+            return json.decodeFromString<SpotifyTrack>(http("https://api.spotify.com/v1/tracks/$id", authHeaders(token)))
+        } catch (e: Exception) {
+            e
         }
-        Timber.w(lastError, "SpotifyProvider: REST track lookup failed for $id, trying oEmbed")
-        return resolveTrackViaOEmbed(id, token)
-    }
-
-    private suspend fun resolveTrackViaOEmbed(id: String, token: String): SpotifyTrack {
-        val trackUrl = "https://open.spotify.com/track/$id"
+        Timber.w(restError, "SpotifyProvider: REST track lookup failed for $id, trying spclient metadata")
+        val gid = spotifyIdToGidHex(id) ?: throw restError
+        val clientTok = fetchClientToken()
         val raw = http(
-            "https://open.spotify.com/oembed?url=${URLEncoder.encode(trackUrl, "UTF-8")}",
-            mapOf("Accept" to "application/json", "User-Agent" to UA),
+            "https://spclient.wg.spotify.com/metadata/4/track/$gid?market=from_token&alt=json",
+            authHeaders(token) + mapOf("Client-Token" to clientTok, "app-platform" to "WebPlayer", "User-Agent" to UA),
         )
-        val obj = json.parseToJsonElement(raw).jsonObject
-        val title = obj["title"]?.jsonPrimitive?.contentOrNull?.takeIf { it.isNotBlank() } ?: error("Spotify link has no title")
-        val thumbnail = obj["thumbnail_url"]?.jsonPrimitive?.contentOrNull
-        // oEmbed carries no artist or duration; recover them from search by matching the track id.
-        val found = runCatching { searchPathfinder(token, title, 20) }
-            .onFailure { Timber.w(it, "SpotifyProvider: oEmbed enrichment search failed for $id") }
-            .getOrNull()?.firstOrNull { it.id == id }
-        return found ?: SpotifyTrack(
-            id = id,
-            title = title,
-            album = thumbnail?.let { SpotifyAlbum(images = listOf(SpotifyImage(url = it))) },
-            externalUrls = SpotifyExternalUrls(spotify = trackUrl),
-        )
+        return parseSpclientTrack(id, raw)
     }
 
     /** Resolves a pasted Spotify track / playlist / album link. */
