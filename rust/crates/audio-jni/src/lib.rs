@@ -4,10 +4,12 @@
 //! so it is testable on the host. `ffi` contains only the thin `extern "system"` shims.
 //! `lyrics_ffi` does the same for `com.wavlin.music.integration.lyrics.NativeLyrics`, and
 //! `cipher_ffi` for `com.wavlin.music.stream.cipher.NativeCipher`, and `queue_ffi` for
-//! `com.wavlin.music.playback.NativeQueue`.
+//! `com.wavlin.music.playback.NativeQueue`, and `player_config_ffi` for
+//! `com.wavlin.music.stream.cipher.NativePlayerConfig`.
 
 pub mod engine;
 mod ffi;
 mod cipher_ffi;
 mod lyrics_ffi;
+mod player_config_ffi;
 mod queue_ffi;

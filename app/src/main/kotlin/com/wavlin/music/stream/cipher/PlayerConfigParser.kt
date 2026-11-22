@@ -13,6 +13,10 @@ import kotlinx.serialization.json.jsonObject
  * coverable by plain unit tests. Android concerns (assets, cache files, fetching) live in
  * [PlayerConfigStore].
  *
+ * Validation runs in Rust through [NativePlayerConfig] when the library loads; [parseKotlin] is the
+ * fallback and the only path on the JVM. Both build the final configs here, including the
+ * n-transform expression.
+ *
  * Security boundary: every value in this file ends up evaluated as JavaScript inside the
  * cipher WebView, so entries are regex-locked to shapes that cannot carry arbitrary JS —
  * `sig` must be a single `name(int,int,INPUT)` call and `nClass` a bare identifier; the
@@ -44,7 +48,23 @@ object PlayerConfigParser {
      * previous map. Invalid individual entries are skipped and reported in
      * [ParseResult.Success.skippedEntries] so one bad entry can't poison the rest.
      */
-    fun parse(jsonText: String): ParseResult {
+    fun parse(jsonText: String): ParseResult =
+        NativePlayerConfig.parse(jsonText)?.let(::fromNative) ?: parseKotlin(jsonText)
+
+    private fun fromNative(decoded: NativePlayerConfig.Decoded): ParseResult = when (decoded) {
+        is NativePlayerConfig.Decoded.Failure -> ParseResult.Failure(decoded.reason)
+        is NativePlayerConfig.Decoded.Success -> {
+            val configs = mutableMapOf<String, FunctionNameExtractor.HardcodedPlayerConfig>()
+            for (entry in decoded.entries) {
+                val config = buildConfig(entry.sig, entry.nClass, entry.sts)
+                configs[entry.hash] = config
+                for (alias in entry.aliases) configs[alias] = config
+            }
+            ParseResult.Success(configs, decoded.skipped)
+        }
+    }
+
+    internal fun parseKotlin(jsonText: String): ParseResult {
         val root = try {
             Json.parseToJsonElement(jsonText) as? JsonObject
                 ?: return ParseResult.Failure("root is not a JSON object")
@@ -124,18 +144,19 @@ object PlayerConfigParser {
             }
         }
 
-        val config = FunctionNameExtractor.HardcodedPlayerConfig(
-            sigFuncName = "_expr_sig",
-            sigConstantArg = null,
-            sigJsExpression = sig,
-            nFuncName = "_expr_n",
-            nArrayIndex = null,
-            nConstantArgs = null,
-            nJsExpression = buildNJsExpression(nClass),
-            signatureTimestamp = sts,
-        )
-        return config to aliases
+        return buildConfig(sig, nClass, sts) to aliases
     }
+
+    private fun buildConfig(sig: String, nClass: String, sts: Int) = FunctionNameExtractor.HardcodedPlayerConfig(
+        sigFuncName = "_expr_sig",
+        sigConstantArg = null,
+        sigJsExpression = sig,
+        nFuncName = "_expr_n",
+        nArrayIndex = null,
+        nConstantArgs = null,
+        nJsExpression = buildNJsExpression(nClass),
+        signatureTimestamp = sts,
+    )
 
     /** Overlay [remote] onto [bundled]: remote wins per key; bundled-only keys survive. */
     fun merge(
