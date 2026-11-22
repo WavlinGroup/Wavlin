@@ -102,7 +102,7 @@ android {
         minSdk = 26
         targetSdk = 36
         versionCode = 150
-        versionName = "13.6.1"
+        versionName = "1.0.0"
         resValue("string", "app_name", appNameOverride ?: "Wavlin")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
