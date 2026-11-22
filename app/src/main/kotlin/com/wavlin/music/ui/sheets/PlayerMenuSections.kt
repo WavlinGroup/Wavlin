@@ -70,7 +70,7 @@ import com.wavlin.music.sound.effects.SystemEffectAvailability
 import com.wavlin.music.sound.effects.SystemEffectController
 import com.wavlin.music.sound.effects.dts.DtsSoundManager
 import com.wavlin.music.sound.effects.reverb.ReverbManager
-import com.wavlin.music.ui.kit.ReverbRoomVisualizer
+import com.wavlin.music.ui.kit.ReverbRoomVisualizerHost
 import com.wavlin.music.sound.effects.xiaomi.XiaomiSoundManager
 import com.wavlin.music.core.config.PlayerBackgroundStyle
 import com.wavlin.music.core.config.PlayerBackgroundStyleKey
@@ -454,7 +454,7 @@ fun PlayerMenuReverbSettingsCard() {
                     .menuCard()
                     .padding(16.dp),
         ) {
-            ReverbRoomVisualizer(
+            ReverbRoomVisualizerHost(
                 presetIndex = presetIndex,
                 enabled = enabled,
                 modifier = Modifier.fillMaxWidth(),

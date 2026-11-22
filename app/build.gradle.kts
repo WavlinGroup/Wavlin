@@ -372,6 +372,16 @@ tasks.configureEach {
     }
 }
 
+// Flutter add-to-app is enabled only when `flutter build aar` has produced the local Maven repo
+// (see settings.gradle.kts). WAVLIN_REQUIRE_FLUTTER=true turns a missing repo into a build failure.
+val flutterVisualsRepoDir = rootProject.file("flutter/wavlin_visuals/build/host/outputs/repo")
+val flutterVisualsEnabled = flutterVisualsRepoDir.isDirectory
+if (!flutterVisualsEnabled) {
+    val message = "Flutter AAR repo not found at $flutterVisualsRepoDir: building without the Flutter reverb visualizer"
+    if (System.getenv("WAVLIN_REQUIRE_FLUTTER") == "true") throw GradleException(message)
+    logger.warn(message)
+}
+
 val buildRustAudio = tasks.register<BuildRustAudioTask>("buildRustAudio") {
     group = "build"
     description = "Builds libwavlin_audio.so from rust/ with cargo-ndk"
@@ -383,6 +393,9 @@ val buildRustAudio = tasks.register<BuildRustAudioTask>("buildRustAudio") {
 androidComponents {
     onVariants { variant ->
         variant.sources.jniLibs?.addGeneratedSourceDirectory(buildRustAudio, BuildRustAudioTask::outputDir)
+        variant.sources.kotlin?.addStaticSourceDirectory(
+            if (flutterVisualsEnabled) "src/flutterOn/kotlin" else "src/flutterOff/kotlin",
+        )
     }
 }
 
@@ -416,6 +429,10 @@ configurations.configureEach {
 }
 
 dependencies {
+    if (flutterVisualsEnabled) {
+        implementation("com.wavlin.visuals:flutter_release:1.0")
+    }
+
     implementation(libs.guava)
     implementation(libs.coroutines.guava)
     implementation(libs.concurrent.futures)
