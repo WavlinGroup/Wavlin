@@ -36,6 +36,10 @@ object LyricsUtils {
     }
 
     fun filterLyricsCreditLines(lyrics: String): String {
+        return NativeLyrics.filterCreditLines(lyrics) ?: filterLyricsCreditLinesKotlin(lyrics)
+    }
+
+    private fun filterLyricsCreditLinesKotlin(lyrics: String): String {
         return lyrics.lines().filter { line ->
             // Strip leading bracketed/braced content, version tags, and timestamps
             // Handles [00:00.00], {agent:v1}, {bg}, [bg: ...], v1: etc.
@@ -409,6 +413,10 @@ object LyricsUtils {
 
     fun parseLyrics(lyrics: String): List<LyricsEntry> {
         if (lyrics.isBlank()) return emptyList()
+        return NativeLyrics.parse(lyrics) ?: parseLyricsKotlin(lyrics)
+    }
+
+    private fun parseLyricsKotlin(lyrics: String): List<LyricsEntry> {
 
         // Fast unescape
         val unescapedLyrics = if (lyrics.contains('\\') || lyrics.startsWith("\"")) {
