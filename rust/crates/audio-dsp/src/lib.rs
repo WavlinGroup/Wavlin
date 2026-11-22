@@ -4,13 +4,17 @@
 //! - `sound/processors/ReverbAudioProcessor.kt` -> [`reverb`]
 //! - `sound/equalizer/engine/BiquadFilter.kt` and
 //!   `sound/equalizer/engine/CustomEqualizerAudioProcessor.kt` -> [`biquad`], [`eq`]
+//! - `sound/processors/VolumeNormalizationAudioProcessor.kt` -> [`normalizer`]
+//! - `sound/processors/SilenceDetectorAudioProcessor.kt` -> [`silence`]
 //!
 //! All constants are carried over unchanged from the Kotlin code. The ExoPlayer
 //! `AudioProcessor` shells (buffer handling, configure/flush lifecycle) are not in this crate.
 
 pub mod biquad;
 pub mod eq;
+pub mod normalizer;
 pub mod reverb;
+pub mod silence;
 
 /// Rejected stream configuration. Returned instead of silently falling back to defaults.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

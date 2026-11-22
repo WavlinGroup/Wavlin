@@ -4,7 +4,7 @@
 //! shim catches panics so nothing unwinds across the FFI boundary; failures return a sentinel
 //! (0, false or -1) and Kotlin falls back to its own path.
 
-use crate::engine::{profile_from_arrays, EqEngine, ReverbEngine};
+use crate::engine::{profile_from_arrays, EqEngine, NormalizerEngine, ReverbEngine, SilenceEngine};
 use jni::objects::{JBooleanArray, JByteBuffer, JClass, JDoubleArray, JIntArray};
 use jni::sys::{jboolean, jdouble, jfloat, jint, jlong, JNI_FALSE, JNI_TRUE};
 use jni::JNIEnv;
@@ -242,5 +242,135 @@ pub extern "system" fn Java_com_wavlin_music_sound_nativeaudio_NativeAudio_eqPro
         // SAFETY: both ranges were bounds-checked against their buffers and do not overlap.
         let (src, dst) = unsafe { (std::slice::from_raw_parts(inp.0, inp.1), std::slice::from_raw_parts_mut(out.0, out.1)) };
         jint::try_from(engine.process(src, dst)).unwrap_or(-1)
+    })
+}
+
+#[no_mangle]
+pub extern "system" fn Java_com_wavlin_music_sound_nativeaudio_NativeAudio_normalizerCreate(_env: JNIEnv, _class: JClass) -> jlong {
+    guard(0, || create(NormalizerEngine::new()))
+}
+
+#[no_mangle]
+pub extern "system" fn Java_com_wavlin_music_sound_nativeaudio_NativeAudio_normalizerDestroy(_env: JNIEnv, _class: JClass, handle: jlong) {
+    // SAFETY: Kotlin destroys each handle exactly once, after the last use.
+    guard((), || unsafe { destroy::<NormalizerEngine>(handle) })
+}
+
+#[no_mangle]
+pub extern "system" fn Java_com_wavlin_music_sound_nativeaudio_NativeAudio_normalizerSetEnabled(_env: JNIEnv, _class: JClass, handle: jlong, enabled: jboolean) {
+    guard((), || {
+        // SAFETY: see `engine_ref`.
+        if let Some(e) = unsafe { engine_ref::<NormalizerEngine>(handle) } {
+            e.set_enabled(enabled != JNI_FALSE);
+        }
+    })
+}
+
+#[no_mangle]
+pub extern "system" fn Java_com_wavlin_music_sound_nativeaudio_NativeAudio_normalizerSetTargetGain(_env: JNIEnv, _class: JClass, handle: jlong, gain_mb: jint) {
+    guard((), || {
+        // SAFETY: see `engine_ref`.
+        if let Some(e) = unsafe { engine_ref::<NormalizerEngine>(handle) } {
+            e.set_target_gain(gain_mb);
+        }
+    })
+}
+
+/// `format_code`: 0 = 16-bit, 1 = 24-bit, 2 = 32-bit, 3 = float. `length` must be a whole number
+/// of samples. Returns the bytes written to `output`, or -1 on any failure.
+#[no_mangle]
+pub extern "system" fn Java_com_wavlin_music_sound_nativeaudio_NativeAudio_normalizerProcess(
+    env: JNIEnv,
+    _class: JClass,
+    handle: jlong,
+    input: JByteBuffer,
+    input_offset: jint,
+    length: jint,
+    output: JByteBuffer,
+    format_code: jint,
+) -> jint {
+    guard(-1, || {
+        // SAFETY: see `engine_ref`.
+        let Some(engine) = (unsafe { engine_ref::<NormalizerEngine>(handle) }) else { return -1 };
+        let Some(inp) = direct_range(&env, &input, input_offset, length) else { return -1 };
+        let Some(out) = direct_range(&env, &output, 0, length) else { return -1 };
+        if ranges_overlap(inp, out) {
+            return -1;
+        }
+        // SAFETY: both ranges were bounds-checked against their buffers and do not overlap.
+        let (src, dst) = unsafe { (std::slice::from_raw_parts(inp.0, inp.1), std::slice::from_raw_parts_mut(out.0, out.1)) };
+        engine.process(src, dst, format_code).and_then(|n| jint::try_from(n).ok()).unwrap_or(-1)
+    })
+}
+
+#[no_mangle]
+pub extern "system" fn Java_com_wavlin_music_sound_nativeaudio_NativeAudio_silenceCreate(
+    _env: JNIEnv,
+    _class: JClass,
+    min_silence_duration_us: jlong,
+    silence_threshold: jint,
+) -> jlong {
+    guard(0, || create(SilenceEngine::new(min_silence_duration_us, silence_threshold)))
+}
+
+#[no_mangle]
+pub extern "system" fn Java_com_wavlin_music_sound_nativeaudio_NativeAudio_silenceDestroy(_env: JNIEnv, _class: JClass, handle: jlong) {
+    // SAFETY: Kotlin destroys each handle exactly once, after the last use.
+    guard((), || unsafe { destroy::<SilenceEngine>(handle) })
+}
+
+#[no_mangle]
+pub extern "system" fn Java_com_wavlin_music_sound_nativeaudio_NativeAudio_silenceConfigure(
+    _env: JNIEnv,
+    _class: JClass,
+    handle: jlong,
+    sample_rate: jint,
+    channel_count: jint,
+) -> jboolean {
+    let ok = guard(false, || {
+        // SAFETY: see `engine_ref`.
+        unsafe { engine_ref::<SilenceEngine>(handle) }.map_or(false, |e| e.configure(sample_rate, channel_count))
+    });
+    if ok { JNI_TRUE } else { JNI_FALSE }
+}
+
+#[no_mangle]
+pub extern "system" fn Java_com_wavlin_music_sound_nativeaudio_NativeAudio_silenceClearState(_env: JNIEnv, _class: JClass, handle: jlong) {
+    guard((), || {
+        // SAFETY: see `engine_ref`.
+        if let Some(e) = unsafe { engine_ref::<SilenceEngine>(handle) } {
+            e.clear_state();
+        }
+    })
+}
+
+#[no_mangle]
+pub extern "system" fn Java_com_wavlin_music_sound_nativeaudio_NativeAudio_silenceIsSilent(_env: JNIEnv, _class: JClass, handle: jlong) -> jboolean {
+    let silent = guard(false, || {
+        // SAFETY: see `engine_ref`.
+        unsafe { engine_ref::<SilenceEngine>(handle) }.map_or(false, |e| e.is_silent())
+    });
+    if silent { JNI_TRUE } else { JNI_FALSE }
+}
+
+/// Analyzes `[input_offset, input_offset + length)` without modifying it. Returns the number of
+/// long-silence notifications for Kotlin to deliver, or -1 on failure (nothing was analyzed).
+#[no_mangle]
+pub extern "system" fn Java_com_wavlin_music_sound_nativeaudio_NativeAudio_silenceAnalyze(
+    env: JNIEnv,
+    _class: JClass,
+    handle: jlong,
+    input: JByteBuffer,
+    input_offset: jint,
+    length: jint,
+    instant_mode: jboolean,
+) -> jint {
+    guard(-1, || {
+        // SAFETY: see `engine_ref`.
+        let Some(engine) = (unsafe { engine_ref::<SilenceEngine>(handle) }) else { return -1 };
+        let Some(inp) = direct_range(&env, &input, input_offset, length) else { return -1 };
+        // SAFETY: the range was bounds-checked against the buffer; it is only read.
+        let src = unsafe { std::slice::from_raw_parts(inp.0, inp.1) };
+        jint::try_from(engine.analyze(src, instant_mode != JNI_FALSE)).unwrap_or(-1)
     })
 }

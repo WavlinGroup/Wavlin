@@ -6,7 +6,10 @@
 
 use audio_dsp::biquad::FilterType;
 use audio_dsp::eq::{EqBand, EqProfile, Equalizer};
+use audio_dsp::normalizer::{self, SampleFormat};
 use audio_dsp::reverb::Reverb;
+use audio_dsp::silence::SilenceDetector;
+use std::sync::atomic::{AtomicBool, AtomicI32, Ordering};
 use std::sync::{Mutex, MutexGuard};
 
 fn lock<T>(m: &Mutex<T>) -> MutexGuard<'_, T> {
@@ -155,6 +158,65 @@ impl EqEngine {
     }
 }
 
+/// Volume normalization gain. Settings are lock-free atomics so the audio thread never waits on
+/// the thread that changes them.
+#[derive(Default)]
+pub struct NormalizerEngine {
+    enabled: AtomicBool,
+    target_gain_mb: AtomicI32,
+}
+
+impl NormalizerEngine {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    pub fn set_enabled(&self, enabled: bool) {
+        self.enabled.store(enabled, Ordering::Relaxed);
+    }
+
+    pub fn set_target_gain(&self, gain_mb: i32) {
+        self.target_gain_mb.store(gain_mb, Ordering::Relaxed);
+    }
+
+    /// Returns the bytes written to `output`. Gain applies only when enabled and non-zero,
+    /// otherwise the samples are copied unchanged. `format_code` is [`SampleFormat::from_code`].
+    pub fn process(&self, input: &[u8], output: &mut [u8], format_code: i32) -> Option<usize> {
+        let format = SampleFormat::from_code(format_code)?;
+        let gain_mb = self.target_gain_mb.load(Ordering::Relaxed);
+        let gain = (self.enabled.load(Ordering::Relaxed) && gain_mb != 0).then(|| normalizer::gain_mb_to_linear(gain_mb));
+        Some(normalizer::process(input, output, format, gain))
+    }
+}
+
+pub struct SilenceEngine {
+    detector: Mutex<SilenceDetector>,
+}
+
+impl SilenceEngine {
+    pub fn new(min_silence_duration_us: i64, silence_threshold: i32) -> Self {
+        Self { detector: Mutex::new(SilenceDetector::new(min_silence_duration_us, silence_threshold)) }
+    }
+
+    pub fn configure(&self, sample_rate: i32, channel_count: i32) -> bool {
+        let Ok(channels) = usize::try_from(channel_count) else { return false };
+        lock(&self.detector).configure(sample_rate, channels).is_ok()
+    }
+
+    pub fn clear_state(&self) {
+        lock(&self.detector).clear_state();
+    }
+
+    pub fn is_silent(&self) -> bool {
+        lock(&self.detector).is_silent()
+    }
+
+    /// Returns how many long-silence notifications fired inside `input`.
+    pub fn analyze(&self, input: &[u8], instant_mode: bool) -> u32 {
+        lock(&self.detector).analyze(input, instant_mode)
+    }
+}
+
 /// Builds an [`EqProfile`] from the flat arrays passed over JNI. `params` holds
 /// `frequency, gain, q` per band.
 pub fn profile_from_arrays(preamp_db: f64, params: &[f64], types: &[i32], enabled: &[bool]) -> Option<EqProfile> {
@@ -274,5 +336,42 @@ mod tests {
         let profile = profile_from_arrays(0.0, &[1000.0, 3.0, 1.41], &[0], &[true]).unwrap();
         assert_eq!(engine.apply_profile(0, 2, &profile), None);
         assert_eq!(engine.apply_profile(44100, 0, &profile), None);
+    }
+
+    #[test]
+    fn normalizer_engine_applies_gain_only_when_enabled_and_nonzero() {
+        let input = i16_bytes(&[1000, -1000]);
+        let mut out = vec![0u8; input.len()];
+        let engine = NormalizerEngine::new();
+        engine.set_target_gain(2000);
+        assert_eq!(engine.process(&input, &mut out, 0), Some(4));
+        assert_eq!(out, input);
+        engine.set_enabled(true);
+        engine.process(&input, &mut out, 0);
+        assert_eq!(out, i16_bytes(&[10000, -10000]));
+        engine.set_target_gain(0);
+        engine.process(&input, &mut out, 0);
+        assert_eq!(out, input);
+    }
+
+    #[test]
+    fn normalizer_engine_rejects_unknown_format() {
+        let engine = NormalizerEngine::new();
+        let mut out = [0u8; 4];
+        assert_eq!(engine.process(&[0u8; 4], &mut out, 9), None);
+    }
+
+    #[test]
+    fn silence_engine_reports_notifications_and_rejects_bad_format() {
+        let engine = SilenceEngine::new(1_000_000, 256);
+        assert!(!engine.configure(0, 2));
+        assert!(!engine.configure(48_000, -1));
+        assert!(engine.configure(1000, 1));
+        let silent = i16_bytes(&[0; 1000]);
+        assert_eq!(engine.analyze(&silent, true), 1);
+        assert!(engine.is_silent());
+        engine.clear_state();
+        assert!(!engine.is_silent());
+        assert_eq!(engine.analyze(&silent, false), 0);
     }
 }
