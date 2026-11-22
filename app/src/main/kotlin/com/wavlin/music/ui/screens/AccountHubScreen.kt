@@ -88,9 +88,9 @@ import com.wavlin.innertube.YouTube
 import com.wavlin.innertube.utils.parseCookieString
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.R
-import com.wavlin.music.constants.InnerTubeCookieKey
-import com.wavlin.music.constants.UseLoginForBrowse
-import com.wavlin.music.constants.YtmSyncKey
+import com.wavlin.music.core.config.InnerTubeCookieKey
+import com.wavlin.music.core.config.UseLoginForBrowse
+import com.wavlin.music.core.config.YtmSyncKey
 import com.wavlin.music.spotify.account.SpotifyAuthState
 import com.wavlin.music.ui.component.DefaultDialog
 import com.wavlin.music.ui.component.IconButton

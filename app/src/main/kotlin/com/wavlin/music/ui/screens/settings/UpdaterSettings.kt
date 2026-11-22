@@ -40,8 +40,8 @@ import androidx.navigation.NavController
 import com.wavlin.music.BuildConfig
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.R
-import com.wavlin.music.constants.CheckForUpdatesKey
-import com.wavlin.music.constants.UpdateNotificationsEnabledKey
+import com.wavlin.music.core.config.CheckForUpdatesKey
+import com.wavlin.music.core.config.UpdateNotificationsEnabledKey
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.Material3SettingsGroup
 import com.wavlin.music.ui.component.Material3SettingsItem

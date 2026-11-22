@@ -12,9 +12,9 @@ import androidx.lifecycle.viewModelScope
 import com.wavlin.innertube.YouTube
 import com.wavlin.innertube.models.filterYoutubeShorts
 import com.wavlin.innertube.pages.BrowseResult
-import com.wavlin.music.constants.HideExplicitKey
-import com.wavlin.music.constants.HideVideoSongsKey
-import com.wavlin.music.constants.HideYoutubeShortsKey
+import com.wavlin.music.core.config.HideExplicitKey
+import com.wavlin.music.core.config.HideVideoSongsKey
+import com.wavlin.music.core.config.HideYoutubeShortsKey
 import com.wavlin.music.utils.dataStore
 import com.wavlin.music.utils.get
 import com.wavlin.music.utils.reportException

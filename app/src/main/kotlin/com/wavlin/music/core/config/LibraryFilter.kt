@@ -3,7 +3,7 @@
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
-package com.wavlin.music.constants
+package com.wavlin.music.core.config
 
 enum class LibraryFilter {
     SONGS,

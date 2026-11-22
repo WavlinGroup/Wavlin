@@ -54,8 +54,8 @@ import com.wavlin.music.LocalDatabase
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
-import com.wavlin.music.constants.CONTENT_TYPE_HEADER
-import com.wavlin.music.constants.GridThumbnailHeight
+import com.wavlin.music.core.config.CONTENT_TYPE_HEADER
+import com.wavlin.music.core.config.GridThumbnailHeight
 import com.wavlin.music.spotify.account.SpotifyAuthState
 import com.wavlin.music.spotify.account.SpotifyPlaylist
 import com.wavlin.music.spotify.account.thumbnailUrl

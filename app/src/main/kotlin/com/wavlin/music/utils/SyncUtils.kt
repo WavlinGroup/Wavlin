@@ -16,10 +16,10 @@ import com.wavlin.innertube.models.SongItem
 import com.wavlin.innertube.utils.completed
 import com.wavlin.innertube.utils.parseCookieString
 import com.wavlin.lastfm.LastFM
-import com.wavlin.music.constants.InnerTubeCookieKey
-import com.wavlin.music.constants.LastFMUseSendLikes
-import com.wavlin.music.constants.LastFullSyncKey
-import com.wavlin.music.constants.SYNC_COOLDOWN
+import com.wavlin.music.core.config.InnerTubeCookieKey
+import com.wavlin.music.core.config.LastFMUseSendLikes
+import com.wavlin.music.core.config.LastFullSyncKey
+import com.wavlin.music.core.config.SYNC_COOLDOWN
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.db.entities.ArtistEntity
 import com.wavlin.music.db.entities.PlaylistEntity
@@ -27,9 +27,9 @@ import com.wavlin.music.db.entities.PlaylistSongMap
 import com.wavlin.music.db.entities.PodcastEntity
 import com.wavlin.music.db.entities.SetVideoIdEntity
 import com.wavlin.music.db.entities.SongEntity
-import com.wavlin.music.extensions.collectLatest
-import com.wavlin.music.extensions.isInternetConnected
-import com.wavlin.music.extensions.isSyncEnabled
+import com.wavlin.music.core.ext.collectLatest
+import com.wavlin.music.core.ext.isInternetConnected
+import com.wavlin.music.core.ext.isSyncEnabled
 import com.wavlin.music.models.toMediaMetadata
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellationException

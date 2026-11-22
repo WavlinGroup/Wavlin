@@ -67,10 +67,10 @@ import com.wavlin.innertube.utils.parseCookieString
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
-import com.wavlin.music.constants.CONTENT_TYPE_ARTIST
-import com.wavlin.music.constants.InnerTubeCookieKey
-import com.wavlin.music.constants.StatPeriod
-import com.wavlin.music.extensions.toMediaItem
+import com.wavlin.music.core.config.CONTENT_TYPE_ARTIST
+import com.wavlin.music.core.config.InnerTubeCookieKey
+import com.wavlin.music.core.config.StatPeriod
+import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.playback.queues.ListQueue
 import com.wavlin.music.playback.queues.YouTubeQueue

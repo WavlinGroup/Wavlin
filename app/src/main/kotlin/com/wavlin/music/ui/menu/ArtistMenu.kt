@@ -33,10 +33,10 @@ import com.wavlin.music.LocalDatabase
 import com.wavlin.music.LocalListenTogetherManager
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
-import com.wavlin.music.constants.ArtistSongSortType
+import com.wavlin.music.core.config.ArtistSongSortType
 import com.wavlin.music.db.entities.SpeedDialItem
 import com.wavlin.music.db.entities.Artist
-import com.wavlin.music.extensions.toMediaItem
+import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.playback.queues.ListQueue
 import com.wavlin.music.ui.component.ArtistListItem
 import com.wavlin.music.ui.component.Material3MenuGroup

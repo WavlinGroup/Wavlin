@@ -33,9 +33,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.R
-import com.wavlin.music.constants.LyricsRomanizeAsMainKey
-import com.wavlin.music.constants.LyricsRomanizeCyrillicByLineKey
-import com.wavlin.music.constants.LyricsRomanizeList
+import com.wavlin.music.core.config.LyricsRomanizeAsMainKey
+import com.wavlin.music.core.config.LyricsRomanizeCyrillicByLineKey
+import com.wavlin.music.core.config.LyricsRomanizeList
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.Material3SettingsGroup
 import com.wavlin.music.ui.component.Material3SettingsItem

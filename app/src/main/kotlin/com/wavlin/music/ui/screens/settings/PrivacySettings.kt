@@ -36,9 +36,9 @@ import androidx.navigation.NavController
 import com.wavlin.music.LocalDatabase
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.R
-import com.wavlin.music.constants.DisableScreenshotKey
-import com.wavlin.music.constants.PauseListenHistoryKey
-import com.wavlin.music.constants.PauseSearchHistoryKey
+import com.wavlin.music.core.config.DisableScreenshotKey
+import com.wavlin.music.core.config.PauseListenHistoryKey
+import com.wavlin.music.core.config.PauseSearchHistoryKey
 import com.wavlin.music.ui.component.DefaultDialog
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.Material3SettingsGroup

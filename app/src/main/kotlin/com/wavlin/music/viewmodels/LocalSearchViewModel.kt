@@ -8,7 +8,7 @@ package com.wavlin.music.viewmodels
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wavlin.music.constants.HideVideoSongsKey
+import com.wavlin.music.core.config.HideVideoSongsKey
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.db.entities.Album
 import com.wavlin.music.db.entities.Artist

@@ -21,11 +21,11 @@ import com.wavlin.innertube.models.PlaylistItem
 import com.wavlin.innertube.models.SongItem
 import com.wavlin.innertube.pages.AlbumPage
 import com.wavlin.innertube.pages.ArtistPage
-import com.wavlin.music.constants.AlbumSortType
-import com.wavlin.music.constants.ArtistSongSortType
-import com.wavlin.music.constants.ArtistSortType
-import com.wavlin.music.constants.PlaylistSortType
-import com.wavlin.music.constants.SongSortType
+import com.wavlin.music.core.config.AlbumSortType
+import com.wavlin.music.core.config.ArtistSongSortType
+import com.wavlin.music.core.config.ArtistSortType
+import com.wavlin.music.core.config.PlaylistSortType
+import com.wavlin.music.core.config.SongSortType
 import com.wavlin.music.db.entities.Album
 import com.wavlin.music.db.entities.AlbumArtistMap
 import com.wavlin.music.db.entities.AlbumEntity
@@ -51,8 +51,8 @@ import com.wavlin.music.db.entities.SongAlbumMap
 import com.wavlin.music.db.entities.SongArtistMap
 import com.wavlin.music.db.entities.SongEntity
 import com.wavlin.music.db.entities.SongWithStats
-import com.wavlin.music.extensions.reversed
-import com.wavlin.music.extensions.toSQLiteQuery
+import com.wavlin.music.core.ext.reversed
+import com.wavlin.music.core.ext.toSQLiteQuery
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.ui.utils.resize

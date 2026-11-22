@@ -158,31 +158,31 @@ import com.wavlin.music.LocalDownloadUtil
 import com.wavlin.music.LocalListenTogetherManager
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
-import com.wavlin.music.constants.CropAlbumArtKey
-import com.wavlin.music.constants.DarkModeKey
-import com.wavlin.music.constants.HidePlayerThumbnailKey
-import com.wavlin.music.constants.HideStatusBarOnFullscreenKey
-import com.wavlin.music.constants.KeepScreenOn
-import com.wavlin.music.constants.PlayerBackgroundStyle
-import com.wavlin.music.constants.PlayerBackgroundStyleKey
-import com.wavlin.music.constants.PlayerButtonsStyle
-import com.wavlin.music.constants.PlayerButtonsStyleKey
-import com.wavlin.music.constants.PlayerHorizontalPadding
-import com.wavlin.music.constants.VideoCanvasEnabledKey
+import com.wavlin.music.core.config.CropAlbumArtKey
+import com.wavlin.music.core.config.DarkModeKey
+import com.wavlin.music.core.config.HidePlayerThumbnailKey
+import com.wavlin.music.core.config.HideStatusBarOnFullscreenKey
+import com.wavlin.music.core.config.KeepScreenOn
+import com.wavlin.music.core.config.PlayerBackgroundStyle
+import com.wavlin.music.core.config.PlayerBackgroundStyleKey
+import com.wavlin.music.core.config.PlayerButtonsStyle
+import com.wavlin.music.core.config.PlayerButtonsStyleKey
+import com.wavlin.music.core.config.PlayerHorizontalPadding
+import com.wavlin.music.core.config.VideoCanvasEnabledKey
 import com.wavlin.music.di.VideoCanvasEntryPoint
-import com.wavlin.music.constants.QueuePeekHeight
-import com.wavlin.music.constants.SleepTimerDefaultKey
-import com.wavlin.music.constants.SleepTimerFadeOutKey
-import com.wavlin.music.constants.SleepTimerStopAfterCurrentSongKey
-import com.wavlin.music.constants.SliderStyle
-import com.wavlin.music.constants.SliderStyleKey
-import com.wavlin.music.constants.SquigglySliderKey
-import com.wavlin.music.constants.ThumbnailCornerRadius
-import com.wavlin.music.constants.UseNewPlayerDesignKey
+import com.wavlin.music.core.config.QueuePeekHeight
+import com.wavlin.music.core.config.SleepTimerDefaultKey
+import com.wavlin.music.core.config.SleepTimerFadeOutKey
+import com.wavlin.music.core.config.SleepTimerStopAfterCurrentSongKey
+import com.wavlin.music.core.config.SliderStyle
+import com.wavlin.music.core.config.SliderStyleKey
+import com.wavlin.music.core.config.SquigglySliderKey
+import com.wavlin.music.core.config.ThumbnailCornerRadius
+import com.wavlin.music.core.config.UseNewPlayerDesignKey
 import com.wavlin.music.db.entities.LyricsEntity
-import com.wavlin.music.extensions.metadata
-import com.wavlin.music.extensions.togglePlayPause
-import com.wavlin.music.extensions.toggleRepeatMode
+import com.wavlin.music.core.ext.metadata
+import com.wavlin.music.core.ext.togglePlayPause
+import com.wavlin.music.core.ext.toggleRepeatMode
 import com.wavlin.music.listentogether.RoomRole
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.ui.component.BottomSheet
@@ -218,11 +218,6 @@ import kotlinx.coroutines.withContext
 import kotlin.math.max
 import kotlin.math.roundToInt
 import com.wavlin.music.ui.component.Icon as MIcon
-import com.wavlin.music.constants.SleepTimerDefaultKey
-import com.wavlin.music.constants.SleepTimerFadeOutKey
-import com.wavlin.music.constants.SleepTimerStopAfterCurrentSongKey
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomSheetPlayer(

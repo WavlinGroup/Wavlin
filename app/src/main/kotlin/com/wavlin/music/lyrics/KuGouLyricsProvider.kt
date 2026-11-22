@@ -7,7 +7,7 @@ package com.wavlin.music.lyrics
 
 import android.content.Context
 import com.wavlin.kugou.KuGou
-import com.wavlin.music.constants.EnableKugouKey
+import com.wavlin.music.core.config.EnableKugouKey
 import com.wavlin.music.utils.dataStore
 import com.wavlin.music.utils.get
 

@@ -26,10 +26,10 @@ import com.wavlin.innertube.models.YouTubeLocale
 import com.wavlin.kugou.KuGou
 import com.wavlin.lastfm.LastFM
 import com.wavlin.music.BuildConfig
-import com.wavlin.music.constants.*
+import com.wavlin.music.core.config.*
 import com.wavlin.music.di.ApplicationScope
-import com.wavlin.music.extensions.toEnum
-import com.wavlin.music.extensions.toInetSocketAddress
+import com.wavlin.music.core.ext.toEnum
+import com.wavlin.music.core.ext.toInetSocketAddress
 import com.wavlin.music.utils.CrashHandler
 import com.wavlin.music.utils.YTPlayerUtils
 import com.wavlin.music.utils.cipher.CipherDeobfuscator

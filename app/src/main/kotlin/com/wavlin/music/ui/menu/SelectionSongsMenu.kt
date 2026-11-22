@@ -54,7 +54,7 @@ import com.wavlin.music.LocalSyncUtils
 import com.wavlin.music.R
 import com.wavlin.music.db.entities.PlaylistSongMap
 import com.wavlin.music.db.entities.Song
-import com.wavlin.music.extensions.toMediaItem
+import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.playback.ExoDownloadService

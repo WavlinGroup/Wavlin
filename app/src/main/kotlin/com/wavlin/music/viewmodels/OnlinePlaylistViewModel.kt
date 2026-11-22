@@ -13,7 +13,7 @@ import com.wavlin.innertube.YouTube
 import com.wavlin.innertube.models.PlaylistItem
 import com.wavlin.innertube.models.SongItem
 import com.wavlin.innertube.models.filterVideoSongs
-import com.wavlin.music.constants.HideVideoSongsKey
+import com.wavlin.music.core.config.HideVideoSongsKey
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.utils.dataStore
 import com.wavlin.music.utils.get
@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import com.wavlin.music.constants.SongSortType
+import com.wavlin.music.core.config.SongSortType
 import com.wavlin.innertube.models.Artist
 import com.wavlin.innertube.models.Album
 import javax.inject.Inject

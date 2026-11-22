@@ -12,8 +12,8 @@ import com.wavlin.deezer.Deezer
 import com.wavlin.innertube.YouTube
 import com.wavlin.innertube.models.AlbumItem
 import com.wavlin.innertube.models.filterExplicit
-import com.wavlin.music.constants.HideExplicitKey
-import com.wavlin.music.constants.PendingNewReleasesKey
+import com.wavlin.music.core.config.HideExplicitKey
+import com.wavlin.music.core.config.PendingNewReleasesKey
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.utils.dataStore
 import com.wavlin.music.utils.get

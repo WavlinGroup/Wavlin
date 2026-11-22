@@ -8,7 +8,7 @@ package com.wavlin.music.ui.player
 import android.os.SystemClock
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.wavlin.music.constants.DoubleTapToSkipNextKey
+import com.wavlin.music.core.config.DoubleTapToSkipNextKey
 import com.wavlin.music.playback.PlayerConnection
 import com.wavlin.music.utils.rememberPreference
 

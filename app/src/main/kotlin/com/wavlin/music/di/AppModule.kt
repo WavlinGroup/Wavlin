@@ -15,7 +15,7 @@ import androidx.media3.datasource.cache.ContentMetadataMutations
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.NoOpCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
-import com.wavlin.music.constants.MaxSongCacheSizeKey
+import com.wavlin.music.core.config.MaxSongCacheSizeKey
 import com.wavlin.music.db.InternalDatabase
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.listentogether.ListenTogetherClient

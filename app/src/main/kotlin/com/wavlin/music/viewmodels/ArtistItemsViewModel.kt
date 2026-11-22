@@ -13,8 +13,8 @@ import com.wavlin.innertube.YouTube
 import com.wavlin.innertube.models.BrowseEndpoint
 import com.wavlin.innertube.models.filterExplicit
 import com.wavlin.innertube.models.filterVideoSongs
-import com.wavlin.music.constants.HideExplicitKey
-import com.wavlin.music.constants.HideVideoSongsKey
+import com.wavlin.music.core.config.HideExplicitKey
+import com.wavlin.music.core.config.HideVideoSongsKey
 import com.wavlin.music.models.ItemsPage
 import com.wavlin.music.utils.dataStore
 import com.wavlin.music.utils.get

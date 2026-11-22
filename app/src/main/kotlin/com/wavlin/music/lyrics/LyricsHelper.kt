@@ -7,7 +7,7 @@ package com.wavlin.music.lyrics
 
 import android.content.Context
 import android.util.LruCache
-import com.wavlin.music.constants.LyricsProviderOrderKey
+import com.wavlin.music.core.config.LyricsProviderOrderKey
 import com.wavlin.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.utils.NetworkConnectivityObserver

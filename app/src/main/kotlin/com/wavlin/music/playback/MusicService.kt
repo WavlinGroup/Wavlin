@@ -103,76 +103,76 @@ import com.wavlin.innertube.models.WatchEndpoint
 import com.wavlin.lastfm.LastFM
 import com.wavlin.music.MainActivity
 import com.wavlin.music.R
-import com.wavlin.music.constants.AndroidAutoTargetPlaylistKey
-import com.wavlin.music.constants.AudioNormalizationKey
-import com.wavlin.music.constants.AudioOffload
-import com.wavlin.music.constants.AudioQualityKey
-import com.wavlin.music.constants.LosslessStreamingEnabledKey
-import com.wavlin.music.constants.AudioTrackPlaybackParamsKey
-import com.wavlin.music.constants.AutoDownloadOnLikeKey
-import com.wavlin.music.constants.AutoLoadMoreKey
-import com.wavlin.music.constants.AutoSkipNextOnErrorKey
-import com.wavlin.music.constants.StreamSourceAndroidVRKey
-import com.wavlin.music.constants.StreamSourceTVHTML5Key
-import com.wavlin.music.constants.StreamSourceVisionOSKey
-import com.wavlin.music.constants.StreamSourceWebCreatorKey
-import com.wavlin.music.constants.StreamSourceWebRemixKey
-import com.wavlin.music.constants.AutoplayKey
-import com.wavlin.music.constants.CrossfadeDurationKey
-import com.wavlin.music.constants.CrossfadeEnabledKey
-import com.wavlin.music.constants.CrossfadeGaplessKey
-import com.wavlin.music.constants.KeepPlayingOverOtherAppsKey
-import com.wavlin.music.constants.DisableLoadMoreWhenRepeatAllKey
-import com.wavlin.music.constants.DiscordActivityNameKey
-import com.wavlin.music.constants.DiscordActivityTypeKey
-import com.wavlin.music.constants.DiscordAdvancedModeKey
-import com.wavlin.music.constants.DiscordButton1EnabledKey
-import com.wavlin.music.constants.DiscordButton1LabelKey
-import com.wavlin.music.constants.DiscordButton1UrlKey
-import com.wavlin.music.constants.DiscordButton2EnabledKey
-import com.wavlin.music.constants.DiscordButton2LabelKey
-import com.wavlin.music.constants.DiscordButton2UrlKey
-import com.wavlin.music.constants.DiscordDetailsTemplateKey
-import com.wavlin.music.constants.DiscordStateTemplateKey
-import com.wavlin.music.constants.DiscordUserStatusKey
-import com.wavlin.music.constants.EnableDiscordRPCKey
+import com.wavlin.music.core.config.AndroidAutoTargetPlaylistKey
+import com.wavlin.music.core.config.AudioNormalizationKey
+import com.wavlin.music.core.config.AudioOffload
+import com.wavlin.music.core.config.AudioQualityKey
+import com.wavlin.music.core.config.LosslessStreamingEnabledKey
+import com.wavlin.music.core.config.AudioTrackPlaybackParamsKey
+import com.wavlin.music.core.config.AutoDownloadOnLikeKey
+import com.wavlin.music.core.config.AutoLoadMoreKey
+import com.wavlin.music.core.config.AutoSkipNextOnErrorKey
+import com.wavlin.music.core.config.StreamSourceAndroidVRKey
+import com.wavlin.music.core.config.StreamSourceTVHTML5Key
+import com.wavlin.music.core.config.StreamSourceVisionOSKey
+import com.wavlin.music.core.config.StreamSourceWebCreatorKey
+import com.wavlin.music.core.config.StreamSourceWebRemixKey
+import com.wavlin.music.core.config.AutoplayKey
+import com.wavlin.music.core.config.CrossfadeDurationKey
+import com.wavlin.music.core.config.CrossfadeEnabledKey
+import com.wavlin.music.core.config.CrossfadeGaplessKey
+import com.wavlin.music.core.config.KeepPlayingOverOtherAppsKey
+import com.wavlin.music.core.config.DisableLoadMoreWhenRepeatAllKey
+import com.wavlin.music.core.config.DiscordActivityNameKey
+import com.wavlin.music.core.config.DiscordActivityTypeKey
+import com.wavlin.music.core.config.DiscordAdvancedModeKey
+import com.wavlin.music.core.config.DiscordButton1EnabledKey
+import com.wavlin.music.core.config.DiscordButton1LabelKey
+import com.wavlin.music.core.config.DiscordButton1UrlKey
+import com.wavlin.music.core.config.DiscordButton2EnabledKey
+import com.wavlin.music.core.config.DiscordButton2LabelKey
+import com.wavlin.music.core.config.DiscordButton2UrlKey
+import com.wavlin.music.core.config.DiscordDetailsTemplateKey
+import com.wavlin.music.core.config.DiscordStateTemplateKey
+import com.wavlin.music.core.config.DiscordUserStatusKey
+import com.wavlin.music.core.config.EnableDiscordRPCKey
 import com.wavlin.music.discord.DiscordActivity
 import com.wavlin.music.discord.DiscordDefaults
 import com.wavlin.music.discord.DiscordRpcManager
 import com.wavlin.music.discord.DiscordActivityBuilder
 import com.wavlin.music.discord.DiscordTemplateRenderer
 import com.wavlin.music.discord.PresenceStatus
-import com.wavlin.music.constants.EnableLastFMScrobblingKey
-import com.wavlin.music.constants.EnableSongCacheKey
-import com.wavlin.music.constants.HideExplicitKey
-import com.wavlin.music.constants.HideVideoSongsKey
-import com.wavlin.music.constants.HistoryDuration
-import com.wavlin.music.constants.LastFMUseNowPlaying
-import com.wavlin.music.constants.MediaSessionConstants
-import com.wavlin.music.constants.MediaSessionConstants.CommandAddToTargetPlaylist
-import com.wavlin.music.constants.MediaSessionConstants.CommandToggleLike
-import com.wavlin.music.constants.MediaSessionConstants.CommandToggleRepeatMode
-import com.wavlin.music.constants.MediaSessionConstants.CommandToggleShuffle
-import com.wavlin.music.constants.MediaSessionConstants.CommandToggleStartRadio
-import com.wavlin.music.constants.PauseListenHistoryKey
-import com.wavlin.music.constants.PauseOnMute
-import com.wavlin.music.constants.PersistentQueueKey
-import com.wavlin.music.constants.PersistentShuffleAcrossQueuesKey
-import com.wavlin.music.constants.PlayerVolumeKey
-import com.wavlin.music.constants.PreventDuplicateTracksInQueueKey
-import com.wavlin.music.constants.RememberShuffleAndRepeatKey
-import com.wavlin.music.constants.RepeatModeKey
-import com.wavlin.music.constants.ResumeOnBluetoothConnectKey
-import com.wavlin.music.constants.ScrobbleDelayPercentKey
-import com.wavlin.music.constants.ScrobbleDelaySecondsKey
-import com.wavlin.music.constants.ScrobbleMinSongDurationKey
-import com.wavlin.music.constants.ShowLyricsKey
-import com.wavlin.music.constants.ShuffleModeKey
-import com.wavlin.music.constants.ShufflePlaylistFirstKey
-import com.wavlin.music.constants.SimilarContent
-import com.wavlin.music.constants.SkipSilenceInstantKey
-import com.wavlin.music.constants.SkipSilenceKey
-import com.wavlin.music.constants.StopMusicOnTaskClearKey
+import com.wavlin.music.core.config.EnableLastFMScrobblingKey
+import com.wavlin.music.core.config.EnableSongCacheKey
+import com.wavlin.music.core.config.HideExplicitKey
+import com.wavlin.music.core.config.HideVideoSongsKey
+import com.wavlin.music.core.config.HistoryDuration
+import com.wavlin.music.core.config.LastFMUseNowPlaying
+import com.wavlin.music.core.config.MediaSessionConstants
+import com.wavlin.music.core.config.MediaSessionConstants.CommandAddToTargetPlaylist
+import com.wavlin.music.core.config.MediaSessionConstants.CommandToggleLike
+import com.wavlin.music.core.config.MediaSessionConstants.CommandToggleRepeatMode
+import com.wavlin.music.core.config.MediaSessionConstants.CommandToggleShuffle
+import com.wavlin.music.core.config.MediaSessionConstants.CommandToggleStartRadio
+import com.wavlin.music.core.config.PauseListenHistoryKey
+import com.wavlin.music.core.config.PauseOnMute
+import com.wavlin.music.core.config.PersistentQueueKey
+import com.wavlin.music.core.config.PersistentShuffleAcrossQueuesKey
+import com.wavlin.music.core.config.PlayerVolumeKey
+import com.wavlin.music.core.config.PreventDuplicateTracksInQueueKey
+import com.wavlin.music.core.config.RememberShuffleAndRepeatKey
+import com.wavlin.music.core.config.RepeatModeKey
+import com.wavlin.music.core.config.ResumeOnBluetoothConnectKey
+import com.wavlin.music.core.config.ScrobbleDelayPercentKey
+import com.wavlin.music.core.config.ScrobbleDelaySecondsKey
+import com.wavlin.music.core.config.ScrobbleMinSongDurationKey
+import com.wavlin.music.core.config.ShowLyricsKey
+import com.wavlin.music.core.config.ShuffleModeKey
+import com.wavlin.music.core.config.ShufflePlaylistFirstKey
+import com.wavlin.music.core.config.SimilarContent
+import com.wavlin.music.core.config.SkipSilenceInstantKey
+import com.wavlin.music.core.config.SkipSilenceKey
+import com.wavlin.music.core.config.StopMusicOnTaskClearKey
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.db.entities.Event
 import com.wavlin.music.db.entities.FormatEntity
@@ -185,18 +185,18 @@ import com.wavlin.music.di.PlayerCache
 import com.wavlin.music.eq.EqualizerService
 import com.wavlin.music.eq.audio.CustomEqualizerAudioProcessor
 import com.wavlin.music.eq.data.EQProfileRepository
-import com.wavlin.music.extensions.SilentHandler
-import com.wavlin.music.extensions.collect
-import com.wavlin.music.extensions.collectLatest
-import com.wavlin.music.extensions.currentMetadata
-import com.wavlin.music.extensions.findNextMediaItemById
-import com.wavlin.music.extensions.mediaItems
-import com.wavlin.music.extensions.metadata
-import com.wavlin.music.extensions.setOffloadEnabled
-import com.wavlin.music.extensions.toEnum
-import com.wavlin.music.extensions.toMediaItem
-import com.wavlin.music.extensions.toPersistQueue
-import com.wavlin.music.extensions.toQueue
+import com.wavlin.music.core.ext.SilentHandler
+import com.wavlin.music.core.ext.collect
+import com.wavlin.music.core.ext.collectLatest
+import com.wavlin.music.core.ext.currentMetadata
+import com.wavlin.music.core.ext.findNextMediaItemById
+import com.wavlin.music.core.ext.mediaItems
+import com.wavlin.music.core.ext.metadata
+import com.wavlin.music.core.ext.setOffloadEnabled
+import com.wavlin.music.core.ext.toEnum
+import com.wavlin.music.core.ext.toMediaItem
+import com.wavlin.music.core.ext.toPersistQueue
+import com.wavlin.music.core.ext.toQueue
 import com.wavlin.music.local.LocalRoutingDataSource
 import com.wavlin.music.local.LocalSongs
 import com.wavlin.music.lyrics.LyricsHelper
@@ -213,8 +213,8 @@ import com.wavlin.music.playback.queues.YouTubeQueue
 import com.wavlin.music.playback.queues.YouTubePlaylistQueue
 import com.wavlin.music.playback.queues.filterExplicit
 import com.wavlin.music.playback.queues.filterVideoSongs
-import com.wavlin.music.constants.LoudnessLevel
-import com.wavlin.music.constants.LoudnessLevelKey
+import com.wavlin.music.core.config.LoudnessLevel
+import com.wavlin.music.core.config.LoudnessLevelKey
 import com.wavlin.music.utils.CoilBitmapLoader
 import com.wavlin.music.utils.NetworkConnectivityObserver
 import com.wavlin.music.utils.ScrobbleManager
@@ -341,7 +341,7 @@ class MusicService :
     private val isNetworkConnected = MutableStateFlow(false)
     val currentStreamClient = MutableStateFlow<String?>(null)
 
-    private lateinit var audioQuality: com.wavlin.music.constants.AudioQuality
+    private lateinit var audioQuality: com.wavlin.music.core.config.AudioQuality
     private var losslessStreamingEnabled: Boolean = false
 
     private var currentQueue: Queue = EmptyQueue
@@ -791,12 +791,12 @@ class MusicService :
         val startupBaseQ = startupPrefs!![AudioQualityKey]?.let { value ->
             // Legacy migration: LOSSLESS was previously a picker value; now the toggle owns it.
             when (value) {
-                "LOSSLESS" -> { losslessStreamingEnabled = true; com.wavlin.music.constants.AudioQuality.HIGH }
-                "VERY_HIGH" -> com.wavlin.music.constants.AudioQuality.HIGH
-                else -> com.wavlin.music.constants.AudioQuality.entries.find { it.name == value }
+                "LOSSLESS" -> { losslessStreamingEnabled = true; com.wavlin.music.core.config.AudioQuality.HIGH }
+                "VERY_HIGH" -> com.wavlin.music.core.config.AudioQuality.HIGH
+                else -> com.wavlin.music.core.config.AudioQuality.entries.find { it.name == value }
             }
-        } ?: com.wavlin.music.constants.AudioQuality.AUTO
-        audioQuality = if (losslessStreamingEnabled) com.wavlin.music.constants.AudioQuality.LOSSLESS else startupBaseQ
+        } ?: com.wavlin.music.core.config.AudioQuality.AUTO
+        audioQuality = if (losslessStreamingEnabled) com.wavlin.music.core.config.AudioQuality.LOSSLESS else startupBaseQ
         playerVolume = MutableStateFlow((startupPrefs!![PlayerVolumeKey] ?: 1f).coerceIn(0f, 1f))
 
         initializeCast()
@@ -844,15 +844,15 @@ class MusicService :
                     val baseQ = it[AudioQualityKey]?.let { value ->
                         // Legacy: LOSSLESS in prefs = HIGH + toggle on
                         when (value) {
-                            "LOSSLESS", "VERY_HIGH" -> com.wavlin.music.constants.AudioQuality.HIGH
-                            else -> com.wavlin.music.constants.AudioQuality.entries.find { it.name == value }
+                            "LOSSLESS", "VERY_HIGH" -> com.wavlin.music.core.config.AudioQuality.HIGH
+                            else -> com.wavlin.music.core.config.AudioQuality.entries.find { it.name == value }
                         }
-                    } ?: com.wavlin.music.constants.AudioQuality.AUTO
+                    } ?: com.wavlin.music.core.config.AudioQuality.AUTO
                     isLossless to baseQ
                 }.distinctUntilChanged()
                 .collect { (isLossless, baseQ) ->
                     losslessStreamingEnabled = isLossless
-                    val newQuality = if (isLossless) com.wavlin.music.constants.AudioQuality.LOSSLESS else baseQ
+                    val newQuality = if (isLossless) com.wavlin.music.core.config.AudioQuality.LOSSLESS else baseQ
                     val oldQuality = audioQuality
                     audioQuality = newQuality
 
@@ -4750,7 +4750,7 @@ class MusicService :
      * Initialize Google Cast support
      */
     private fun initializeCast() {
-        if (dataStore.get(com.wavlin.music.constants.EnableGoogleCastKey, true)) {
+        if (dataStore.get(com.wavlin.music.core.config.EnableGoogleCastKey, true)) {
             try {
                 castConnectionHandler = CastConnectionHandler(this, scope, this)
                 castConnectionHandler?.initialize()

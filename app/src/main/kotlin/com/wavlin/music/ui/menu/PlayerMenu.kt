@@ -86,8 +86,8 @@ import com.wavlin.music.LocalDownloadUtil
 import com.wavlin.music.LocalListenTogetherManager
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
-import com.wavlin.music.constants.ListItemHeight
-import com.wavlin.music.constants.VarispeedKey
+import com.wavlin.music.core.config.ListItemHeight
+import com.wavlin.music.core.config.VarispeedKey
 import com.wavlin.music.listentogether.ConnectionState
 import com.wavlin.music.listentogether.ListenTogetherEvent
 import com.wavlin.music.models.MediaMetadata
@@ -1002,7 +1002,7 @@ fun ListenTogetherDialog(
     val pendingSuggestions by listenTogetherManager.pendingSuggestions.collectAsStateWithLifecycle()
 
     // Load saved username
-    var savedUsername by rememberPreference(com.wavlin.music.constants.ListenTogetherUsernameKey, "")
+    var savedUsername by rememberPreference(com.wavlin.music.core.config.ListenTogetherUsernameKey, "")
     var roomCodeInput by rememberSaveable { mutableStateOf("") }
     var usernameInput by rememberSaveable { mutableStateOf(savedUsername) }
 

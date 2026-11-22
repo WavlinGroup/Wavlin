@@ -66,7 +66,7 @@ import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.R
 import com.wavlin.music.db.entities.PlaylistSong
 import com.wavlin.music.db.entities.Song
-import com.wavlin.music.extensions.move
+import com.wavlin.music.core.ext.move
 import com.wavlin.music.ui.component.ItemThumbnail
 import com.wavlin.music.ui.component.LocalInterfaceAppleMusic
 import com.wavlin.music.ui.component.LocalPinkLilyTheme

@@ -78,11 +78,11 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.R
-import com.wavlin.music.constants.ListenTogetherAutoApprovalKey
-import com.wavlin.music.constants.ListenTogetherAutoApproveSuggestionsKey
-import com.wavlin.music.constants.ListenTogetherServerUrlKey
-import com.wavlin.music.constants.ListenTogetherSyncVolumeKey
-import com.wavlin.music.constants.ListenTogetherUsernameKey
+import com.wavlin.music.core.config.ListenTogetherAutoApprovalKey
+import com.wavlin.music.core.config.ListenTogetherAutoApproveSuggestionsKey
+import com.wavlin.music.core.config.ListenTogetherServerUrlKey
+import com.wavlin.music.core.config.ListenTogetherSyncVolumeKey
+import com.wavlin.music.core.config.ListenTogetherUsernameKey
 import com.wavlin.music.listentogether.ConnectionState
 import com.wavlin.music.listentogether.ListenTogetherEvent
 import com.wavlin.music.listentogether.ListenTogetherServer

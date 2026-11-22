@@ -74,18 +74,18 @@ import com.wavlin.music.ui.component.ListDialog
 import com.wavlin.music.ui.component.Material3MenuItemData
 import com.wavlin.music.ui.component.TextFieldDialog
 import com.wavlin.music.viewmodels.LyricsMenuViewModel
-import com.wavlin.music.constants.OpenRouterApiKey
-import com.wavlin.music.constants.DeeplApiKey
-import com.wavlin.music.constants.AiProviderKey
-import com.wavlin.music.constants.TranslateLanguageKey
-import com.wavlin.music.constants.TranslateModeKey
-import com.wavlin.music.constants.RespectAgentPositioningKey
-import com.wavlin.music.constants.ShowIntervalIndicatorKey
-import com.wavlin.music.constants.OpenRouterBaseUrlKey
-import com.wavlin.music.constants.OpenRouterDefaultBaseUrl
-import com.wavlin.music.constants.OpenRouterDefaultModel
-import com.wavlin.music.constants.OpenRouterModelKey
-import com.wavlin.music.constants.DeeplFormalityKey
+import com.wavlin.music.core.config.OpenRouterApiKey
+import com.wavlin.music.core.config.DeeplApiKey
+import com.wavlin.music.core.config.AiProviderKey
+import com.wavlin.music.core.config.TranslateLanguageKey
+import com.wavlin.music.core.config.TranslateModeKey
+import com.wavlin.music.core.config.RespectAgentPositioningKey
+import com.wavlin.music.core.config.ShowIntervalIndicatorKey
+import com.wavlin.music.core.config.OpenRouterBaseUrlKey
+import com.wavlin.music.core.config.OpenRouterDefaultBaseUrl
+import com.wavlin.music.core.config.OpenRouterDefaultModel
+import com.wavlin.music.core.config.OpenRouterModelKey
+import com.wavlin.music.core.config.DeeplFormalityKey
 import com.wavlin.music.utils.rememberPreference
 
 @OptIn(ExperimentalMaterial3Api::class)

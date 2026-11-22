@@ -3,7 +3,7 @@
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
-package com.wavlin.music.extensions
+package com.wavlin.music.core.ext
 
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.models.PersistQueue

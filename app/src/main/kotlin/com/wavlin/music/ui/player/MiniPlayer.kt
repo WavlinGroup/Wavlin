@@ -99,14 +99,14 @@ import com.wavlin.music.LocalDatabase
 import com.wavlin.music.LocalListenTogetherManager
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
-import com.wavlin.music.constants.CropAlbumArtKey
-import com.wavlin.music.constants.DarkModeKey
-import com.wavlin.music.constants.MiniPlayerHeight
-import com.wavlin.music.constants.PureBlackMiniPlayerKey
-import com.wavlin.music.constants.SwipeSensitivityKey
-import com.wavlin.music.constants.SelectedThemeColorKey
-import com.wavlin.music.constants.SwipeThumbnailKey
-import com.wavlin.music.constants.ThumbnailCornerRadius
+import com.wavlin.music.core.config.CropAlbumArtKey
+import com.wavlin.music.core.config.DarkModeKey
+import com.wavlin.music.core.config.MiniPlayerHeight
+import com.wavlin.music.core.config.PureBlackMiniPlayerKey
+import com.wavlin.music.core.config.SwipeSensitivityKey
+import com.wavlin.music.core.config.SelectedThemeColorKey
+import com.wavlin.music.core.config.SwipeThumbnailKey
+import com.wavlin.music.core.config.ThumbnailCornerRadius
 import com.wavlin.music.db.entities.ArtistEntity
 import com.wavlin.music.listentogether.ListenTogetherManager
 import com.wavlin.music.models.MediaMetadata
@@ -122,8 +122,8 @@ import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 import com.wavlin.music.ui.component.Icon as MIcon
 import androidx.compose.ui.draw.blur
-import com.wavlin.music.constants.MiniPlayerBackgroundStyle
-import com.wavlin.music.constants.MiniPlayerBackgroundStyleKey
+import com.wavlin.music.core.config.MiniPlayerBackgroundStyle
+import com.wavlin.music.core.config.MiniPlayerBackgroundStyleKey
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext

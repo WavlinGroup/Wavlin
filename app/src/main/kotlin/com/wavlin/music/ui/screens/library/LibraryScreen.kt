@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.wavlin.music.LocalNavController
 import com.wavlin.music.R
-import com.wavlin.music.constants.ChipSortTypeKey
-import com.wavlin.music.constants.LibraryFilter
+import com.wavlin.music.core.config.ChipSortTypeKey
+import com.wavlin.music.core.config.LibraryFilter
 import com.wavlin.music.utils.rememberEnumPreference
 
 @Composable

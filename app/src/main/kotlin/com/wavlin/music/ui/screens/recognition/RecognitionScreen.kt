@@ -540,7 +540,7 @@ private fun SuccessState(
                 Modifier
                     .size(180.dp)
                     .aspectRatio(1f),
-            shape = RoundedCornerShape(com.wavlin.music.constants.ThumbnailCornerRadius),
+            shape = RoundedCornerShape(com.wavlin.music.core.config.ThumbnailCornerRadius),
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         ) {
             AsyncImage(

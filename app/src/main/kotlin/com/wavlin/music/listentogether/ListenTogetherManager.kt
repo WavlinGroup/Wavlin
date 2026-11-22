@@ -12,10 +12,10 @@ import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import com.wavlin.innertube.YouTube
 import com.wavlin.innertube.models.WatchEndpoint
-import com.wavlin.music.constants.ListenTogetherSyncVolumeKey
-import com.wavlin.music.extensions.currentMetadata
-import com.wavlin.music.extensions.metadata
-import com.wavlin.music.extensions.toMediaItem
+import com.wavlin.music.core.config.ListenTogetherSyncVolumeKey
+import com.wavlin.music.core.ext.currentMetadata
+import com.wavlin.music.core.ext.metadata
+import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.models.MediaMetadata.Album
 import com.wavlin.music.models.MediaMetadata.Artist

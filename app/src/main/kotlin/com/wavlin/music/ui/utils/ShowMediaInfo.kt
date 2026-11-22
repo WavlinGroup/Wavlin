@@ -44,8 +44,8 @@ import com.wavlin.innertube.models.MediaInfo
 import com.wavlin.music.LocalDatabase
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
-import com.wavlin.music.constants.LoudnessLevel
-import com.wavlin.music.constants.LoudnessLevelKey
+import com.wavlin.music.core.config.LoudnessLevel
+import com.wavlin.music.core.config.LoudnessLevelKey
 import com.wavlin.music.db.entities.FormatEntity
 import com.wavlin.music.db.entities.Song
 import com.wavlin.music.ui.component.Material3SettingsGroup

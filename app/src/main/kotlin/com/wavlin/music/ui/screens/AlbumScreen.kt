@@ -78,8 +78,8 @@ import com.wavlin.music.LocalListenTogetherManager
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
-import com.wavlin.music.constants.HideExplicitKey
-import com.wavlin.music.constants.HideVideoSongsKey
+import com.wavlin.music.core.config.HideExplicitKey
+import com.wavlin.music.core.config.HideVideoSongsKey
 import com.wavlin.music.db.entities.Album
 import com.wavlin.music.playback.queues.LocalAlbumRadio
 import com.wavlin.music.ui.component.ClickableArtistText

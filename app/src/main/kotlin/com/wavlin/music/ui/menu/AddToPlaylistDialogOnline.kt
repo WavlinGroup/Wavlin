@@ -38,10 +38,10 @@ import com.wavlin.innertube.YouTube
 import com.wavlin.innertube.models.SongItem
 import com.wavlin.music.LocalDatabase
 import com.wavlin.music.R
-import com.wavlin.music.constants.AddToPlaylistSortDescendingKey
-import com.wavlin.music.constants.AddToPlaylistSortTypeKey
-import com.wavlin.music.constants.ListThumbnailSize
-import com.wavlin.music.constants.PlaylistSortType
+import com.wavlin.music.core.config.AddToPlaylistSortDescendingKey
+import com.wavlin.music.core.config.AddToPlaylistSortTypeKey
+import com.wavlin.music.core.config.ListThumbnailSize
+import com.wavlin.music.core.config.PlaylistSortType
 import com.wavlin.music.db.entities.Playlist
 import com.wavlin.music.db.entities.Song
 import com.wavlin.music.models.ItemsPage

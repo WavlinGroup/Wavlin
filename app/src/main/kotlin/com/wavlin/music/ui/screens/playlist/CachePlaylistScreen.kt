@@ -79,12 +79,12 @@ import coil3.compose.AsyncImage
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
-import com.wavlin.music.constants.HideExplicitKey
-import com.wavlin.music.constants.SongSortDescendingKey
-import com.wavlin.music.constants.SongSortType
-import com.wavlin.music.constants.SongSortTypeKey
+import com.wavlin.music.core.config.HideExplicitKey
+import com.wavlin.music.core.config.SongSortDescendingKey
+import com.wavlin.music.core.config.SongSortType
+import com.wavlin.music.core.config.SongSortTypeKey
 import com.wavlin.music.db.entities.Song
-import com.wavlin.music.extensions.toMediaItem
+import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.playback.ExoDownloadService
 import com.wavlin.music.playback.queues.ListQueue
 import com.wavlin.music.ui.component.DraggableScrollbar
@@ -129,10 +129,10 @@ fun CachePlaylistScreen(
     val hideExplicit by rememberPreference(key = HideExplicitKey, defaultValue = false)
 
     var showEditPage by rememberSaveable { mutableStateOf(false) }
-    val screenPureBlack by rememberPreference(com.wavlin.music.constants.PureBlackKey, defaultValue = false)
+    val screenPureBlack by rememberPreference(com.wavlin.music.core.config.PureBlackKey, defaultValue = false)
     val (screenDarkMode, _) =
         rememberEnumPreference(
-            com.wavlin.music.constants.DarkModeKey,
+            com.wavlin.music.core.config.DarkModeKey,
             defaultValue = com.wavlin.music.ui.screens.settings.DarkMode.AUTO,
         )
     val screenDarkTheme =

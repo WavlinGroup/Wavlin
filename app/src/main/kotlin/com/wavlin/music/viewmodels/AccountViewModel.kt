@@ -14,7 +14,7 @@ import com.wavlin.innertube.models.ArtistItem
 import com.wavlin.innertube.models.PlaylistItem
 import com.wavlin.innertube.models.filterYoutubeShorts
 import com.wavlin.innertube.utils.completed
-import com.wavlin.music.constants.HideYoutubeShortsKey
+import com.wavlin.music.core.config.HideYoutubeShortsKey
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.db.entities.PodcastEntity
 import com.wavlin.music.ui.utils.resize

@@ -128,13 +128,13 @@ import com.wavlin.music.LocalNavController
 import com.wavlin.music.LocalListenTogetherManager
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
-import com.wavlin.music.constants.ListItemHeight
-import com.wavlin.music.constants.PlayerBackgroundStyle
-import com.wavlin.music.constants.QueueEditLockKey
-import com.wavlin.music.constants.UseNewPlayerDesignKey
-import com.wavlin.music.extensions.metadata
-import com.wavlin.music.extensions.move
-import com.wavlin.music.extensions.toggleRepeatMode
+import com.wavlin.music.core.config.ListItemHeight
+import com.wavlin.music.core.config.PlayerBackgroundStyle
+import com.wavlin.music.core.config.QueueEditLockKey
+import com.wavlin.music.core.config.UseNewPlayerDesignKey
+import com.wavlin.music.core.ext.metadata
+import com.wavlin.music.core.ext.move
+import com.wavlin.music.core.ext.toggleRepeatMode
 import com.wavlin.music.listentogether.RoomRole
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.ui.component.ActionPromptDialog
@@ -157,12 +157,11 @@ import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 import kotlin.math.roundToInt
-import com.wavlin.music.constants.SleepTimerDefaultKey
+import com.wavlin.music.core.config.SleepTimerDefaultKey
 import android.widget.Toast
 import androidx.compose.runtime.derivedStateOf
-import com.wavlin.music.constants.SleepTimerFadeOutKey
-import com.wavlin.music.constants.SleepTimerStopAfterCurrentSongKey
-import androidx.compose.runtime.derivedStateOf
+import com.wavlin.music.core.config.SleepTimerFadeOutKey
+import com.wavlin.music.core.config.SleepTimerStopAfterCurrentSongKey
 import androidx.compose.material3.Button
 
 

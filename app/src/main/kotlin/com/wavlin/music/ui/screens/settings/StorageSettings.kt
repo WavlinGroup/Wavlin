@@ -51,10 +51,10 @@ import com.wavlin.music.LocalDatabase
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
-import com.wavlin.music.constants.EnableSongCacheKey
-import com.wavlin.music.constants.MaxImageCacheSizeKey
-import com.wavlin.music.constants.MaxSongCacheSizeKey
-import com.wavlin.music.extensions.tryOrNull
+import com.wavlin.music.core.config.EnableSongCacheKey
+import com.wavlin.music.core.config.MaxImageCacheSizeKey
+import com.wavlin.music.core.config.MaxSongCacheSizeKey
+import com.wavlin.music.core.ext.tryOrNull
 import com.wavlin.music.ui.component.ActionPromptDialog
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.Material3SettingsGroup

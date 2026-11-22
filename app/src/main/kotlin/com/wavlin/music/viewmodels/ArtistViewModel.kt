@@ -22,16 +22,16 @@ import com.wavlin.innertube.models.filterExplicit
 import com.wavlin.innertube.models.filterVideoSongs
 import com.wavlin.innertube.models.filterYoutubeShorts
 import com.wavlin.innertube.pages.ArtistPage
-import com.wavlin.music.constants.HideExplicitKey
-import com.wavlin.music.constants.HideVideoSongsKey
-import com.wavlin.music.constants.HideYoutubeShortsKey
+import com.wavlin.music.core.config.HideExplicitKey
+import com.wavlin.music.core.config.HideVideoSongsKey
+import com.wavlin.music.core.config.HideYoutubeShortsKey
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.db.entities.ArtistEntity
 import com.wavlin.music.db.entities.deserializeArtistPage
 import com.wavlin.music.db.entities.serializeArtistPage
 import com.wavlin.music.db.entities.toArtistPage
-import com.wavlin.music.extensions.filterExplicit
-import com.wavlin.music.extensions.filterExplicitAlbums
+import com.wavlin.music.core.ext.filterExplicit
+import com.wavlin.music.core.ext.filterExplicitAlbums
 import com.wavlin.music.utils.SyncUtils
 import com.wavlin.music.utils.dataStore
 import com.wavlin.music.utils.get
@@ -52,8 +52,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
-import com.wavlin.music.extensions.filterVideoSongs as filterVideoSongsLocal
-
+import com.wavlin.music.core.ext.filterVideoSongs as filterVideoSongsLocal
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class ArtistViewModel @Inject constructor(

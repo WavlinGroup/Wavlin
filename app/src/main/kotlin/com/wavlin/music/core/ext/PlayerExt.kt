@@ -3,7 +3,7 @@
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
-package com.wavlin.music.extensions
+package com.wavlin.music.core.ext
 
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem

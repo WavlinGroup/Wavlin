@@ -12,7 +12,7 @@ import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import com.wavlin.music.constants.ThumbnailCornerRadius
+import com.wavlin.music.core.config.ThumbnailCornerRadius
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier

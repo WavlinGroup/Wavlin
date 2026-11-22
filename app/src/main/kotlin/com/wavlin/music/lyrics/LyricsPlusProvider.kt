@@ -7,7 +7,7 @@ package com.wavlin.music.lyrics
 
 import android.content.Context
 import com.wavlin.music.betterlyrics.TTMLParser
-import com.wavlin.music.constants.EnableLyricsPlus
+import com.wavlin.music.core.config.EnableLyricsPlus
 import com.wavlin.music.utils.dataStore
 import com.wavlin.music.utils.get
 import io.ktor.client.HttpClient

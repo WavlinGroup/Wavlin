@@ -67,9 +67,9 @@ import com.wavlin.innertube.models.SongItem
 import com.wavlin.music.LocalDatabase
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
-import com.wavlin.music.constants.AutoRadioQueueKey
-import com.wavlin.music.constants.SuggestionItemHeight
-import com.wavlin.music.extensions.toMediaItem
+import com.wavlin.music.core.config.AutoRadioQueueKey
+import com.wavlin.music.core.config.SuggestionItemHeight
+import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.playback.queues.ListQueue
 import com.wavlin.music.playback.queues.YouTubeQueue

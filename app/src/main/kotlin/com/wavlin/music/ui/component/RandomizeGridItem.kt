@@ -21,8 +21,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.wavlin.music.constants.ThumbnailCornerRadius
-
+import com.wavlin.music.core.config.ThumbnailCornerRadius
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun RandomizeGridItem(

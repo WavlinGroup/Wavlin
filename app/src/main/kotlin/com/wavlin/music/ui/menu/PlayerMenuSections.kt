@@ -72,8 +72,8 @@ import com.wavlin.music.audio.dts.DtsSoundManager
 import com.wavlin.music.audio.reverb.ReverbManager
 import com.wavlin.music.ui.component.ReverbRoomVisualizer
 import com.wavlin.music.audio.xiaomi.XiaomiSoundManager
-import com.wavlin.music.constants.PlayerBackgroundStyle
-import com.wavlin.music.constants.PlayerBackgroundStyleKey
+import com.wavlin.music.core.config.PlayerBackgroundStyle
+import com.wavlin.music.core.config.PlayerBackgroundStyleKey
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.ui.component.LocalPinkLilyTheme
 import com.wavlin.music.ui.component.PinkGlassTint

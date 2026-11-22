@@ -55,7 +55,7 @@ import com.wavlin.music.db.entities.Playlist
 import com.wavlin.music.db.entities.PlaylistSong
 import com.wavlin.music.db.entities.Song
 import com.wavlin.music.db.entities.SpeedDialItem
-import com.wavlin.music.extensions.toMediaItem
+import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.playback.ExoDownloadService
 import com.wavlin.music.playback.queues.ListQueue
 import com.wavlin.music.playback.queues.YouTubeQueue

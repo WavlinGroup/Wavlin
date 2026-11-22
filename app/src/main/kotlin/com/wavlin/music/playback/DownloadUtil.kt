@@ -19,8 +19,8 @@ import androidx.media3.exoplayer.offline.DownloadManager
 import androidx.media3.exoplayer.offline.DownloadNotificationHelper
 import com.wavlin.innertube.YouTube
 import com.wavlin.innertube.strategy.ContentHints
-import com.wavlin.music.constants.AudioQuality
-import com.wavlin.music.constants.AudioQualityKey
+import com.wavlin.music.core.config.AudioQuality
+import com.wavlin.music.core.config.AudioQualityKey
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.db.entities.FormatEntity
 import com.wavlin.music.db.entities.SongEntity

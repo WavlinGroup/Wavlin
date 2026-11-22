@@ -33,11 +33,11 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wavlin.innertube.utils.parseCookieString
 import com.wavlin.music.LocalDatabase
 import com.wavlin.music.R
-import com.wavlin.music.constants.AddToPlaylistSortDescendingKey
-import com.wavlin.music.constants.AddToPlaylistSortTypeKey
-import com.wavlin.music.constants.InnerTubeCookieKey
-import com.wavlin.music.constants.ListThumbnailSize
-import com.wavlin.music.constants.PlaylistSortType
+import com.wavlin.music.core.config.AddToPlaylistSortDescendingKey
+import com.wavlin.music.core.config.AddToPlaylistSortTypeKey
+import com.wavlin.music.core.config.InnerTubeCookieKey
+import com.wavlin.music.core.config.ListThumbnailSize
+import com.wavlin.music.core.config.PlaylistSortType
 import com.wavlin.music.db.entities.Playlist
 import com.wavlin.music.ui.component.CreatePlaylistDialog
 import com.wavlin.music.ui.component.DefaultDialog

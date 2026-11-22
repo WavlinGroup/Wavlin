@@ -15,7 +15,7 @@ import com.wavlin.innertube.models.YouTubeClient.Companion.WEB_REMIX
 import com.wavlin.innertube.models.response.PlayerResponse
 import com.wavlin.innertube.strategy.ContentAwareFallbackStrategy
 import com.wavlin.innertube.strategy.ContentHints
-import com.wavlin.music.constants.AudioQuality
+import com.wavlin.music.core.config.AudioQuality
 import com.wavlin.music.utils.YTPlayerUtils.MAIN_CLIENT
 import com.wavlin.music.utils.YTPlayerUtils.validateStatus
 import com.wavlin.music.utils.cipher.CipherDeobfuscator

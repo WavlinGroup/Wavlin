@@ -63,10 +63,10 @@ import com.wavlin.music.LocalDatabase
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
-import com.wavlin.music.constants.HistorySource
-import com.wavlin.music.constants.InnerTubeCookieKey
-import com.wavlin.music.extensions.metadata
-import com.wavlin.music.extensions.toMediaItem
+import com.wavlin.music.core.config.HistorySource
+import com.wavlin.music.core.config.InnerTubeCookieKey
+import com.wavlin.music.core.ext.metadata
+import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.playback.queues.ListQueue
 import com.wavlin.music.playback.queues.YouTubeQueue

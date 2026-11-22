@@ -62,8 +62,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.wavlin.music.constants.AppBarHeight
-
+import com.wavlin.music.core.config.AppBarHeight
 @ExperimentalMaterial3Api
 @Composable
 fun TopSearch(

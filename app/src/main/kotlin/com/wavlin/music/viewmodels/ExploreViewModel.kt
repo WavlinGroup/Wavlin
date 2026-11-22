@@ -11,7 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.wavlin.innertube.YouTube
 import com.wavlin.innertube.models.filterExplicit
 import com.wavlin.innertube.pages.ExplorePage
-import com.wavlin.music.constants.HideExplicitKey
+import com.wavlin.music.core.config.HideExplicitKey
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.utils.dataStore
 import com.wavlin.music.utils.get

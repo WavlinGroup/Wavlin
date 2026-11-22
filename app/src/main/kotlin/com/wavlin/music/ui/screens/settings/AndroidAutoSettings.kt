@@ -46,10 +46,10 @@ import androidx.navigation.NavController
 import com.wavlin.music.LocalDatabase
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.R
-import com.wavlin.music.constants.AndroidAutoSectionsOrderKey
-import com.wavlin.music.constants.AndroidAutoTargetPlaylistKey
-import com.wavlin.music.constants.AndroidAutoYouTubePlaylistsKey
-import com.wavlin.music.constants.MediaSessionConstants
+import com.wavlin.music.core.config.AndroidAutoSectionsOrderKey
+import com.wavlin.music.core.config.AndroidAutoTargetPlaylistKey
+import com.wavlin.music.core.config.AndroidAutoYouTubePlaylistsKey
+import com.wavlin.music.core.config.MediaSessionConstants
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.Material3SettingsGroup
 import com.wavlin.music.ui.component.Material3SettingsItem

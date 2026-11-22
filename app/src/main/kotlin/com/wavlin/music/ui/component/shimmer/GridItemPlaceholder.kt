@@ -22,11 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
-import com.wavlin.music.constants.GridItemSize
-import com.wavlin.music.constants.GridItemsSizeKey
-import com.wavlin.music.constants.GridThumbnailHeight
-import com.wavlin.music.constants.SmallGridThumbnailHeight
-import com.wavlin.music.constants.ThumbnailCornerRadius
+import com.wavlin.music.core.config.GridItemSize
+import com.wavlin.music.core.config.GridItemsSizeKey
+import com.wavlin.music.core.config.GridThumbnailHeight
+import com.wavlin.music.core.config.SmallGridThumbnailHeight
+import com.wavlin.music.core.config.ThumbnailCornerRadius
 import com.wavlin.music.utils.rememberEnumPreference
 
 @Composable

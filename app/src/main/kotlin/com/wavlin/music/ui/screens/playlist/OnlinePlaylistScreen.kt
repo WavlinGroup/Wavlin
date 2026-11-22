@@ -89,7 +89,7 @@ import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.LocalSyncUtils
 import com.wavlin.music.R
-import com.wavlin.music.constants.HideExplicitKey
+import com.wavlin.music.core.config.HideExplicitKey
 import com.wavlin.music.db.entities.Playlist
 import com.wavlin.music.db.entities.PlaylistEntity
 import com.wavlin.music.db.entities.PlaylistSongMap

@@ -102,9 +102,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.wavlin.music.LocalListenTogetherManager
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.R
-import com.wavlin.music.constants.AppBarHeight
-import com.wavlin.music.constants.ListenTogetherInTopBarKey
-import com.wavlin.music.constants.ListenTogetherUsernameKey
+import com.wavlin.music.core.config.AppBarHeight
+import com.wavlin.music.core.config.ListenTogetherInTopBarKey
+import com.wavlin.music.core.config.ListenTogetherUsernameKey
 import com.wavlin.music.listentogether.ConnectionState
 import com.wavlin.music.listentogether.JoinRequestPayload
 import com.wavlin.music.listentogether.ListenTogetherEvent

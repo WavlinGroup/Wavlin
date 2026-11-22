@@ -40,11 +40,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.R
-import com.wavlin.music.constants.StreamSourceAndroidVRKey
-import com.wavlin.music.constants.StreamSourceTVHTML5Key
-import com.wavlin.music.constants.StreamSourceVisionOSKey
-import com.wavlin.music.constants.StreamSourceWebCreatorKey
-import com.wavlin.music.constants.StreamSourceWebRemixKey
+import com.wavlin.music.core.config.StreamSourceAndroidVRKey
+import com.wavlin.music.core.config.StreamSourceTVHTML5Key
+import com.wavlin.music.core.config.StreamSourceVisionOSKey
+import com.wavlin.music.core.config.StreamSourceWebCreatorKey
+import com.wavlin.music.core.config.StreamSourceWebRemixKey
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.Material3SettingsGroup
 import com.wavlin.music.ui.component.Material3SettingsItem

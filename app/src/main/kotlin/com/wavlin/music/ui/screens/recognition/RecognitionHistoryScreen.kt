@@ -55,7 +55,7 @@ import coil3.compose.AsyncImage
 import com.wavlin.music.LocalDatabase
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.R
-import com.wavlin.music.constants.ThumbnailCornerRadius
+import com.wavlin.music.core.config.ThumbnailCornerRadius
 import com.wavlin.music.db.entities.RecognitionHistory
 import com.wavlin.music.ui.component.DefaultDialog
 import com.wavlin.music.ui.component.IconButton

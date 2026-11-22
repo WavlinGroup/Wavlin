@@ -24,14 +24,14 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.wavlin.music.R
-import com.wavlin.music.constants.ListenTogetherAutoApprovalKey
-import com.wavlin.music.constants.ListenTogetherAutoApproveSuggestionsKey
-import com.wavlin.music.constants.ListenTogetherIsHostKey
-import com.wavlin.music.constants.ListenTogetherRoomCodeKey
-import com.wavlin.music.constants.ListenTogetherServerUrlKey
-import com.wavlin.music.constants.ListenTogetherSessionTimestampKey
-import com.wavlin.music.constants.ListenTogetherSessionTokenKey
-import com.wavlin.music.constants.ListenTogetherUserIdKey
+import com.wavlin.music.core.config.ListenTogetherAutoApprovalKey
+import com.wavlin.music.core.config.ListenTogetherAutoApproveSuggestionsKey
+import com.wavlin.music.core.config.ListenTogetherIsHostKey
+import com.wavlin.music.core.config.ListenTogetherRoomCodeKey
+import com.wavlin.music.core.config.ListenTogetherServerUrlKey
+import com.wavlin.music.core.config.ListenTogetherSessionTimestampKey
+import com.wavlin.music.core.config.ListenTogetherSessionTokenKey
+import com.wavlin.music.core.config.ListenTogetherUserIdKey
 import com.wavlin.music.utils.NetworkConnectivityObserver
 import com.wavlin.music.utils.dataStore
 import com.wavlin.music.utils.get
@@ -477,7 +477,7 @@ class ListenTogetherClient
          */
         private fun loadBlockedUsernames() {
             try {
-                val blockedJson = context.dataStore.get(com.wavlin.music.constants.ListenTogetherBlockedUsersKey, "")
+                val blockedJson = context.dataStore.get(com.wavlin.music.core.config.ListenTogetherBlockedUsersKey, "")
                 val blockedList =
                     if (blockedJson.isNotEmpty()) {
                         json.decodeFromString<List<String>>(blockedJson)
@@ -498,7 +498,7 @@ class ListenTogetherClient
             try {
                 val blockedJson = json.encodeToString(_blockedUsernames.value.toList())
                 context.safeDataStoreEdit { preferences ->
-                    preferences[com.wavlin.music.constants.ListenTogetherBlockedUsersKey] = blockedJson
+                    preferences[com.wavlin.music.core.config.ListenTogetherBlockedUsersKey] = blockedJson
                 }
             } catch (e: Exception) {
                 log(LogLevel.ERROR, "Failed to save blocked usernames", e.message)

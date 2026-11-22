@@ -23,8 +23,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.navArgument
-import com.wavlin.music.constants.DarkModeKey
-import com.wavlin.music.constants.PureBlackKey
+import com.wavlin.music.core.config.DarkModeKey
+import com.wavlin.music.core.config.PureBlackKey
 import com.wavlin.music.ui.screens.artist.ArtistAlbumsScreen
 import com.wavlin.music.ui.screens.artist.ArtistItemsScreen
 import com.wavlin.music.ui.screens.artist.ArtistScreen

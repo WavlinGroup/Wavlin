@@ -65,12 +65,12 @@ import com.wavlin.music.LocalListenTogetherManager
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.LocalSyncUtils
 import com.wavlin.music.R
-import com.wavlin.music.constants.ListItemHeight
-import com.wavlin.music.constants.ListThumbnailSize
-import com.wavlin.music.constants.ThumbnailCornerRadius
+import com.wavlin.music.core.config.ListItemHeight
+import com.wavlin.music.core.config.ListThumbnailSize
+import com.wavlin.music.core.config.ThumbnailCornerRadius
 import com.wavlin.music.db.entities.SpeedDialItem
 import com.wavlin.music.db.entities.SongEntity
-import com.wavlin.music.extensions.toMediaItem
+import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.playback.ExoDownloadService

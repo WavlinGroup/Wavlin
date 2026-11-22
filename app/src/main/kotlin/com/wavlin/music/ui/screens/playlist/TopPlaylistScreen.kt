@@ -83,9 +83,9 @@ import com.wavlin.music.LocalDownloadUtil
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
-import com.wavlin.music.constants.MyTopFilter
+import com.wavlin.music.core.config.MyTopFilter
 import com.wavlin.music.db.entities.Song
-import com.wavlin.music.extensions.toMediaItem
+import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.playback.ExoDownloadService
 import com.wavlin.music.playback.queues.ListQueue
 import com.wavlin.music.ui.component.DefaultDialog

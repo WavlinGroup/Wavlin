@@ -18,7 +18,7 @@ import com.google.android.gms.cast.framework.SessionManager
 import com.google.android.gms.cast.framework.SessionManagerListener
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.google.android.gms.common.images.WebImage
-import com.wavlin.music.extensions.metadata
+import com.wavlin.music.core.ext.metadata
 import com.wavlin.music.models.MediaMetadata as AppMediaMetadata
 import com.wavlin.music.ui.utils.resize
 import kotlinx.coroutines.CoroutineScope

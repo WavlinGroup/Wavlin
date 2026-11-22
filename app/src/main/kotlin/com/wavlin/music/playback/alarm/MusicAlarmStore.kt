@@ -2,13 +2,13 @@ package com.wavlin.music.playback.alarm
 
 import android.content.Context
 import android.os.Build
-import com.wavlin.music.constants.AlarmEnabledKey
-import com.wavlin.music.constants.AlarmEntriesKey
-import com.wavlin.music.constants.AlarmHourKey
-import com.wavlin.music.constants.AlarmMinuteKey
-import com.wavlin.music.constants.AlarmNextTriggerAtKey
-import com.wavlin.music.constants.AlarmPlaylistIdKey
-import com.wavlin.music.constants.AlarmRandomSongKey
+import com.wavlin.music.core.config.AlarmEnabledKey
+import com.wavlin.music.core.config.AlarmEntriesKey
+import com.wavlin.music.core.config.AlarmHourKey
+import com.wavlin.music.core.config.AlarmMinuteKey
+import com.wavlin.music.core.config.AlarmNextTriggerAtKey
+import com.wavlin.music.core.config.AlarmPlaylistIdKey
+import com.wavlin.music.core.config.AlarmRandomSongKey
 import com.wavlin.music.utils.dataStore
 import com.wavlin.music.utils.safeDataStoreEdit
 import kotlinx.coroutines.flow.first

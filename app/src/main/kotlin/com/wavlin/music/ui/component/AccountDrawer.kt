@@ -65,7 +65,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.wavlin.innertube.utils.parseCookieString
 import com.wavlin.music.BuildConfig
-import com.wavlin.music.constants.InnerTubeCookieKey
+import com.wavlin.music.core.config.InnerTubeCookieKey
 import com.wavlin.music.spotify.account.SpotifyAuthState
 import com.wavlin.music.ui.screens.settings.AccountTokenEntry
 import com.wavlin.music.utils.Updater

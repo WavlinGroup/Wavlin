@@ -47,7 +47,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.R
-import com.wavlin.music.constants.AppBarHeight
+import com.wavlin.music.core.config.AppBarHeight
 import com.wavlin.music.ui.component.LocalPinkLilyTheme
 import com.wavlin.music.ui.component.pinkGlass
 import com.wavlin.music.ui.theme.PinkInk

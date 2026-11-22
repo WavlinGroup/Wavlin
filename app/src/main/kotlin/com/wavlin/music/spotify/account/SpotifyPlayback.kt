@@ -9,7 +9,7 @@
 package com.wavlin.music.spotify.account
 
 import com.wavlin.innertube.YouTube
-import com.wavlin.music.extensions.toMediaItem
+import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.playback.PlayerConnection

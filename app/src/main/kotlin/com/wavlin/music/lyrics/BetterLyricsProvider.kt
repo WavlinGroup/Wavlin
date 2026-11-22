@@ -7,7 +7,7 @@ package com.wavlin.music.lyrics
 
 import android.content.Context
 import com.wavlin.music.betterlyrics.BetterLyrics
-import com.wavlin.music.constants.EnableBetterLyricsKey
+import com.wavlin.music.core.config.EnableBetterLyricsKey
 import com.wavlin.music.utils.dataStore
 import com.wavlin.music.utils.get
 

@@ -22,9 +22,9 @@ import com.wavlin.innertube.models.filterVideoSongs
 import com.wavlin.innertube.models.filterYoutubeShorts
 import com.wavlin.innertube.pages.SearchSummary
 import com.wavlin.innertube.pages.SearchSummaryPage
-import com.wavlin.music.constants.HideExplicitKey
-import com.wavlin.music.constants.HideVideoSongsKey
-import com.wavlin.music.constants.HideYoutubeShortsKey
+import com.wavlin.music.core.config.HideExplicitKey
+import com.wavlin.music.core.config.HideVideoSongsKey
+import com.wavlin.music.core.config.HideYoutubeShortsKey
 import com.wavlin.music.models.ItemsPage
 import com.wavlin.music.utils.SearchRoutes
 import com.wavlin.music.utils.dataStore

@@ -15,7 +15,7 @@ import com.wavlin.innertube.models.SongItem
 import com.wavlin.innertube.models.YTItem
 import com.wavlin.innertube.models.filterExplicit
 import com.wavlin.music.R
-import com.wavlin.music.constants.HideExplicitKey
+import com.wavlin.music.core.config.HideExplicitKey
 import com.wavlin.music.utils.dataStore
 import com.wavlin.music.utils.get
 import dagger.hilt.android.lifecycle.HiltViewModel

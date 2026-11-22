@@ -6,7 +6,7 @@
 package com.wavlin.music.playback.queues
 
 import androidx.media3.common.MediaItem
-import com.wavlin.music.extensions.metadata
+import com.wavlin.music.core.ext.metadata
 import com.wavlin.music.models.MediaMetadata
 
 interface Queue {

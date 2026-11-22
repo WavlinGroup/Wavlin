@@ -21,10 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
-import com.wavlin.music.constants.ListItemHeight
-import com.wavlin.music.constants.ListThumbnailSize
-import com.wavlin.music.constants.ThumbnailCornerRadius
-
+import com.wavlin.music.core.config.ListItemHeight
+import com.wavlin.music.core.config.ListThumbnailSize
+import com.wavlin.music.core.config.ThumbnailCornerRadius
 @Composable
 fun ListItemPlaceHolder(
     modifier: Modifier = Modifier,

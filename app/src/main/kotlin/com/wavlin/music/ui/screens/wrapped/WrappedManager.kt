@@ -10,7 +10,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.wavlin.innertube.YouTube
 import com.wavlin.innertube.models.AccountInfo
-import com.wavlin.music.constants.ArtistSongSortType
+import com.wavlin.music.core.config.ArtistSongSortType
 import com.wavlin.music.db.DatabaseDao
 import com.wavlin.music.db.entities.Artist
 import com.wavlin.music.db.entities.PlaylistEntity

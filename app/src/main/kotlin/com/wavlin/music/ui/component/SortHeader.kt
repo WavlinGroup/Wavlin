@@ -30,8 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wavlin.music.R
-import com.wavlin.music.constants.PlaylistSongSortType
-
+import com.wavlin.music.core.config.PlaylistSongSortType
 @Composable
 inline fun <reified T : Enum<T>> SortHeader(
     sortType: T,

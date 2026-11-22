@@ -13,7 +13,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.wavlin.music.R
-import com.wavlin.music.constants.AudioQuality
+import com.wavlin.music.core.config.AudioQuality
 import com.wavlin.music.utils.YTPlayerUtils
 import com.wavlin.music.utils.dataStore
 import com.wavlin.music.utils.get
@@ -103,7 +103,7 @@ class WrappedAudioService(
         }
 
         return try {
-            val audioQuality = context.dataStore.get(com.wavlin.music.constants.AudioQualityKey).let { value ->
+            val audioQuality = context.dataStore.get(com.wavlin.music.core.config.AudioQualityKey).let { value ->
                 if (value == "VERY_HIGH") AudioQuality.HIGH
                 else AudioQuality.entries.find { it.name == value } ?: AudioQuality.AUTO
             }

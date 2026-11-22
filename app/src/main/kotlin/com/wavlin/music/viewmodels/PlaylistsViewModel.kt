@@ -10,11 +10,11 @@ package com.wavlin.music.viewmodels
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wavlin.music.constants.AddToPlaylistSortDescendingKey
-import com.wavlin.music.constants.AddToPlaylistSortTypeKey
-import com.wavlin.music.constants.PlaylistSortType
+import com.wavlin.music.core.config.AddToPlaylistSortDescendingKey
+import com.wavlin.music.core.config.AddToPlaylistSortTypeKey
+import com.wavlin.music.core.config.PlaylistSortType
 import com.wavlin.music.db.MusicDatabase
-import com.wavlin.music.extensions.toEnum
+import com.wavlin.music.core.ext.toEnum
 import com.wavlin.music.playback.DownloadUtil
 import com.wavlin.music.utils.SyncUtils
 import com.wavlin.music.utils.dataStore

@@ -49,11 +49,11 @@ import androidx.navigation.NavController
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
-import com.wavlin.music.constants.CONTENT_TYPE_ALBUM
-import com.wavlin.music.constants.CONTENT_TYPE_HEADER
-import com.wavlin.music.constants.GridItemSize
-import com.wavlin.music.constants.GridItemsSizeKey
-import com.wavlin.music.constants.GridThumbnailHeight
+import com.wavlin.music.core.config.CONTENT_TYPE_ALBUM
+import com.wavlin.music.core.config.CONTENT_TYPE_HEADER
+import com.wavlin.music.core.config.GridItemSize
+import com.wavlin.music.core.config.GridItemsSizeKey
+import com.wavlin.music.core.config.GridThumbnailHeight
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.LibraryAlbumGridItem
 import com.wavlin.music.ui.component.LocalMenuState

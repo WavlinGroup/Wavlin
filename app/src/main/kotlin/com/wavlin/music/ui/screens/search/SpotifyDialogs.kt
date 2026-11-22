@@ -72,8 +72,8 @@ import coil3.compose.AsyncImage
 import com.wavlin.innertube.YouTube
 import com.wavlin.innertube.models.SongItem
 import com.wavlin.music.R
-import com.wavlin.music.constants.ListThumbnailSize
-import com.wavlin.music.constants.ThumbnailCornerRadius
+import com.wavlin.music.core.config.ListThumbnailSize
+import com.wavlin.music.core.config.ThumbnailCornerRadius
 import com.wavlin.music.spotify.SpotifyMatcher
 import com.wavlin.music.spotify.SpotifyResult
 import com.wavlin.music.spotify.SpotifyTrack

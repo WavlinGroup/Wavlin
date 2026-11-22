@@ -63,9 +63,9 @@ import com.wavlin.music.LocalDownloadUtil
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.LocalSyncUtils
 import com.wavlin.music.R
-import com.wavlin.music.constants.ListItemHeight
-import com.wavlin.music.constants.ListThumbnailSize
-import com.wavlin.music.extensions.toMediaItem
+import com.wavlin.music.core.config.ListItemHeight
+import com.wavlin.music.core.config.ListThumbnailSize
+import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.playback.ExoDownloadService

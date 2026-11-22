@@ -54,9 +54,9 @@ import androidx.compose.ui.unit.dp
 import com.wavlin.innertube.YouTube
 import com.wavlin.music.LocalDatabase
 import com.wavlin.music.R
-import com.wavlin.music.constants.InnerTubeCookieKey
+import com.wavlin.music.core.config.InnerTubeCookieKey
 import com.wavlin.music.db.entities.PlaylistEntity
-import com.wavlin.music.extensions.isSyncEnabled
+import com.wavlin.music.core.ext.isSyncEnabled
 import com.wavlin.music.utils.rememberPreference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -8,8 +8,8 @@ package com.wavlin.music
 import com.wavlin.music.ui.component.appleGlassSupported
 import com.wavlin.music.ui.component.LocalGlassBackdrop
 import com.wavlin.music.ui.component.LocalInterfaceAppleMusic
-import com.wavlin.music.constants.InterfaceStyleKey
-import com.wavlin.music.constants.InterfaceStyle
+import com.wavlin.music.core.config.InterfaceStyleKey
+import com.wavlin.music.core.config.InterfaceStyle
 import com.kyant.backdrop.backdrops.rememberLayerBackdrop
 import com.kyant.backdrop.backdrops.layerBackdrop
 import android.Manifest
@@ -143,39 +143,39 @@ import coil3.toBitmap
 import com.wavlin.innertube.YouTube
 import com.wavlin.innertube.models.SongItem
 import com.wavlin.innertube.models.WatchEndpoint
-import com.wavlin.music.constants.AppBarHeight
-import com.wavlin.music.constants.AppLanguageKey
-import com.wavlin.music.constants.CheckForUpdatesKey
-import com.wavlin.music.constants.DarkModeKey
-import com.wavlin.music.constants.DefaultOpenTabKey
-import com.wavlin.music.constants.DisableScreenshotKey
-import com.wavlin.music.constants.DynamicThemeKey
-import com.wavlin.music.constants.EnableHighRefreshRateKey
-import com.wavlin.music.constants.EnableLandscapeScalingKey
-import com.wavlin.music.constants.ExperimentalLyricsKey
-import com.wavlin.music.constants.LastSeenVersionKey
-import com.wavlin.music.constants.ListenTogetherInTopBarKey
-import com.wavlin.music.constants.ListenTogetherUsernameKey
-import com.wavlin.music.constants.LyricsProviderOrderKey
-import com.wavlin.music.constants.MiniPlayerBottomSpacing
-import com.wavlin.music.constants.MiniPlayerHeight
-import com.wavlin.music.constants.NavigationBarAnimationSpec
-import com.wavlin.music.constants.NavigationBarHeight
-import com.wavlin.music.constants.PauseSearchHistoryKey
-import com.wavlin.music.constants.PreferredLyricsProvider
-import com.wavlin.music.constants.PreferredLyricsProviderKey
-import com.wavlin.music.constants.PureBlackKey
-import com.wavlin.music.constants.ReduceGlassKey
-import com.wavlin.music.constants.SYSTEM_DEFAULT
-import com.wavlin.music.constants.SelectedThemeColorKey
-import com.wavlin.music.constants.SimpMusicMigrationDoneKey
-import com.wavlin.music.constants.SlimNavBarHeight
-import com.wavlin.music.constants.SlimNavBarKey
-import com.wavlin.music.constants.StopMusicOnTaskClearKey
-import com.wavlin.music.constants.UpdateNotificationsEnabledKey
+import com.wavlin.music.core.config.AppBarHeight
+import com.wavlin.music.core.config.AppLanguageKey
+import com.wavlin.music.core.config.CheckForUpdatesKey
+import com.wavlin.music.core.config.DarkModeKey
+import com.wavlin.music.core.config.DefaultOpenTabKey
+import com.wavlin.music.core.config.DisableScreenshotKey
+import com.wavlin.music.core.config.DynamicThemeKey
+import com.wavlin.music.core.config.EnableHighRefreshRateKey
+import com.wavlin.music.core.config.EnableLandscapeScalingKey
+import com.wavlin.music.core.config.ExperimentalLyricsKey
+import com.wavlin.music.core.config.LastSeenVersionKey
+import com.wavlin.music.core.config.ListenTogetherInTopBarKey
+import com.wavlin.music.core.config.ListenTogetherUsernameKey
+import com.wavlin.music.core.config.LyricsProviderOrderKey
+import com.wavlin.music.core.config.MiniPlayerBottomSpacing
+import com.wavlin.music.core.config.MiniPlayerHeight
+import com.wavlin.music.core.config.NavigationBarAnimationSpec
+import com.wavlin.music.core.config.NavigationBarHeight
+import com.wavlin.music.core.config.PauseSearchHistoryKey
+import com.wavlin.music.core.config.PreferredLyricsProvider
+import com.wavlin.music.core.config.PreferredLyricsProviderKey
+import com.wavlin.music.core.config.PureBlackKey
+import com.wavlin.music.core.config.ReduceGlassKey
+import com.wavlin.music.core.config.SYSTEM_DEFAULT
+import com.wavlin.music.core.config.SelectedThemeColorKey
+import com.wavlin.music.core.config.SimpMusicMigrationDoneKey
+import com.wavlin.music.core.config.SlimNavBarHeight
+import com.wavlin.music.core.config.SlimNavBarKey
+import com.wavlin.music.core.config.StopMusicOnTaskClearKey
+import com.wavlin.music.core.config.UpdateNotificationsEnabledKey
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.db.entities.SearchHistory
-import com.wavlin.music.extensions.toEnum
+import com.wavlin.music.core.ext.toEnum
 import com.wavlin.music.lyrics.LyricsProviderRegistry
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.playback.DownloadUtil
@@ -561,7 +561,7 @@ class MainActivity : ComponentActivity() {
 
         val enableDynamicTheme by rememberPreference(DynamicThemeKey, defaultValue = true)
         val enableHighRefreshRate by rememberPreference(EnableHighRefreshRateKey, defaultValue = true)
-        val cropAlbumArtPref by rememberPreference(com.wavlin.music.constants.CropAlbumArtKey, defaultValue = false)
+        val cropAlbumArtPref by rememberPreference(com.wavlin.music.core.config.CropAlbumArtKey, defaultValue = false)
         val reduceGlassPref by rememberPreference(ReduceGlassKey, defaultValue = false)
 
         LaunchedEffect(enableHighRefreshRate) {

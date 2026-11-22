@@ -3,14 +3,14 @@
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
-package com.wavlin.music.extensions
+package com.wavlin.music.core.ext
 
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.wavlin.innertube.utils.parseCookieString
-import com.wavlin.music.constants.InnerTubeCookieKey
-import com.wavlin.music.constants.YtmSyncKey
+import com.wavlin.music.core.config.InnerTubeCookieKey
+import com.wavlin.music.core.config.YtmSyncKey
 import com.wavlin.music.utils.dataStore
 import com.wavlin.music.utils.get
 import kotlinx.coroutines.runBlocking

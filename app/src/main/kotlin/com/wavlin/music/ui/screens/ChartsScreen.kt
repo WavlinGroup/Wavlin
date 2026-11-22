@@ -68,7 +68,7 @@ import com.wavlin.innertube.models.WatchEndpoint
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
-import com.wavlin.music.constants.ListItemHeight
+import com.wavlin.music.core.config.ListItemHeight
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.playback.queues.YouTubeQueue
 import com.wavlin.music.ui.component.IconButton

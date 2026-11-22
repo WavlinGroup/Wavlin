@@ -9,7 +9,7 @@ import androidx.media3.common.MediaItem
 import com.wavlin.innertube.YouTube
 import com.wavlin.innertube.models.WatchEndpoint
 import com.wavlin.music.db.entities.AlbumWithSongs
-import com.wavlin.music.extensions.toMediaItem
+import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.models.MediaMetadata
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext

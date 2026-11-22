@@ -10,8 +10,7 @@ import androidx.compose.material3.SliderColors
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import com.wavlin.music.constants.PlayerBackgroundStyle
-
+import com.wavlin.music.core.config.PlayerBackgroundStyle
 /**
  * Player slider color configuration for consistent styling across all slider types
  * 
