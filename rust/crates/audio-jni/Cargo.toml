@@ -1,0 +1,14 @@
+[package]
+name = "audio-jni"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+description = "JNI bridge exposing audio-dsp to the Wavlin Android app as libwavlin_audio.so"
+
+[lib]
+name = "wavlin_audio"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+audio-dsp = { path = "../audio-dsp" }
+jni = "0.21"
