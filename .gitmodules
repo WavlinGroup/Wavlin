@@ -1,3 +1,4 @@
 [submodule "wavlinproto"]
 	path = wavlinproto
 	url = https://github.com/WavlinGroup/wavlinproto
+	branch = main
