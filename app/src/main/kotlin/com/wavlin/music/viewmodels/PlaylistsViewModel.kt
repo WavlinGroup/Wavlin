@@ -16,8 +16,8 @@ import com.wavlin.music.core.config.PlaylistSortType
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.core.ext.toEnum
 import com.wavlin.music.playback.DownloadUtil
-import com.wavlin.music.utils.SyncUtils
-import com.wavlin.music.utils.dataStore
+import com.wavlin.music.core.util.SyncUtils
+import com.wavlin.music.core.util.dataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi

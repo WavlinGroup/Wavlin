@@ -15,7 +15,7 @@ import com.wavlin.music.db.entities.Song
 import com.wavlin.music.lyrics.LyricsHelper
 import com.wavlin.music.lyrics.LyricsResult
 import com.wavlin.music.models.MediaMetadata
-import com.wavlin.music.utils.NetworkConnectivityObserver
+import com.wavlin.music.core.util.NetworkConnectivityObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

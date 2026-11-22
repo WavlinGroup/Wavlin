@@ -94,8 +94,8 @@ import com.wavlin.music.ui.menu.SongMenu
 import com.wavlin.music.ui.menu.YouTubeAlbumMenu
 import com.wavlin.music.ui.utils.backToMain
 import com.wavlin.music.ui.utils.resize
-import com.wavlin.music.utils.makeTimeString
-import com.wavlin.music.utils.rememberPreference
+import com.wavlin.music.core.util.makeTimeString
+import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.viewmodels.AlbumViewModel
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)

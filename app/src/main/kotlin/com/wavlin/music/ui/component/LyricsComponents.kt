@@ -79,7 +79,7 @@ import com.wavlin.music.R
 import com.wavlin.music.lyrics.LyricsTranslationHelper
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.ui.screens.settings.LyricsPosition
-import com.wavlin.music.utils.ComposeToImage
+import com.wavlin.music.core.util.ComposeToImage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

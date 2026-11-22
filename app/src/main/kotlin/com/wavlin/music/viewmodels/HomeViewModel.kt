@@ -44,11 +44,11 @@ import com.wavlin.music.core.ext.toEnum
 import com.wavlin.music.models.SimilarRecommendation
 import com.wavlin.music.ui.screens.wrapped.WrappedAudioService
 import com.wavlin.music.ui.screens.wrapped.WrappedManager
-import com.wavlin.music.utils.SyncUtils
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.safeDataStoreEdit
-import com.wavlin.music.utils.get
-import com.wavlin.music.utils.reportException
+import com.wavlin.music.core.util.SyncUtils
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.safeDataStoreEdit
+import com.wavlin.music.core.util.get
+import com.wavlin.music.core.util.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers

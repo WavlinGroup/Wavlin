@@ -32,10 +32,10 @@ import com.wavlin.music.core.config.ListenTogetherServerUrlKey
 import com.wavlin.music.core.config.ListenTogetherSessionTimestampKey
 import com.wavlin.music.core.config.ListenTogetherSessionTokenKey
 import com.wavlin.music.core.config.ListenTogetherUserIdKey
-import com.wavlin.music.utils.NetworkConnectivityObserver
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.get
-import com.wavlin.music.utils.safeDataStoreEdit
+import com.wavlin.music.core.util.NetworkConnectivityObserver
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.get
+import com.wavlin.music.core.util.safeDataStoreEdit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

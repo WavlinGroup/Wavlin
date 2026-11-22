@@ -101,7 +101,7 @@ import com.wavlin.music.ui.component.Material3MenuItemData
 import com.wavlin.music.ui.component.NewAction
 import com.wavlin.music.ui.component.NewActionGrid
 import com.wavlin.music.ui.component.VolumeSlider
-import com.wavlin.music.utils.rememberPreference
+import com.wavlin.music.core.util.rememberPreference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.log2

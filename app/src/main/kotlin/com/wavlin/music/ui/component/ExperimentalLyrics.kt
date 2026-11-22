@@ -118,9 +118,9 @@ import com.wavlin.music.ui.component.shimmer.TextPlaceholder
 import com.wavlin.music.ui.screens.settings.LyricsPosition
 import com.wavlin.music.ui.screens.settings.defaultList
 import com.wavlin.music.ui.utils.fadingEdge
-import com.wavlin.music.utils.ComposeToImage
-import com.wavlin.music.utils.rememberEnumPreference
-import com.wavlin.music.utils.rememberPreference
+import com.wavlin.music.core.util.ComposeToImage
+import com.wavlin.music.core.util.rememberEnumPreference
+import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.viewmodels.LyricsViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect

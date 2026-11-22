@@ -8,8 +8,8 @@ package com.wavlin.music.lyrics
 import android.content.Context
 import com.wavlin.music.betterlyrics.TTMLParser
 import com.wavlin.music.core.config.EnableLyricsPlus
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.get
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.get
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO

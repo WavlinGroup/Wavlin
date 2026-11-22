@@ -10,7 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wavlin.music.core.config.ExperimentalLyricsKey
-import com.wavlin.music.utils.rememberPreference
+import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.viewmodels.LyricsViewModel
 
 @Composable

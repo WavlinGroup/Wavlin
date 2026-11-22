@@ -34,9 +34,9 @@ import com.wavlin.music.core.ext.metadata
 import com.wavlin.music.core.ext.togglePlayPause
 import com.wavlin.music.playback.MusicService.MusicBinder
 import com.wavlin.music.playback.queues.Queue
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.get
-import com.wavlin.music.utils.reportException
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.get
+import com.wavlin.music.core.util.reportException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow

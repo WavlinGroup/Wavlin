@@ -40,7 +40,7 @@ import com.wavlin.music.playback.MusicService
 import com.wavlin.music.playback.MusicService.Companion.PERSISTENT_AUTOMIX_FILE
 import com.wavlin.music.playback.MusicService.Companion.PERSISTENT_PLAYER_STATE_FILE
 import com.wavlin.music.playback.MusicService.Companion.PERSISTENT_QUEUE_FILE
-import com.wavlin.music.utils.reportException
+import com.wavlin.music.core.util.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking

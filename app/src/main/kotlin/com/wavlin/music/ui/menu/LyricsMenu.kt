@@ -86,8 +86,7 @@ import com.wavlin.music.core.config.OpenRouterDefaultBaseUrl
 import com.wavlin.music.core.config.OpenRouterDefaultModel
 import com.wavlin.music.core.config.OpenRouterModelKey
 import com.wavlin.music.core.config.DeeplFormalityKey
-import com.wavlin.music.utils.rememberPreference
-
+import com.wavlin.music.core.util.rememberPreference
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LyricsMenu(

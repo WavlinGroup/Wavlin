@@ -81,7 +81,7 @@ import com.wavlin.music.ui.menu.SelectionMediaMetadataMenu
 import com.wavlin.music.ui.menu.SongMenu
 import com.wavlin.music.ui.menu.YouTubeSongMenu
 import com.wavlin.music.ui.utils.backToMain
-import com.wavlin.music.utils.rememberPreference
+import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.viewmodels.DateAgo
 import com.wavlin.music.viewmodels.HistoryViewModel
 import java.time.format.DateTimeFormatter

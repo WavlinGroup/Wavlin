@@ -93,8 +93,8 @@ import com.wavlin.music.ui.component.DraggableLyricsProviderItem
 import com.wavlin.music.ui.component.DraggableLyricsProviderList
 import com.wavlin.music.lyrics.LyricsProviderRegistry
 import com.wavlin.music.ui.utils.backToMain
-import com.wavlin.music.utils.rememberEnumPreference
-import com.wavlin.music.utils.rememberPreference
+import com.wavlin.music.core.util.rememberEnumPreference
+import com.wavlin.music.core.util.rememberPreference
 import java.net.Proxy
 
 @OptIn(ExperimentalMaterial3Api::class)

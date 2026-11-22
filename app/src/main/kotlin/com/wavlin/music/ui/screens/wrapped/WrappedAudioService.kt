@@ -14,9 +14,9 @@ import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.wavlin.music.R
 import com.wavlin.music.core.config.AudioQuality
-import com.wavlin.music.utils.YTPlayerUtils
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.get
+import com.wavlin.music.stream.YTPlayerUtils
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.get
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

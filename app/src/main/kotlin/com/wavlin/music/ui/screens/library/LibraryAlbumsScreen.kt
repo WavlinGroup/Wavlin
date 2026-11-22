@@ -76,8 +76,8 @@ import com.wavlin.music.ui.component.LibraryAlbumGridItem
 import com.wavlin.music.ui.component.LibraryAlbumListItem
 import com.wavlin.music.ui.component.LocalMenuState
 import com.wavlin.music.ui.component.SortHeader
-import com.wavlin.music.utils.rememberEnumPreference
-import com.wavlin.music.utils.rememberPreference
+import com.wavlin.music.core.util.rememberEnumPreference
+import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.viewmodels.LibraryAlbumsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

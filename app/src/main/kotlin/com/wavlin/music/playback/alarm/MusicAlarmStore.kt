@@ -9,8 +9,8 @@ import com.wavlin.music.core.config.AlarmMinuteKey
 import com.wavlin.music.core.config.AlarmNextTriggerAtKey
 import com.wavlin.music.core.config.AlarmPlaylistIdKey
 import com.wavlin.music.core.config.AlarmRandomSongKey
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.safeDataStoreEdit
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.safeDataStoreEdit
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.json.JSONArray

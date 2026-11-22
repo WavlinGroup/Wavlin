@@ -55,7 +55,7 @@ import com.wavlin.music.ui.component.Material3SettingsGroup
 import com.wavlin.music.ui.component.Material3SettingsItem
 import com.wavlin.music.ui.component.PreferenceEntry
 import com.wavlin.music.ui.utils.backToMain
-import com.wavlin.music.utils.rememberPreference
+import com.wavlin.music.core.util.rememberPreference
 import kotlinx.coroutines.flow.map
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState

@@ -8,8 +8,8 @@ import com.wavlin.innertube.models.EpisodeItem
 import com.wavlin.innertube.models.PodcastItem
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.db.entities.PodcastEntity
-import com.wavlin.music.utils.SyncUtils
-import com.wavlin.music.utils.reportException
+import com.wavlin.music.core.util.SyncUtils
+import com.wavlin.music.core.util.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

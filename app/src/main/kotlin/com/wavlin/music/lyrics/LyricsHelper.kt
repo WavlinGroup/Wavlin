@@ -10,9 +10,9 @@ import android.util.LruCache
 import com.wavlin.music.core.config.LyricsProviderOrderKey
 import com.wavlin.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
 import com.wavlin.music.models.MediaMetadata
-import com.wavlin.music.utils.NetworkConnectivityObserver
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.reportException
+import com.wavlin.music.core.util.NetworkConnectivityObserver
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.reportException
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope

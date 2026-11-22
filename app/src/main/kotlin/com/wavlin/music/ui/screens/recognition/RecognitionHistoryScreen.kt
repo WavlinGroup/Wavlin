@@ -61,7 +61,7 @@ import com.wavlin.music.ui.component.DefaultDialog
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.LocalMenuState
 import com.wavlin.music.ui.utils.backToMain
-import com.wavlin.music.utils.SearchRoutes
+import com.wavlin.music.core.util.SearchRoutes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter

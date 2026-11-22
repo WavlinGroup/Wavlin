@@ -20,8 +20,8 @@ import com.wavlin.music.db.InternalDatabase
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.listentogether.ListenTogetherClient
 import com.wavlin.music.listentogether.ListenTogetherManager
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.get
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.get
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

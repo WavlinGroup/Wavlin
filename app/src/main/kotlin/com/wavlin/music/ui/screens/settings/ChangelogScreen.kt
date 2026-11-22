@@ -32,9 +32,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.wavlin.music.R
 import com.wavlin.music.BuildConfig
-import com.wavlin.music.utils.ReleaseInfo
-import com.wavlin.music.utils.Updater
-
+import com.wavlin.music.core.util.ReleaseInfo
+import com.wavlin.music.core.util.Updater
 private val markdownLinkRegex = Regex("(@[a-zA-Z0-9_-]+)|(https?://[\\w-]+(\\.[\\w-]+)+[\\w.,@?^=%&:/~+#-]*[\\w@?^=%&/~+#-])")
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)

@@ -15,10 +15,10 @@ import com.wavlin.innertube.models.filterExplicit
 import com.wavlin.music.core.config.HideExplicitKey
 import com.wavlin.music.core.config.PendingNewReleasesKey
 import com.wavlin.music.db.MusicDatabase
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.get
-import com.wavlin.music.utils.reportException
-import com.wavlin.music.utils.safeDataStoreEdit
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.get
+import com.wavlin.music.core.util.reportException
+import com.wavlin.music.core.util.safeDataStoreEdit
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay

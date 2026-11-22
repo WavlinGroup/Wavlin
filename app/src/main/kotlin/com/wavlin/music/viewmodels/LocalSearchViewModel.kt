@@ -15,7 +15,7 @@ import com.wavlin.music.db.entities.Artist
 import com.wavlin.music.db.entities.LocalItem
 import com.wavlin.music.db.entities.Playlist
 import com.wavlin.music.db.entities.Song
-import com.wavlin.music.utils.dataStore
+import com.wavlin.music.core.util.dataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi

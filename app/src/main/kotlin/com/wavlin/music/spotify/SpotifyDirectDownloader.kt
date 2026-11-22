@@ -58,7 +58,7 @@ object SpotifyDirectDownloader {
                 }
                 val song = LocalSongs.add(context, database, Uri.fromFile(audioFile), track.title, track.artist, track.coverUrl)
                 // Keep the cover in app storage so it shows with no internet
-                com.wavlin.music.utils.ArtworkStore.save(context, track.coverUrl)
+                com.wavlin.music.core.util.ArtworkStore.save(context, track.coverUrl)
                 song
             } catch (e: CancellationException) {
                 throw e

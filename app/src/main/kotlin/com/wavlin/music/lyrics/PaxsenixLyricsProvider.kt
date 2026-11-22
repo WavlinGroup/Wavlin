@@ -8,8 +8,8 @@ package com.wavlin.music.lyrics
 import android.content.Context
 import com.wavlin.paxsenix.Paxsenix
 import com.wavlin.music.core.config.EnablePaxsenixKey
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.get
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.get
 import timber.log.Timber
 
 object PaxsenixLyricsProvider : LyricsProvider {

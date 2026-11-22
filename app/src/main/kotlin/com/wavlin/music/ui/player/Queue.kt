@@ -79,8 +79,8 @@ import com.wavlin.music.ui.component.LocalPinkLilyTheme
 import com.wavlin.music.ui.component.artworkShape
 import com.wavlin.music.ui.component.pinkLilyHazeStyle
 import com.wavlin.music.ui.component.pureBlackHazeStyle
-import com.wavlin.music.utils.joinByBullet
-import com.wavlin.music.utils.joinToArtistString
+import com.wavlin.music.core.util.joinByBullet
+import com.wavlin.music.core.util.joinToArtistString
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
@@ -146,10 +146,10 @@ import com.wavlin.music.ui.menu.PlayerMenu
 import com.wavlin.music.ui.menu.QueueMenu
 import com.wavlin.music.ui.menu.SelectionMediaMetadataMenu
 import com.wavlin.music.ui.utils.ShowMediaInfo
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.makeTimeString
-import com.wavlin.music.utils.rememberPreference
-import com.wavlin.music.utils.safeDataStoreEdit
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.makeTimeString
+import com.wavlin.music.core.util.rememberPreference
+import com.wavlin.music.core.util.safeDataStoreEdit
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive

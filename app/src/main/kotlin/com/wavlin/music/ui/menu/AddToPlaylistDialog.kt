@@ -45,8 +45,8 @@ import com.wavlin.music.ui.component.ListDialog
 import com.wavlin.music.ui.component.ListItem
 import com.wavlin.music.ui.component.PlaylistListItem
 import com.wavlin.music.ui.component.SortHeader
-import com.wavlin.music.utils.rememberEnumPreference
-import com.wavlin.music.utils.rememberPreference
+import com.wavlin.music.core.util.rememberEnumPreference
+import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.viewmodels.PlaylistsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

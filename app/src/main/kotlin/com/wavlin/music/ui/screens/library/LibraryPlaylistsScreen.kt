@@ -87,8 +87,8 @@ import com.wavlin.music.ui.component.PlaylistListItem
 import com.wavlin.music.ui.component.SortHeader
 import com.wavlin.music.core.ext.matchesNormalizedQuery
 import com.wavlin.music.core.ext.normalizeForSearch
-import com.wavlin.music.utils.rememberEnumPreference
-import com.wavlin.music.utils.rememberPreference
+import com.wavlin.music.core.util.rememberEnumPreference
+import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.viewmodels.LibraryPlaylistsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

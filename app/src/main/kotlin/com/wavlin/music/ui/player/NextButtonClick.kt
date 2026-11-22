@@ -10,8 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.wavlin.music.core.config.DoubleTapToSkipNextKey
 import com.wavlin.music.playback.PlayerConnection
-import com.wavlin.music.utils.rememberPreference
-
+import com.wavlin.music.core.util.rememberPreference
 private const val DOUBLE_TAP_WINDOW_MS = 400L
 
 /** One tap skips by default; with the "double tap to skip" setting on, the second tap within 400 ms skips. */

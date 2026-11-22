@@ -37,7 +37,7 @@ import com.google.android.gms.cast.framework.CastContext
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
 import com.wavlin.music.core.config.EnableGoogleCastKey
-import com.wavlin.music.utils.rememberPreference
+import com.wavlin.music.core.util.rememberPreference
 import timber.log.Timber
 
 /**

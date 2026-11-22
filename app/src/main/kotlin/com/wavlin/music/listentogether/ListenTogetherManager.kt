@@ -22,9 +22,9 @@ import com.wavlin.music.models.MediaMetadata.Artist
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.playback.PlayerConnection
 import com.wavlin.music.playback.queues.YouTubeQueue
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.getArtistSeparator
-import com.wavlin.music.utils.joinToArtistString
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.getArtistSeparator
+import com.wavlin.music.core.util.joinToArtistString
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

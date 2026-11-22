@@ -40,8 +40,7 @@ import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.Material3SettingsGroup
 import com.wavlin.music.ui.component.Material3SettingsItem
 import com.wavlin.music.ui.utils.backToMain
-import com.wavlin.music.utils.rememberPreference
-
+import com.wavlin.music.core.util.rememberPreference
 val defaultList = mutableListOf(
     "Japanese" to true,
     "Korean" to true,

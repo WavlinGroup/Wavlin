@@ -21,9 +21,9 @@ import com.wavlin.music.core.config.statToPeriod
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.db.entities.PlaylistEntity
 import com.wavlin.music.ui.screens.OptionStats
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.safeDataStoreEdit
-import com.wavlin.music.utils.reportException
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.safeDataStoreEdit
+import com.wavlin.music.core.util.reportException
 import com.wavlin.music.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

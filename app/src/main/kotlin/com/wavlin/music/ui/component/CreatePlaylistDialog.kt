@@ -57,7 +57,7 @@ import com.wavlin.music.R
 import com.wavlin.music.core.config.InnerTubeCookieKey
 import com.wavlin.music.db.entities.PlaylistEntity
 import com.wavlin.music.core.ext.isSyncEnabled
-import com.wavlin.music.utils.rememberPreference
+import com.wavlin.music.core.util.rememberPreference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

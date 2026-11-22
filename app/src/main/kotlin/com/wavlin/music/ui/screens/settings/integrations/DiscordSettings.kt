@@ -105,10 +105,10 @@ import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.Material3SettingsGroup
 import com.wavlin.music.ui.component.Material3SettingsItem
 import com.wavlin.music.ui.utils.backToMain
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.makeTimeString
-import com.wavlin.music.utils.safeDataStoreEdit
-import com.wavlin.music.utils.rememberPreference
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.makeTimeString
+import com.wavlin.music.core.util.safeDataStoreEdit
+import com.wavlin.music.core.util.rememberPreference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive

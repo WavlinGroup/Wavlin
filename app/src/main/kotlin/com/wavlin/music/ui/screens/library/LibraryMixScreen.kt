@@ -104,8 +104,8 @@ import com.wavlin.music.ui.menu.AlbumMenu
 import com.wavlin.music.ui.menu.ArtistMenu
 import com.wavlin.music.ui.menu.PlaylistMenu
 import com.wavlin.music.ui.menu.SongMenu
-import com.wavlin.music.utils.rememberEnumPreference
-import com.wavlin.music.utils.rememberPreference
+import com.wavlin.music.core.util.rememberEnumPreference
+import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.viewmodels.LibraryMixViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

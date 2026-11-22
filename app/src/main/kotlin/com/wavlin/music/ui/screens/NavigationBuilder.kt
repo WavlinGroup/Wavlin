@@ -71,9 +71,8 @@ import com.wavlin.music.ui.screens.spotify.SpotifyPlaylistScreen
 import com.wavlin.music.ui.screens.spotify.SpotifySignInScreen
 
 import com.wavlin.music.ui.screens.wrapped.WrappedScreen
-import com.wavlin.music.utils.rememberEnumPreference
-import com.wavlin.music.utils.rememberPreference
-
+import com.wavlin.music.core.util.rememberEnumPreference
+import com.wavlin.music.core.util.rememberPreference
 @OptIn(ExperimentalMaterial3Api::class)
 fun NavGraphBuilder.navigationBuilder(
     navController: NavHostController,

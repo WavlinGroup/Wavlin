@@ -86,8 +86,8 @@ import com.wavlin.music.core.config.SwipeThumbnailKey
 import com.wavlin.music.core.config.ThumbnailCornerRadius
 import com.wavlin.music.listentogether.RoomRole
 import com.wavlin.music.ui.component.CastButton
-import com.wavlin.music.utils.rememberEnumPreference
-import com.wavlin.music.utils.rememberPreference
+import com.wavlin.music.core.util.rememberEnumPreference
+import com.wavlin.music.core.util.rememberPreference
 import kotlinx.coroutines.delay
 
 /**

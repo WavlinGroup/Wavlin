@@ -46,9 +46,8 @@ import com.wavlin.music.R
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.pinkTopBarColors
 import com.wavlin.music.ui.utils.backToMain
-import com.wavlin.music.utils.AppIcon
-import com.wavlin.music.utils.IconUtils
-
+import com.wavlin.music.core.util.AppIcon
+import com.wavlin.music.core.util.IconUtils
 private data class IconOption(
     val icon: AppIcon,
     val label: Int,

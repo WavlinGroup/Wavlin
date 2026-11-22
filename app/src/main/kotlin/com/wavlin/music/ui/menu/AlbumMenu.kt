@@ -89,9 +89,9 @@ import com.wavlin.music.ui.component.NewAction
 import com.wavlin.music.ui.component.NewActionGrid
 import com.wavlin.music.ui.component.SongListItem
 import com.wavlin.music.ui.menu.ExportDialog
-import com.wavlin.music.utils.PlaylistExporter
-import com.wavlin.music.utils.getExportFileUri
-import com.wavlin.music.utils.saveToPublicDocuments
+import com.wavlin.music.core.util.PlaylistExporter
+import com.wavlin.music.core.util.getExportFileUri
+import com.wavlin.music.core.util.saveToPublicDocuments
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

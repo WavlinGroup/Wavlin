@@ -89,7 +89,7 @@ import com.wavlin.music.R
 import com.wavlin.music.db.entities.RecognitionHistory
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.utils.backToMain
-import com.wavlin.music.utils.SearchRoutes
+import com.wavlin.music.core.util.SearchRoutes
 import com.wavlin.shazamkit.models.RecognitionResult
 import com.wavlin.shazamkit.models.RecognitionStatus
 import kotlinx.coroutines.Dispatchers

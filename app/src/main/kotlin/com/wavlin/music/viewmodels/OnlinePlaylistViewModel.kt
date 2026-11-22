@@ -15,9 +15,9 @@ import com.wavlin.innertube.models.SongItem
 import com.wavlin.innertube.models.filterVideoSongs
 import com.wavlin.music.core.config.HideVideoSongsKey
 import com.wavlin.music.db.MusicDatabase
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.get
-import com.wavlin.music.utils.reportException
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.get
+import com.wavlin.music.core.util.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers

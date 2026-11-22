@@ -212,16 +212,16 @@ import com.wavlin.music.ui.theme.WavlinTheme
 import com.wavlin.music.ui.theme.extractThemeColor
 import com.wavlin.music.ui.utils.appBarScrollBehavior
 import com.wavlin.music.ui.utils.resetHeightOffset
-import com.wavlin.music.utils.SearchRoutes
-import com.wavlin.music.utils.SyncUtils
-import com.wavlin.music.utils.Updater
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.safeDataStoreEdit
-import com.wavlin.music.utils.get
-import com.wavlin.music.utils.rememberEnumPreference
-import com.wavlin.music.utils.rememberPreference
-import com.wavlin.music.utils.reportException
-import com.wavlin.music.utils.setAppLocale
+import com.wavlin.music.core.util.SearchRoutes
+import com.wavlin.music.core.util.SyncUtils
+import com.wavlin.music.core.util.Updater
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.safeDataStoreEdit
+import com.wavlin.music.core.util.get
+import com.wavlin.music.core.util.rememberEnumPreference
+import com.wavlin.music.core.util.rememberPreference
+import com.wavlin.music.core.util.reportException
+import com.wavlin.music.core.util.setAppLocale
 import com.wavlin.music.viewmodels.HomeViewModel
 import com.wavlin.music.widget.PlaylistWidgetReceiver
 import com.valentinilk.shimmer.LocalShimmerTheme
@@ -359,7 +359,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private val cpuBoost by lazy { com.wavlin.music.utils.CpuBoost(this) }
+    private val cpuBoost by lazy { com.wavlin.music.core.util.CpuBoost(this) }
 
     override fun onResume() {
         super.onResume()

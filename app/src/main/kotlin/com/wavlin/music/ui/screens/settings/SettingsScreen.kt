@@ -38,7 +38,7 @@ import com.wavlin.music.ui.component.Material3SettingsGroup
 import com.wavlin.music.ui.component.Material3SettingsItem
 import com.wavlin.music.ui.component.ReleaseNotesCard
 import com.wavlin.music.ui.utils.backToMain
-import com.wavlin.music.utils.Updater
+import com.wavlin.music.core.util.Updater
 import androidx.compose.runtime.remember
 
 @OptIn(ExperimentalMaterial3Api::class)

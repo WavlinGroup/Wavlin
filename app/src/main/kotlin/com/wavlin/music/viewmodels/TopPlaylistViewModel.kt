@@ -12,7 +12,7 @@ import androidx.lifecycle.viewModelScope
 import com.wavlin.music.core.config.HideVideoSongsKey
 import com.wavlin.music.core.config.MyTopFilter
 import com.wavlin.music.db.MusicDatabase
-import com.wavlin.music.utils.dataStore
+import com.wavlin.music.core.util.dataStore
 import java.time.LocalDateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

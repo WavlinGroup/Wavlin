@@ -106,8 +106,8 @@ import com.wavlin.music.ui.menu.YouTubeSelectionSongMenu
 import com.wavlin.music.ui.menu.YouTubeSongMenu
 import com.wavlin.music.ui.utils.backToMain
 import com.wavlin.music.ui.utils.resize
-import com.wavlin.music.utils.makeTimeString
-import com.wavlin.music.utils.rememberPreference
+import com.wavlin.music.core.util.makeTimeString
+import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.viewmodels.OnlinePlaylistViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

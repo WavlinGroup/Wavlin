@@ -58,7 +58,7 @@ import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.LibraryAlbumGridItem
 import com.wavlin.music.ui.component.LocalMenuState
 import com.wavlin.music.ui.utils.backToMain
-import com.wavlin.music.utils.rememberEnumPreference
+import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.viewmodels.ArtistAlbumsViewModel
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)

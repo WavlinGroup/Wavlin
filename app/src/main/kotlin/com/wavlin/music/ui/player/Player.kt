@@ -203,11 +203,11 @@ import com.wavlin.music.ui.theme.PlayerColorExtractor
 import com.wavlin.music.ui.theme.PlayerSliderColors
 import com.wavlin.music.ui.utils.ShowMediaInfo
 import com.wavlin.music.ui.utils.ShowOffsetDialog
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.makeTimeString
-import com.wavlin.music.utils.rememberEnumPreference
-import com.wavlin.music.utils.rememberPreference
-import com.wavlin.music.utils.safeDataStoreEdit
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.makeTimeString
+import com.wavlin.music.core.util.rememberEnumPreference
+import com.wavlin.music.core.util.rememberPreference
+import com.wavlin.music.core.util.safeDataStoreEdit
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

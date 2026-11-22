@@ -80,7 +80,7 @@ import com.wavlin.music.ui.component.PinkGlassTint
 import com.wavlin.music.ui.component.pinkGlassEdge
 import com.wavlin.music.ui.component.VolumeSlider
 import com.wavlin.music.ui.theme.PinkSwoosh
-import com.wavlin.music.utils.rememberEnumPreference
+import com.wavlin.music.core.util.rememberEnumPreference
 import kotlin.math.roundToInt
 
 private val CardShape = RoundedCornerShape(28.dp)

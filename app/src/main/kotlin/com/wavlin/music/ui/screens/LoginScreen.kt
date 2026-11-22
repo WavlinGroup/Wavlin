@@ -64,8 +64,8 @@ import com.wavlin.music.core.config.InnerTubeCookieKey
 import com.wavlin.music.core.config.VisitorDataKey
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.utils.backToMain
-import com.wavlin.music.utils.reportException
-import com.wavlin.music.utils.safeDataStoreEdit
+import com.wavlin.music.core.util.reportException
+import com.wavlin.music.core.util.safeDataStoreEdit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

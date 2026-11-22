@@ -51,10 +51,10 @@ import com.wavlin.music.core.ext.matchesNormalizedQuery
 import com.wavlin.music.core.ext.normalizeForSearch
 import com.wavlin.music.core.ext.toEnum
 import com.wavlin.music.playback.DownloadUtil
-import com.wavlin.music.utils.PodcastRefreshTrigger
-import com.wavlin.music.utils.SyncUtils
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.reportException
+import com.wavlin.music.core.util.PodcastRefreshTrigger
+import com.wavlin.music.core.util.SyncUtils
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers

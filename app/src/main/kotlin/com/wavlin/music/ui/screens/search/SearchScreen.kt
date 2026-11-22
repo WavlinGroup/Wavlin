@@ -104,9 +104,9 @@ import com.wavlin.innertube.models.SongItem
 import com.wavlin.music.spotify.SpotifyTrack
 import com.wavlin.music.spotify.SpotifyProvider
 import com.wavlin.music.spotify.SpotifyResult
-import com.wavlin.music.utils.SearchRoutes
-import com.wavlin.music.utils.rememberEnumPreference
-import com.wavlin.music.utils.rememberPreference
+import com.wavlin.music.core.util.SearchRoutes
+import com.wavlin.music.core.util.rememberEnumPreference
+import com.wavlin.music.core.util.rememberPreference
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.CancellationException

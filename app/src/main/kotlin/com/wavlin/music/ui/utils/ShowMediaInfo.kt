@@ -49,12 +49,12 @@ import com.wavlin.music.core.config.LoudnessLevelKey
 import com.wavlin.music.db.entities.FormatEntity
 import com.wavlin.music.db.entities.Song
 import com.wavlin.music.ui.component.Material3SettingsGroup
-import com.wavlin.music.utils.cipher.CipherDeobfuscator
-import com.wavlin.music.utils.cipher.PlayerDatesStore
+import com.wavlin.music.stream.cipher.CipherDeobfuscator
+import com.wavlin.music.stream.cipher.PlayerDatesStore
 import com.wavlin.music.ui.component.Material3SettingsItem
 import com.wavlin.music.ui.component.shimmer.ShimmerHost
 import com.wavlin.music.ui.component.shimmer.TextPlaceholder
-import com.wavlin.music.utils.rememberEnumPreference
+import com.wavlin.music.core.util.rememberEnumPreference
 import androidx.compose.ui.platform.LocalLocale
 
 @Composable

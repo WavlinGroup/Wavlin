@@ -83,8 +83,8 @@ import com.wavlin.music.ui.component.NewAction
 import com.wavlin.music.ui.component.NewActionGrid
 import com.wavlin.music.ui.utils.ShowMediaInfo
 import com.wavlin.music.ui.utils.resize
-import com.wavlin.music.utils.joinByBullet
-import com.wavlin.music.utils.makeTimeString
+import com.wavlin.music.core.util.joinByBullet
+import com.wavlin.music.core.util.makeTimeString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

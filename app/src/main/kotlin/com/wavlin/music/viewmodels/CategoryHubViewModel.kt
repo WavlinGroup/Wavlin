@@ -16,8 +16,8 @@ import com.wavlin.innertube.models.YTItem
 import com.wavlin.innertube.models.filterExplicit
 import com.wavlin.music.R
 import com.wavlin.music.core.config.HideExplicitKey
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.get
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.get
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.async

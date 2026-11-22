@@ -178,10 +178,10 @@ import com.wavlin.music.ui.menu.SelectionSongMenu
 import com.wavlin.music.ui.menu.SongMenu
 import com.wavlin.music.ui.screens.settings.DarkMode
 import com.wavlin.music.ui.utils.backToMain
-import com.wavlin.music.utils.makeTimeString
-import com.wavlin.music.utils.rememberEnumPreference
-import com.wavlin.music.utils.rememberPreference
-import com.wavlin.music.utils.reportException
+import com.wavlin.music.core.util.makeTimeString
+import com.wavlin.music.core.util.rememberEnumPreference
+import com.wavlin.music.core.util.rememberPreference
+import com.wavlin.music.core.util.reportException
 import com.wavlin.music.viewmodels.LocalPlaylistViewModel
 import com.yalantis.ucrop.UCrop
 import io.ktor.client.plugins.ClientRequestException

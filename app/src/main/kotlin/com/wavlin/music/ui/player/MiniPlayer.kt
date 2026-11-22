@@ -114,9 +114,9 @@ import com.wavlin.music.playback.CastConnectionHandler
 import com.wavlin.music.playback.PlayerConnection
 import com.wavlin.music.ui.screens.settings.DarkMode
 import com.wavlin.music.ui.utils.resize
-import com.wavlin.music.utils.joinToArtistString
-import com.wavlin.music.utils.rememberEnumPreference
-import com.wavlin.music.utils.rememberPreference
+import com.wavlin.music.core.util.joinToArtistString
+import com.wavlin.music.core.util.rememberEnumPreference
+import com.wavlin.music.core.util.rememberPreference
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt

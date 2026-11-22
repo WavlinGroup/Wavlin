@@ -19,7 +19,7 @@ import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.db.entities.PlaylistSong
 import com.wavlin.music.core.ext.reversed
 import com.wavlin.music.core.ext.toEnum
-import com.wavlin.music.utils.dataStore
+import com.wavlin.music.core.util.dataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers

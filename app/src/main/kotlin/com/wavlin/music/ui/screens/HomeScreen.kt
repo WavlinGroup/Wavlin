@@ -162,11 +162,11 @@ import com.wavlin.music.ui.menu.YouTubePlaylistMenu
 import com.wavlin.music.ui.menu.YouTubeSongMenu
 import com.wavlin.music.ui.utils.SnapLayoutInfoProvider
 import com.wavlin.music.ui.utils.resize
-import com.wavlin.music.utils.joinByBullet
-import com.wavlin.music.utils.joinToArtistString
-import com.wavlin.music.utils.makeTimeString
-import com.wavlin.music.utils.rememberEnumPreference
-import com.wavlin.music.utils.rememberPreference
+import com.wavlin.music.core.util.joinByBullet
+import com.wavlin.music.core.util.joinToArtistString
+import com.wavlin.music.core.util.makeTimeString
+import com.wavlin.music.core.util.rememberEnumPreference
+import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.viewmodels.CommunityPlaylistItem
 import com.wavlin.music.viewmodels.HomeViewModel
 import kotlinx.coroutines.Dispatchers

@@ -40,7 +40,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import com.wavlin.music.utils.reportException
+import com.wavlin.music.core.util.reportException
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -74,8 +74,8 @@ import com.wavlin.music.ui.component.Material3SettingsGroup
 import com.wavlin.music.ui.component.Material3SettingsItem
 import com.wavlin.music.ui.component.PreferenceEntry
 import com.wavlin.music.ui.component.TextFieldDialog
-import com.wavlin.music.utils.Updater
-import com.wavlin.music.utils.rememberPreference
+import com.wavlin.music.core.util.Updater
+import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.viewmodels.AccountSettingsViewModel
 import com.wavlin.music.spotify.account.SpotifyAuthState
 import com.wavlin.music.viewmodels.HomeViewModel

@@ -38,8 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.media3.exoplayer.offline.Download
 import com.wavlin.music.R
-import com.wavlin.music.utils.makeTimeString
-
+import com.wavlin.music.core.util.makeTimeString
 val GridMenuItemHeight = 108.dp
 
 @Composable

@@ -30,12 +30,12 @@ import com.wavlin.music.core.config.*
 import com.wavlin.music.core.inject.ApplicationScope
 import com.wavlin.music.core.ext.toEnum
 import com.wavlin.music.core.ext.toInetSocketAddress
-import com.wavlin.music.utils.CrashHandler
-import com.wavlin.music.utils.YTPlayerUtils
-import com.wavlin.music.utils.cipher.CipherDeobfuscator
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.safeDataStoreEdit
-import com.wavlin.music.utils.reportException
+import com.wavlin.music.core.util.CrashHandler
+import com.wavlin.music.stream.YTPlayerUtils
+import com.wavlin.music.stream.cipher.CipherDeobfuscator
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.safeDataStoreEdit
+import com.wavlin.music.core.util.reportException
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -303,7 +303,7 @@ class App :
             .apply {
                 crossfade(true)
                 // Covers of downloaded songs are kept in app storage and win over the network/cache copy
-                components { add(com.wavlin.music.utils.OfflineArtworkInterceptor(applicationContext)) }
+                components { add(com.wavlin.music.core.util.OfflineArtworkInterceptor(applicationContext)) }
                 allowHardware(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
                 // Memory cache for fast image loading (prevents network requests on recomposition)
                 memoryCache {

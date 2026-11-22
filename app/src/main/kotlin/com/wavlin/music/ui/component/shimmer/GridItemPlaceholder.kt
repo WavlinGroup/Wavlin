@@ -27,8 +27,7 @@ import com.wavlin.music.core.config.GridItemsSizeKey
 import com.wavlin.music.core.config.GridThumbnailHeight
 import com.wavlin.music.core.config.SmallGridThumbnailHeight
 import com.wavlin.music.core.config.ThumbnailCornerRadius
-import com.wavlin.music.utils.rememberEnumPreference
-
+import com.wavlin.music.core.util.rememberEnumPreference
 @Composable
 fun GridItemPlaceHolder(
     modifier: Modifier = Modifier,

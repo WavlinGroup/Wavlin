@@ -60,8 +60,7 @@ import com.wavlin.music.ui.component.EnumDialog
 import com.wavlin.music.ui.component.Material3SettingsGroup
 import com.wavlin.music.ui.component.Material3SettingsItem
 import com.wavlin.music.ui.component.TextFieldDialog
-import com.wavlin.music.utils.rememberPreference
-
+import com.wavlin.music.core.util.rememberPreference
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AiSettings(navController: NavController) {

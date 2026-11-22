@@ -16,9 +16,9 @@ import com.wavlin.music.core.config.AccountNameKey
 import com.wavlin.music.core.config.DataSyncIdKey
 import com.wavlin.music.core.config.InnerTubeCookieKey
 import com.wavlin.music.core.config.VisitorDataKey
-import com.wavlin.music.utils.SyncUtils
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.safeDataStoreEdit
+import com.wavlin.music.core.util.SyncUtils
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.safeDataStoreEdit
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -11,8 +11,8 @@ import android.net.NetworkCapabilities
 import com.wavlin.innertube.utils.parseCookieString
 import com.wavlin.music.core.config.InnerTubeCookieKey
 import com.wavlin.music.core.config.YtmSyncKey
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.get
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.get
 import kotlinx.coroutines.runBlocking
 
 fun Context.isSyncEnabled(): Boolean {

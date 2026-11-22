@@ -101,7 +101,7 @@ import com.wavlin.music.ui.menu.SelectionSongMenu
 import com.wavlin.music.ui.menu.SongMenu
 import com.wavlin.music.ui.menu.TopPlaylistMenu
 import com.wavlin.music.ui.utils.backToMain
-import com.wavlin.music.utils.makeTimeString
+import com.wavlin.music.core.util.makeTimeString
 import com.wavlin.music.viewmodels.TopPlaylistViewModel
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)

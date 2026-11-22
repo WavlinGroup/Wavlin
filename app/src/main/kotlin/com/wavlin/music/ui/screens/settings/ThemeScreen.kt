@@ -84,9 +84,8 @@ import com.wavlin.music.ui.component.LocalPinkLilyTheme
 import com.wavlin.music.ui.theme.DefaultThemeColor
 import com.wavlin.music.ui.theme.SecretPinkThemeColor
 import com.wavlin.music.ui.theme.WavlinTheme
-import com.wavlin.music.utils.rememberEnumPreference
-import com.wavlin.music.utils.rememberPreference
-
+import com.wavlin.music.core.util.rememberEnumPreference
+import com.wavlin.music.core.util.rememberPreference
 data class ThemePalette(
     val nameRes: Int,
     val seedColor: Color

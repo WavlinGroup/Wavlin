@@ -14,16 +14,16 @@
 -dontobfuscate
 
 # WebView JavaScript interfaces
--keepclassmembers class com.wavlin.music.utils.cipher.CipherWebView {
+-keepclassmembers class com.wavlin.music.stream.cipher.CipherWebView {
     @android.webkit.JavascriptInterface public *;
 }
--keepclassmembers class com.wavlin.music.utils.potoken.PoTokenWebView {
+-keepclassmembers class com.wavlin.music.stream.potoken.PoTokenWebView {
     @android.webkit.JavascriptInterface public *;
 }
 
 # Keep streaming utility classes
--keep class com.wavlin.music.utils.cipher.** { *; }
--keep class com.wavlin.music.utils.potoken.** { *; }
+-keep class com.wavlin.music.stream.cipher.** { *; }
+-keep class com.wavlin.music.stream.potoken.** { *; }
 
 # Keep coroutine continuation for WebView callbacks
 -keepclassmembers class * {

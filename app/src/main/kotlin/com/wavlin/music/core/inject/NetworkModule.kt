@@ -6,7 +6,7 @@
 package com.wavlin.music.core.inject
 
 import android.content.Context
-import com.wavlin.music.utils.NetworkConnectivityObserver
+import com.wavlin.music.core.util.NetworkConnectivityObserver
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

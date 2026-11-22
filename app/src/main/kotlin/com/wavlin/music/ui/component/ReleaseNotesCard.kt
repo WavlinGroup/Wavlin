@@ -20,8 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wavlin.music.R
-import com.wavlin.music.utils.Updater
-
+import com.wavlin.music.core.util.Updater
 @Composable
 fun ReleaseNotesCard() {
     val releaseInfo = Updater.getCachedLatestRelease() ?: return

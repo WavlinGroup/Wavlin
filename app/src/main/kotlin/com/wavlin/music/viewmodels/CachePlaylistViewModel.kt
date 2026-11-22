@@ -17,8 +17,8 @@ import com.wavlin.music.core.inject.DownloadCache
 import com.wavlin.music.core.inject.PlayerCache
 import com.wavlin.music.core.ext.filterExplicit
 import com.wavlin.music.core.ext.filterVideoSongs
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.get
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.get
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay

@@ -32,10 +32,10 @@ import com.wavlin.music.db.entities.serializeArtistPage
 import com.wavlin.music.db.entities.toArtistPage
 import com.wavlin.music.core.ext.filterExplicit
 import com.wavlin.music.core.ext.filterExplicitAlbums
-import com.wavlin.music.utils.SyncUtils
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.get
-import com.wavlin.music.utils.reportException
+import com.wavlin.music.core.util.SyncUtils
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.get
+import com.wavlin.music.core.util.reportException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers

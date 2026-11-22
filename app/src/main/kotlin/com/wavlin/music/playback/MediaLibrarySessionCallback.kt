@@ -43,11 +43,11 @@ import com.wavlin.music.db.entities.Song
 import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.core.ext.toggleRepeatMode
 import com.wavlin.music.models.toMediaMetadata
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.get
-import com.wavlin.music.utils.getArtistSeparator
-import com.wavlin.music.utils.joinToArtistString
-import com.wavlin.music.utils.reportException
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.get
+import com.wavlin.music.core.util.getArtistSeparator
+import com.wavlin.music.core.util.joinToArtistString
+import com.wavlin.music.core.util.reportException
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

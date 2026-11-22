@@ -97,7 +97,7 @@ import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.LocalInterfaceAppleMusic
 import com.wavlin.music.ui.component.pinkTopBarColors
 import com.wavlin.music.ui.utils.backToMain
-import com.wavlin.music.utils.rememberPreference
+import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.viewmodels.AccountSettingsViewModel
 import com.wavlin.music.viewmodels.HomeViewModel
 import com.wavlin.music.viewmodels.SpotifyViewModel

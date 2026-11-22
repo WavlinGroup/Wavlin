@@ -26,8 +26,8 @@ import com.wavlin.music.db.entities.FormatEntity
 import com.wavlin.music.db.entities.SongEntity
 import com.wavlin.music.core.inject.DownloadCache
 import com.wavlin.music.core.inject.PlayerCache
-import com.wavlin.music.utils.YTPlayerUtils
-import com.wavlin.music.utils.enumPreference
+import com.wavlin.music.stream.YTPlayerUtils
+import com.wavlin.music.core.util.enumPreference
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -226,7 +226,7 @@ constructor(
                                         database.updateDownloadedInfo(songId, true, LocalDateTime.now())
                                     }
                                     // Keep the cover too, so it still shows with no internet
-                                    com.wavlin.music.utils.ArtworkStore.saveForSong(context, database, songId)
+                                    com.wavlin.music.core.util.ArtworkStore.saveForSong(context, database, songId)
                                 }
                                 Download.STATE_FAILED,
                                 Download.STATE_STOPPED,
@@ -278,7 +278,7 @@ constructor(
     init {
         // Songs downloaded before covers were kept offline get theirs saved the next time the app is online
         scope.launch {
-            runCatching { com.wavlin.music.utils.ArtworkStore.backfillDownloaded(context, database) }
+            runCatching { com.wavlin.music.core.util.ArtworkStore.backfillDownloaded(context, database) }
         }
         val result = mutableMapOf<String, Download>()
         val cursor = downloadManager.downloadIndex.getDownloads()
