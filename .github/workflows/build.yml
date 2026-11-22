@@ -58,6 +58,18 @@ jobs:
       - name: Install cargo-ndk
         run: cargo install cargo-ndk --locked
 
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Build Flutter AAR (arm64-v8a, armeabi-v7a)
+        working-directory: flutter/wavlin_visuals
+        run: |
+          flutter pub get
+          flutter build aar --no-debug --no-profile --target-platform android-arm,android-arm64
+
       - name: Check release signing secrets
         id: check_release_secrets
         env:
@@ -74,6 +86,7 @@ jobs:
         run: ./gradlew --console=plain assemble${{ matrix.variantName }}Release :app:lint${{ matrix.variantName }}Release --warning-mode summary
         env:
           WAVLIN_REQUIRE_RUST: "true"
+          WAVLIN_REQUIRE_FLUTTER: "true"
           WAVLIN_APPLICATION_ID: com.wavlin.music
           WAVLIN_APP_NAME: Wavlin
           PULL_REQUEST: "false"
