@@ -3,7 +3,7 @@
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
-package com.wavlin.music.ui.player
+package com.wavlin.music.ui.nowplaying
 
 import android.graphics.SurfaceTexture
 import android.view.Surface

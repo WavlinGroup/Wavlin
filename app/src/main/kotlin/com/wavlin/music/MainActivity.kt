@@ -199,7 +199,7 @@ import com.wavlin.music.ui.kit.LocalMenuState
 import com.wavlin.music.ui.kit.rememberBottomSheetState
 import com.wavlin.music.ui.kit.shimmer.ShimmerTheme
 import com.wavlin.music.ui.sheets.YouTubeSongMenu
-import com.wavlin.music.ui.player.BottomSheetPlayer
+import com.wavlin.music.ui.nowplaying.BottomSheetPlayer
 import com.wavlin.music.ui.screens.Screens
 import com.wavlin.music.ui.screens.navigationBuilder
 import com.wavlin.music.ui.screens.settings.ChangelogScreen

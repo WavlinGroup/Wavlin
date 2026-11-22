@@ -71,7 +71,7 @@ import com.wavlin.music.ui.kit.ItemThumbnail
 import com.wavlin.music.ui.kit.LocalInterfaceAppleMusic
 import com.wavlin.music.ui.kit.LocalPinkLilyTheme
 import com.wavlin.music.ui.kit.artworkShape
-import com.wavlin.music.ui.player.queueGlass
+import com.wavlin.music.ui.nowplaying.queueGlass
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import sh.calvin.reorderable.ReorderableItem

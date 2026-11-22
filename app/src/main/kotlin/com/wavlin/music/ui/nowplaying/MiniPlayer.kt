@@ -5,7 +5,7 @@
  * Performance optimized MiniPlayer - prevents unnecessary recomposition
  */
 
-package com.wavlin.music.ui.player
+package com.wavlin.music.ui.nowplaying
 
 import com.wavlin.music.ui.kit.pinkGlass
 import com.wavlin.music.ui.kit.pinkGlassEdge
