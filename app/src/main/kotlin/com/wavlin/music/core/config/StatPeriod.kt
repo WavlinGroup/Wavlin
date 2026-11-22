@@ -5,7 +5,7 @@
 
 package com.wavlin.music.core.config
 
-import com.wavlin.music.ui.screens.OptionStats
+import com.wavlin.music.ui.pages.activity.OptionStats
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 

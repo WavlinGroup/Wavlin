@@ -20,7 +20,7 @@ import com.wavlin.music.core.config.StatPeriod
 import com.wavlin.music.core.config.statToPeriod
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.db.entities.PlaylistEntity
-import com.wavlin.music.ui.screens.OptionStats
+import com.wavlin.music.ui.pages.activity.OptionStats
 import com.wavlin.music.core.util.dataStore
 import com.wavlin.music.core.util.safeDataStoreEdit
 import com.wavlin.music.core.util.reportException

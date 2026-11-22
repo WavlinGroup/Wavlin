@@ -200,8 +200,8 @@ import com.wavlin.music.ui.kit.rememberBottomSheetState
 import com.wavlin.music.ui.kit.shimmer.ShimmerTheme
 import com.wavlin.music.ui.sheets.YouTubeSongMenu
 import com.wavlin.music.ui.nowplaying.BottomSheetPlayer
-import com.wavlin.music.ui.screens.Screens
-import com.wavlin.music.ui.screens.navigationBuilder
+import com.wavlin.music.ui.pages.nav.Screens
+import com.wavlin.music.ui.pages.nav.navigationBuilder
 import com.wavlin.music.ui.screens.settings.ChangelogScreen
 import com.wavlin.music.ui.screens.settings.DarkMode
 import com.wavlin.music.ui.screens.settings.NavigationTab

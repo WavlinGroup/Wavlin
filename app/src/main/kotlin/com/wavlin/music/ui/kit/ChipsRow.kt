@@ -54,8 +54,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wavlin.music.R
-import com.wavlin.music.ui.screens.OptionStats
-
+import com.wavlin.music.ui.pages.activity.OptionStats
 @Composable
 fun <E> ChipsRow(
     chips: List<Pair<E, String>>,

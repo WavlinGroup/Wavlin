@@ -6,8 +6,7 @@
 package com.wavlin.music.ui.support
 
 import androidx.navigation.NavController
-import com.wavlin.music.ui.screens.Screens
-
+import com.wavlin.music.ui.pages.nav.Screens
 fun NavController.backToMain() {
     val mainRoutes = Screens.MainScreens.map { it.route }
 
