@@ -4,12 +4,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'eq_graph_params.dart';
+import 'eq_response_graph.dart';
 import 'reverb_params.dart';
 import 'reverb_room_visualizer.dart';
 import 'wrapped_background.dart';
 
 const hostChannelName = 'com.wavlin.visuals/reverb';
 const wrappedBackgroundChannelName = 'com.wavlin.visuals/wrapped_background';
+const eqGraphChannelName = 'com.wavlin.visuals/eq_graph';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -112,6 +115,56 @@ class _WrappedBackgroundHostAppState extends State<_WrappedBackgroundHostApp> {
     return Directionality(
       textDirection: TextDirection.ltr,
       child: WrappedBackground(elements: _elements),
+    );
+  }
+}
+
+/// Third entrypoint, run by its own FlutterEngine for the equalizer's frequency response graph.
+@pragma('vm:entry-point')
+void eqGraphMain() {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const _EqGraphHostApp());
+}
+
+class _EqGraphHostApp extends StatefulWidget {
+  const _EqGraphHostApp();
+
+  @override
+  State<_EqGraphHostApp> createState() => _EqGraphHostAppState();
+}
+
+class _EqGraphHostAppState extends State<_EqGraphHostApp> {
+  static const _channel = MethodChannel(eqGraphChannelName);
+  EqGraphParams? _params;
+
+  @override
+  void initState() {
+    super.initState();
+    _channel.setMethodCallHandler(_onCall);
+    _channel.invokeMethod<void>('ready').catchError((Object _) {});
+  }
+
+  @override
+  void dispose() {
+    _channel.setMethodCallHandler(null);
+    super.dispose();
+  }
+
+  Future<Object?> _onCall(MethodCall call) async {
+    if (call.method != 'update') throw MissingPluginException(call.method);
+    final parsed = EqGraphParams.tryParse(call.arguments);
+    if (parsed == null) throw PlatformException(code: 'bad_args', message: 'invalid eq graph params');
+    if (mounted) setState(() => _params = parsed);
+    return null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final p = _params;
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      // Nothing is drawn until the first update, so no empty surface flashes in.
+      child: p == null ? const SizedBox.shrink() : EqResponseGraph(params: p),
     );
   }
 }

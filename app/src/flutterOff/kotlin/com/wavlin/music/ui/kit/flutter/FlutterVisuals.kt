@@ -12,6 +12,10 @@ object FlutterVisuals {
     fun acquireWrappedBackground(context: Context, token: Any): Boolean = false
 
     fun releaseWrappedBackground(token: Any) = Unit
+
+    fun acquireEqGraph(context: Context, token: Any): Boolean = false
+
+    fun releaseEqGraph(token: Any) = Unit
 }
 
 @Suppress("UNUSED_PARAMETER")
@@ -29,5 +33,25 @@ fun FlutterWrappedBackground(
     elementCount: Int,
     shapes: List<String>,
     seed: Long,
+    modifier: Modifier = Modifier,
+) = Unit
+
+@Suppress("UNUSED_PARAMETER")
+@Composable
+fun FlutterEqGraph(
+    points: DoubleArray,
+    markers: DoubleArray,
+    dbTop: Double,
+    dbStep: Double,
+    showBandMarkers: Boolean,
+    density: Float,
+    fontScale: Float,
+    surface: Int,
+    grid: Int,
+    label: Int,
+    curve: Int,
+    fill: Int,
+    zeroLine: Int,
+    markerRing: Int,
     modifier: Modifier = Modifier,
 ) = Unit

@@ -10,16 +10,20 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
@@ -27,6 +31,8 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wavlin.music.sound.equalizer.profiles.FilterType
+import com.wavlin.music.ui.kit.flutter.FlutterEqGraph
+import com.wavlin.music.ui.kit.flutter.FlutterVisuals
 import com.wavlin.music.sound.equalizer.profiles.ParametricEQBand
 import kotlin.math.PI
 import kotlin.math.abs
@@ -59,6 +65,9 @@ private const val GRAPH_PADDING_BOTTOM = 24f
 /**
  * Frequency response graph for an EQ profile.
  * Draws a curve showing the combined magnitude response of all bands.
+ *
+ * The Flutter version draws it while the graph's single engine is free; otherwise (or when the
+ * build has no Flutter) the Compose version below draws. Both are fed by [computeGraphData].
  */
 @Composable
 fun EqFrequencyResponseGraph(
@@ -67,6 +76,71 @@ fun EqFrequencyResponseGraph(
     modifier: Modifier = Modifier,
     showBandMarkers: Boolean = false,
     graphHeight: androidx.compose.ui.unit.Dp = 200.dp,
+) {
+    val context = LocalContext.current
+    val token = remember { Any() }
+    val useFlutter = remember { FlutterVisuals.acquireEqGraph(context, token) }
+    DisposableEffect(token) {
+        onDispose { FlutterVisuals.releaseEqGraph(token) }
+    }
+    if (useFlutter) {
+        FlutterEqFrequencyResponseGraph(bands, preamp, modifier, showBandMarkers, graphHeight)
+    } else {
+        ComposeEqFrequencyResponseGraph(bands, preamp, modifier, showBandMarkers, graphHeight)
+    }
+}
+
+@Composable
+private fun FlutterEqFrequencyResponseGraph(
+    bands: List<ParametricEQBand>,
+    preamp: Double,
+    modifier: Modifier,
+    showBandMarkers: Boolean,
+    graphHeight: androidx.compose.ui.unit.Dp,
+) {
+    val scheme = MaterialTheme.colorScheme
+    val density = LocalDensity.current
+    val graphData = remember(bands, preamp) { computeGraphData(bands, preamp) }
+    val points = remember(graphData) { graphData.points.toFlatArray() }
+    val markers = remember(graphData) { graphData.markers.toFlatArray() }
+    FlutterEqGraph(
+        points = points,
+        markers = markers,
+        dbTop = graphData.dbTop,
+        dbStep = graphData.dbStep,
+        showBandMarkers = showBandMarkers,
+        density = density.density,
+        fontScale = density.fontScale,
+        surface = scheme.surfaceContainer.toArgb(),
+        grid = scheme.outlineVariant.copy(alpha = 0.4f).toArgb(),
+        label = scheme.onSurfaceVariant.copy(alpha = 0.7f).toArgb(),
+        curve = scheme.primary.toArgb(),
+        fill = scheme.primary.copy(alpha = 0.18f).toArgb(),
+        zeroLine = scheme.primary.copy(alpha = 0.5f).toArgb(),
+        markerRing = scheme.surfaceContainer.toArgb(),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .height(graphHeight),
+    )
+}
+
+private fun List<Pair<Double, Double>>.toFlatArray(): DoubleArray {
+    val out = DoubleArray(size * 2)
+    forEachIndexed { i, (first, second) ->
+        out[2 * i] = first
+        out[2 * i + 1] = second
+    }
+    return out
+}
+
+@Composable
+private fun ComposeEqFrequencyResponseGraph(
+    bands: List<ParametricEQBand>,
+    preamp: Double,
+    modifier: Modifier,
+    showBandMarkers: Boolean,
+    graphHeight: androidx.compose.ui.unit.Dp,
 ) {
     val textMeasurer = rememberTextMeasurer()
     val surfaceColor = MaterialTheme.colorScheme.surfaceContainer

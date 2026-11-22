@@ -94,6 +94,7 @@ object FlutterVisuals {
     private val reverb = VisualEngine(entrypoint = null, channelName = "com.wavlin.visuals/reverb")
     private val wrappedBackground =
         VisualEngine(entrypoint = "wrappedBackgroundMain", channelName = "com.wavlin.visuals/wrapped_background")
+    private val eqGraph = VisualEngine(entrypoint = "eqGraphMain", channelName = "com.wavlin.visuals/eq_graph")
 
     /** True when the reverb engine started. Call from the main thread. */
     fun isAvailable(context: Context): Boolean = reverb.ensureEngine(context) != null
@@ -104,9 +105,17 @@ object FlutterVisuals {
 
     fun releaseWrappedBackground(token: Any) = wrappedBackground.release(token)
 
+    /** Takes the EQ graph engine for [token]; false when it is missing or in use. */
+    fun acquireEqGraph(context: Context, token: Any): Boolean =
+        eqGraph.ensureEngine(context) != null && eqGraph.acquire(token)
+
+    fun releaseEqGraph(token: Any) = eqGraph.release(token)
+
     internal fun reverbEngine() = reverb
 
     internal fun wrappedBackgroundEngine() = wrappedBackground
+
+    internal fun eqGraphEngine() = eqGraph
 }
 
 /** Hosts [visual]'s engine in a transparent FlutterView for as long as this is composed. */
@@ -186,6 +195,55 @@ fun FlutterWrappedBackground(
                 "elementCount" to elementCount,
                 "shapes" to shapes,
                 "seed" to seed,
+            ),
+        )
+    }
+    FlutterSurface(visual, modifier)
+}
+
+/**
+ * [points] and [markers] are flat (frequencyHz, db) pairs. The caller must hold
+ * [FlutterVisuals.acquireEqGraph]. Colors are ARGB ints from Color.toArgb().
+ */
+@Composable
+fun FlutterEqGraph(
+    points: DoubleArray,
+    markers: DoubleArray,
+    dbTop: Double,
+    dbStep: Double,
+    showBandMarkers: Boolean,
+    density: Float,
+    fontScale: Float,
+    surface: Int,
+    grid: Int,
+    label: Int,
+    curve: Int,
+    fill: Int,
+    zeroLine: Int,
+    markerRing: Int,
+    modifier: Modifier = Modifier,
+) {
+    val visual = FlutterVisuals.eqGraphEngine()
+    LaunchedEffect(
+        points, markers, dbTop, dbStep, showBandMarkers, density, fontScale,
+        surface, grid, label, curve, fill, zeroLine, markerRing,
+    ) {
+        visual.send(
+            mapOf(
+                "points" to points,
+                "markers" to markers,
+                "dbTop" to dbTop,
+                "dbStep" to dbStep,
+                "showBandMarkers" to showBandMarkers,
+                "density" to density.toDouble(),
+                "fontScale" to fontScale.toDouble(),
+                "surface" to surface,
+                "grid" to grid,
+                "label" to label,
+                "curve" to curve,
+                "fill" to fill,
+                "zeroLine" to zeroLine,
+                "markerRing" to markerRing,
             ),
         )
     }
