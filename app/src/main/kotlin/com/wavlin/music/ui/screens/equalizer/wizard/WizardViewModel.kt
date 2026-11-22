@@ -3,9 +3,9 @@ package com.wavlin.music.ui.screens.equalizer.wizard
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wavlin.music.eq.data.EQProfileRepository
-import com.wavlin.music.eq.data.GitHubAutoEqSearch
-import com.wavlin.music.eq.data.SavedEQProfile
+import com.wavlin.music.sound.equalizer.profiles.EQProfileRepository
+import com.wavlin.music.sound.equalizer.profiles.GitHubAutoEqSearch
+import com.wavlin.music.sound.equalizer.profiles.SavedEQProfile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job

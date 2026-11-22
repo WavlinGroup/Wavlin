@@ -2,9 +2,8 @@ package com.wavlin.music.ui.screens.equalizer
 
 import androidx.annotation.StringRes
 import com.wavlin.music.R
-import com.wavlin.music.eq.data.FilterType
-import com.wavlin.music.eq.data.ParametricEQBand
-
+import com.wavlin.music.sound.equalizer.profiles.FilterType
+import com.wavlin.music.sound.equalizer.profiles.ParametricEQBand
 /** Center frequencies (Hz) of the custom graphic equalizer, one octave apart. */
 val EqBandFrequencies: List<Double> = listOf(
     31.0, 62.0, 125.0, 250.0, 500.0, 1000.0, 2000.0, 4000.0, 8000.0, 16000.0

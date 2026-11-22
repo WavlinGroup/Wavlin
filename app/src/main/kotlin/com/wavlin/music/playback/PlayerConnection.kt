@@ -45,8 +45,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import com.wavlin.music.audio.dolby.DolbyAtmosExtensions
-import com.wavlin.music.audio.dolby.DolbyAtmosManager
+import com.wavlin.music.sound.effects.dolby.DolbyAtmosExtensions
+import com.wavlin.music.sound.effects.dolby.DolbyAtmosManager
 import timber.log.Timber
 import java.time.LocalDate
 import java.time.LocalTime

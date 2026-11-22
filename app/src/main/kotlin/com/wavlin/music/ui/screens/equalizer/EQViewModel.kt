@@ -2,10 +2,10 @@ package com.wavlin.music.ui.screens.equalizer
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wavlin.music.eq.EqualizerService
-import com.wavlin.music.eq.data.EQProfileRepository
-import com.wavlin.music.eq.data.ParametricEQParser
-import com.wavlin.music.eq.data.SavedEQProfile
+import com.wavlin.music.sound.equalizer.EqualizerService
+import com.wavlin.music.sound.equalizer.profiles.EQProfileRepository
+import com.wavlin.music.sound.equalizer.profiles.ParametricEQParser
+import com.wavlin.music.sound.equalizer.profiles.SavedEQProfile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

@@ -24,7 +24,7 @@ import android.media.AudioDeviceInfo
 import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.audiofx.AudioEffect
-import com.wavlin.music.playback.audio.VolumeNormalizationAudioProcessor
+import com.wavlin.music.sound.processors.VolumeNormalizationAudioProcessor
 import com.wavlin.music.core.util.safeDataStoreEdit
 import android.net.ConnectivityManager
 import android.os.Binder
@@ -182,9 +182,9 @@ import com.wavlin.music.db.entities.RelatedSongMap
 import com.wavlin.music.db.entities.Song
 import com.wavlin.music.core.inject.DownloadCache
 import com.wavlin.music.core.inject.PlayerCache
-import com.wavlin.music.eq.EqualizerService
-import com.wavlin.music.eq.audio.CustomEqualizerAudioProcessor
-import com.wavlin.music.eq.data.EQProfileRepository
+import com.wavlin.music.sound.equalizer.EqualizerService
+import com.wavlin.music.sound.equalizer.engine.CustomEqualizerAudioProcessor
+import com.wavlin.music.sound.equalizer.profiles.EQProfileRepository
 import com.wavlin.music.core.ext.SilentHandler
 import com.wavlin.music.core.ext.collect
 import com.wavlin.music.core.ext.collectLatest
@@ -205,7 +205,7 @@ import com.wavlin.music.models.PersistQueue
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.playback.alarm.MusicAlarmScheduler
 import com.wavlin.music.playback.alarm.MusicAlarmStore
-import com.wavlin.music.playback.audio.SilenceDetectorAudioProcessor
+import com.wavlin.music.sound.processors.SilenceDetectorAudioProcessor
 import com.wavlin.music.playback.queues.EmptyQueue
 import com.wavlin.music.playback.queues.ListQueue
 import com.wavlin.music.playback.queues.Queue
@@ -642,11 +642,11 @@ class MusicService :
     override fun onCreate() {
         super.onCreate()
         isRunning = true
-        com.wavlin.music.audio.dolby.DolbyAtmosManager.init(this)
-        com.wavlin.music.audio.dolby.DolbyAtmosV2Manager.init(this)
-        com.wavlin.music.audio.xiaomi.XiaomiSoundManager.init(this)
-        com.wavlin.music.audio.dts.DtsSoundManager.init(this)
-        com.wavlin.music.audio.reverb.ReverbManager.init(this)
+        com.wavlin.music.sound.effects.dolby.DolbyAtmosManager.init(this)
+        com.wavlin.music.sound.effects.dolby.DolbyAtmosV2Manager.init(this)
+        com.wavlin.music.sound.effects.xiaomi.XiaomiSoundManager.init(this)
+        com.wavlin.music.sound.effects.dts.DtsSoundManager.init(this)
+        com.wavlin.music.sound.effects.reverb.ReverbManager.init(this)
         shutdownDeferred = kotlinx.coroutines.CompletableDeferred<Unit>()
 
         setListener(
@@ -1008,9 +1008,9 @@ class MusicService :
         combine(
             dataStore.data.map { it[AudioOffload] ?: false },
             dataStore.data.map { it[CrossfadeEnabledKey] ?: false },
-            com.wavlin.music.audio.reverb.ReverbManager.isEnabled,
-            com.wavlin.music.audio.dolby.DolbyAtmosManager.isAtmosEnabledByUser,
-            combine(com.wavlin.music.audio.dolby.DolbyAtmosV2Manager.isEnabled, com.wavlin.music.audio.xiaomi.XiaomiSoundManager.isEnabled, com.wavlin.music.audio.dts.DtsSoundManager.isEnabled) { dolbyV2, xiaomi, dts -> dolbyV2 || xiaomi || dts },
+            com.wavlin.music.sound.effects.reverb.ReverbManager.isEnabled,
+            com.wavlin.music.sound.effects.dolby.DolbyAtmosManager.isAtmosEnabledByUser,
+            combine(com.wavlin.music.sound.effects.dolby.DolbyAtmosV2Manager.isEnabled, com.wavlin.music.sound.effects.xiaomi.XiaomiSoundManager.isEnabled, com.wavlin.music.sound.effects.dts.DtsSoundManager.isEnabled) { dolbyV2, xiaomi, dts -> dolbyV2 || xiaomi || dts },
         ) { offloadPref, crossfadeEnabled, reverbEnabled, dolbyEnabled, systemEffectEnabled ->
             // Offload is disabled with crossfade (volume ramp issues), reverb and Dolby Atmos (offloaded tracks bypass audio processors)
             if (crossfadeEnabled || reverbEnabled || dolbyEnabled || systemEffectEnabled) false else offloadPref
@@ -1385,10 +1385,10 @@ class MusicService :
         equalizerService.addAudioProcessor(eqProcessor)
 
         val silenceProcessor = SilenceDetectorAudioProcessor { handleLongSilenceDetected() }
-        val reverbProcessor = com.wavlin.music.playback.audio.ReverbAudioProcessor()
-        com.wavlin.music.audio.reverb.ReverbManager.setProcessor(reverbProcessor)
-        val dolbyProcessor = com.wavlin.music.playback.audio.DolbyAtmosAudioProcessor()
-        com.wavlin.music.audio.dolby.DolbyAtmosManager.registerProcessor(dolbyProcessor)
+        val reverbProcessor = com.wavlin.music.sound.processors.ReverbAudioProcessor()
+        com.wavlin.music.sound.effects.reverb.ReverbManager.setProcessor(reverbProcessor)
+        val dolbyProcessor = com.wavlin.music.sound.processors.DolbyAtmosAudioProcessor()
+        com.wavlin.music.sound.effects.dolby.DolbyAtmosManager.registerProcessor(dolbyProcessor)
 
         // Set initial state — use pre-read prefs when available, otherwise fall back to DataStore
         val useAudioTrackPlaybackParams = if (prefs != null) {
@@ -1439,14 +1439,14 @@ class MusicService :
         if (prefs != null) {
             val offload = prefs[AudioOffload] ?: false
             val crossfade = prefs[CrossfadeEnabledKey] ?: false
-            player.setOffloadEnabled(if (crossfade || com.wavlin.music.audio.reverb.ReverbManager.isEnabled.value || com.wavlin.music.audio.dolby.DolbyAtmosManager.isAtmosEnabledByUser.value || com.wavlin.music.audio.dolby.DolbyAtmosV2Manager.isEnabled.value || com.wavlin.music.audio.xiaomi.XiaomiSoundManager.isEnabled.value || com.wavlin.music.audio.dts.DtsSoundManager.isEnabled.value) false else offload)
+            player.setOffloadEnabled(if (crossfade || com.wavlin.music.sound.effects.reverb.ReverbManager.isEnabled.value || com.wavlin.music.sound.effects.dolby.DolbyAtmosManager.isAtmosEnabledByUser.value || com.wavlin.music.sound.effects.dolby.DolbyAtmosV2Manager.isEnabled.value || com.wavlin.music.sound.effects.xiaomi.XiaomiSoundManager.isEnabled.value || com.wavlin.music.sound.effects.dts.DtsSoundManager.isEnabled.value) false else offload)
             player.skipSilenceEnabled = prefs[SkipSilenceKey] ?: false
         } else {
             player.apply {
                 runBlocking {
                     val offload = dataStore.get(AudioOffload, false)
                     val crossfade = dataStore.get(CrossfadeEnabledKey, false)
-                    setOffloadEnabled(if (crossfade || com.wavlin.music.audio.reverb.ReverbManager.isEnabled.value || com.wavlin.music.audio.dolby.DolbyAtmosManager.isAtmosEnabledByUser.value || com.wavlin.music.audio.dolby.DolbyAtmosV2Manager.isEnabled.value || com.wavlin.music.audio.xiaomi.XiaomiSoundManager.isEnabled.value || com.wavlin.music.audio.dts.DtsSoundManager.isEnabled.value) false else offload)
+                    setOffloadEnabled(if (crossfade || com.wavlin.music.sound.effects.reverb.ReverbManager.isEnabled.value || com.wavlin.music.sound.effects.dolby.DolbyAtmosManager.isAtmosEnabledByUser.value || com.wavlin.music.sound.effects.dolby.DolbyAtmosV2Manager.isEnabled.value || com.wavlin.music.sound.effects.xiaomi.XiaomiSoundManager.isEnabled.value || com.wavlin.music.sound.effects.dts.DtsSoundManager.isEnabled.value) false else offload)
                     skipSilenceEnabled = dataStore.get(SkipSilenceKey, false)
                 }
             }
@@ -2491,11 +2491,11 @@ class MusicService :
 
         isAudioEffectSessionOpened = true
         openedAudioEffectSessionId = audioSessionId
-        com.wavlin.music.audio.dolby.DolbyAtmosManager.attachSession(audioSessionId)
-        com.wavlin.music.audio.dolby.DolbyAtmosV2Manager.attachSession(audioSessionId)
-        com.wavlin.music.audio.xiaomi.XiaomiSoundManager.attachSession(audioSessionId)
-        com.wavlin.music.audio.dts.DtsSoundManager.attachSession(audioSessionId)
-        com.wavlin.music.audio.reverb.ReverbManager.attachSession(audioSessionId, player)
+        com.wavlin.music.sound.effects.dolby.DolbyAtmosManager.attachSession(audioSessionId)
+        com.wavlin.music.sound.effects.dolby.DolbyAtmosV2Manager.attachSession(audioSessionId)
+        com.wavlin.music.sound.effects.xiaomi.XiaomiSoundManager.attachSession(audioSessionId)
+        com.wavlin.music.sound.effects.dts.DtsSoundManager.attachSession(audioSessionId)
+        com.wavlin.music.sound.effects.reverb.ReverbManager.attachSession(audioSessionId, player)
 
         sendBroadcast(
             Intent(android.media.audiofx.AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION).apply {
@@ -2520,10 +2520,10 @@ class MusicService :
                     sessionIdToClose == openedAudioEffectSessionId
 
         if (isClosingCurrentSession) {
-            com.wavlin.music.audio.reverb.ReverbManager.detachSession(player)
-            com.wavlin.music.audio.dolby.DolbyAtmosV2Manager.detachSession()
-            com.wavlin.music.audio.xiaomi.XiaomiSoundManager.detachSession()
-            com.wavlin.music.audio.dts.DtsSoundManager.detachSession()
+            com.wavlin.music.sound.effects.reverb.ReverbManager.detachSession(player)
+            com.wavlin.music.sound.effects.dolby.DolbyAtmosV2Manager.detachSession()
+            com.wavlin.music.sound.effects.xiaomi.XiaomiSoundManager.detachSession()
+            com.wavlin.music.sound.effects.dts.DtsSoundManager.detachSession()
             isAudioEffectSessionOpened = false
             openedAudioEffectSessionId = C.AUDIO_SESSION_ID_UNSET
         }
@@ -3944,8 +3944,8 @@ class MusicService :
     private fun createRenderersFactory(
         normalizationProcessor: VolumeNormalizationAudioProcessor,
         eqProcessor: CustomEqualizerAudioProcessor,
-        reverbProcessor: com.wavlin.music.playback.audio.ReverbAudioProcessor,
-        dolbyProcessor: com.wavlin.music.playback.audio.DolbyAtmosAudioProcessor,
+        reverbProcessor: com.wavlin.music.sound.processors.ReverbAudioProcessor,
+        dolbyProcessor: com.wavlin.music.sound.processors.DolbyAtmosAudioProcessor,
         silenceProcessor: SilenceDetectorAudioProcessor,
         useAudioTrackPlaybackParams: Boolean,
     ) = object : DefaultRenderersFactory(this) {
@@ -4248,10 +4248,10 @@ class MusicService :
 
     override fun onDestroy() {
         isRunning = false
-        com.wavlin.music.audio.dolby.DolbyAtmosManager.release()
-        com.wavlin.music.audio.dolby.DolbyAtmosV2Manager.release()
-        com.wavlin.music.audio.xiaomi.XiaomiSoundManager.release()
-        com.wavlin.music.audio.dts.DtsSoundManager.release()
+        com.wavlin.music.sound.effects.dolby.DolbyAtmosManager.release()
+        com.wavlin.music.sound.effects.dolby.DolbyAtmosV2Manager.release()
+        com.wavlin.music.sound.effects.xiaomi.XiaomiSoundManager.release()
+        com.wavlin.music.sound.effects.dts.DtsSoundManager.release()
 
         if (!::player.isInitialized) {
             try {

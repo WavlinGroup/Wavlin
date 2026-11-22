@@ -79,7 +79,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wavlin.music.LocalNavController
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.R
-import com.wavlin.music.eq.data.SavedEQProfile
+import com.wavlin.music.sound.equalizer.profiles.SavedEQProfile
 import com.wavlin.music.ui.component.pinkTopBarColors
 import timber.log.Timber
 import java.util.Locale

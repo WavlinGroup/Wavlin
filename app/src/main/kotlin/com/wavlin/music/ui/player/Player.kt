@@ -2649,7 +2649,7 @@ private fun AudioQualityBadge(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
-                val atmosActive by com.wavlin.music.audio.dolby.DolbyAtmosManager.isAtmosActive.collectAsStateWithLifecycle()
+                val atmosActive by com.wavlin.music.sound.effects.dolby.DolbyAtmosManager.isAtmosActive.collectAsStateWithLifecycle()
                 if (atmosActive) {
                     Icon(
                         painter = painterResource(R.drawable.ic_dolby),

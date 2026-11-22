@@ -1,6 +1,6 @@
 package com.wavlin.music.ui.screens.equalizer
 
-import com.wavlin.music.eq.data.SavedEQProfile
+import com.wavlin.music.sound.equalizer.profiles.SavedEQProfile
 import kotlin.math.round
 
 /**

@@ -26,8 +26,8 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.wavlin.music.eq.data.FilterType
-import com.wavlin.music.eq.data.ParametricEQBand
+import com.wavlin.music.sound.equalizer.profiles.FilterType
+import com.wavlin.music.sound.equalizer.profiles.ParametricEQBand
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.ceil
