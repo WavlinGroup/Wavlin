@@ -103,4 +103,32 @@ object NativeAudio {
         length: Int,
         instantMode: Boolean,
     ): Int
+
+    @JvmStatic external fun atmosCreate(): Long
+    @JvmStatic external fun atmosDestroy(handle: Long)
+    @JvmStatic external fun atmosSetParameters(
+        handle: Long,
+        enabled: Boolean,
+        dialogueLevel: Int,
+        stereoLevel: Int,
+        volume: Float,
+        immersive: Boolean,
+        speaker: Boolean,
+    )
+
+    /** @return false when [gainsDb] does not hold exactly 10 values (the old curve is kept) */
+    @JvmStatic external fun atmosSetGraphicEq(handle: Long, gainsDb: FloatArray): Boolean
+    @JvmStatic external fun atmosConfigure(handle: Long, sampleRate: Int, channelCount: Int): Boolean
+    @JvmStatic external fun atmosClearState(handle: Long)
+    @JvmStatic external fun atmosAppliedSpeaker(handle: Long): Boolean
+
+    /** 2-channel PCM_16BIT or PCM_FLOAT. Returns the bytes written to [output], or -1. */
+    @JvmStatic external fun atmosProcess(
+        handle: Long,
+        input: ByteBuffer,
+        inputOffset: Int,
+        length: Int,
+        output: ByteBuffer,
+        isFloat: Boolean,
+    ): Int
 }

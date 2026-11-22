@@ -7,6 +7,8 @@ package com.wavlin.music.sound.processors
 
 import androidx.media3.common.audio.AudioProcessor
 import androidx.media3.common.util.UnstableApi
+import com.wavlin.music.sound.nativeaudio.DirectInputStage
+import com.wavlin.music.sound.nativeaudio.NativeAudio
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import kotlin.math.PI
@@ -247,6 +249,12 @@ class DolbyAtmosAudioProcessor : AudioProcessor {
     @Volatile private var systemVolume = 0.5f
     @Volatile private var immersiveMode = false
 
+    // Rust DSP handle (0 = library missing, the Kotlin DSP below is used instead). While the native
+    // path works, the dry/wet mix and all filter state live in Rust; a native failure falls back to
+    // the Kotlin state, which restarts from its own (possibly stale) values.
+    private val nativeHandle: Long = if (NativeAudio.isAvailable) NativeAudio.atmosCreate() else 0L
+    private val inputStage = DirectInputStage()
+
     /** Diagnostics: when audio last reached [queueInput] (System.nanoTime), 0 = never. */
     @Volatile var lastInputNanos = 0L
         private set
@@ -403,6 +411,11 @@ class DolbyAtmosAudioProcessor : AudioProcessor {
         this.stereoLevel = stereoLevel.coerceIn(0, 3)
         this.systemVolume = volume.coerceIn(0f, 1f)
         this.enabled = enabled
+        if (nativeHandle != 0L) {
+            NativeAudio.atmosSetParameters(
+                nativeHandle, enabled, this.dialogueLevel, this.stereoLevel, this.systemVolume, immersive, speaker,
+            )
+        }
     }
 
     /** Replaces the 10-band graphic EQ curve (gains in dB, one per band 31 Hz … 16 kHz). */
@@ -410,6 +423,7 @@ class DolbyAtmosAudioProcessor : AudioProcessor {
         if (gainsDb.size != GEQ_FREQS.size) return
         geqGainsDb = gainsDb.copyOf()
         geqVersion++
+        if (nativeHandle != 0L) NativeAudio.atmosSetGraphicEq(nativeHandle, gainsDb)
     }
 
     /** Short human-readable state for the Dolby card, so it's obvious whether the DSP is really running. */
@@ -421,7 +435,7 @@ class DolbyAtmosAudioProcessor : AudioProcessor {
             bytesPerSample == 0 || channelCount != 2 ->
                 "Not applied: unsupported audio format (${channelCount}ch)"
             !enabled -> "Bypassed (Dolby off)"
-            else -> "Active · ${if (appliedSpeaker) "speaker" else "earphone"} profile · ${sampleRate / 1000.0} kHz · ${if (isFloat) "32-bit float" else "16-bit"}"
+            else -> "Active · ${if (speakerApplied()) "speaker" else "earphone"} profile · ${sampleRate / 1000.0} kHz · ${if (isFloat) "32-bit float" else "16-bit"}"
         }
     }
 
@@ -435,6 +449,9 @@ class DolbyAtmosAudioProcessor : AudioProcessor {
             else -> { isFloat = false; bytesPerSample = 0 }
         }
         sampleRate = inputAudioFormat.sampleRate
+        if (nativeHandle != 0L) {
+            NativeAudio.atmosConfigure(nativeHandle, inputAudioFormat.sampleRate, inputAudioFormat.channelCount)
+        }
         val sr = sampleRate.toDouble()
         appliedDialogue = -1 // force coefficient rebuild for the new sample rate
 
@@ -524,6 +541,7 @@ class DolbyAtmosAudioProcessor : AudioProcessor {
 
         val target = if (enabled) 1f else 0f
         val unsupported = bytesPerSample == 0 || channelCount != 2
+        if (!unsupported && nativeHandle != 0L && processNative(inputBuffer, remaining)) return
         if (unsupported || (target == 0f && mix == 0f)) {
             buffer.put(inputBuffer)
             buffer.flip()
@@ -568,6 +586,26 @@ class DolbyAtmosAudioProcessor : AudioProcessor {
         buffer.position(0)
         buffer.limit(frames * bytesPerSample * 2)
         outputBuffer = buffer
+    }
+
+    /** Runs the Rust chain into [buffer]. Returns false when the Kotlin path must run instead. */
+    private fun processNative(inputBuffer: ByteBuffer, remaining: Int): Boolean {
+        val source = inputStage.prepare(inputBuffer)
+        val written = NativeAudio.atmosProcess(nativeHandle, source, inputStage.offset, remaining, buffer, isFloat)
+        if (written < 0 || written > buffer.capacity()) return false
+        inputBuffer.position(inputBuffer.limit())
+        buffer.position(0)
+        buffer.limit(written)
+        outputBuffer = buffer
+        return true
+    }
+
+    private fun speakerApplied(): Boolean =
+        if (nativeHandle != 0L) NativeAudio.atmosAppliedSpeaker(nativeHandle) else appliedSpeaker
+
+    @Suppress("unused", "ProtectedInFinal")
+    protected fun finalize() {
+        if (nativeHandle != 0L) NativeAudio.atmosDestroy(nativeHandle)
     }
 
     /** Writes the processed (dry/wet mixed) frame into [outL]/[outR]. */
@@ -939,6 +977,7 @@ class DolbyAtmosAudioProcessor : AudioProcessor {
 
     /** Clears audio state only (filters, envelopes, delay lines); user settings are kept. */
     private fun clearState() {
+        if (nativeHandle != 0L) NativeAudio.atmosClearState(nativeHandle)
         z1 = 0f; z2 = 0f
         hpPrevIn = 0f; hpPrevOut = 0f; sBand = 0f
         voxBuf.fill(0f); voxIdx = 0; voxLp = 0f
