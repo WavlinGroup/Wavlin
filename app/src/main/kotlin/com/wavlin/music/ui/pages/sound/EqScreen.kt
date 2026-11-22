@@ -32,6 +32,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -328,7 +329,9 @@ private fun EqScreenContent(
             )
         }
     ) { paddingValues ->
+        val listState = rememberLazyListState()
         LazyColumn(
+            state = listState,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(paddingValues),
@@ -344,6 +347,7 @@ private fun EqScreenContent(
                     modifier = Modifier.alpha(graphDim),
                     showBandMarkers = tab == TAB_CUSTOM,
                     graphHeight = 190.dp,
+                    scrolling = listState.isScrollInProgress,
                 )
             }
 

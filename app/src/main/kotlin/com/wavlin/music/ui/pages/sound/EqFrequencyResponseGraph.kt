@@ -3,6 +3,7 @@ package com.wavlin.music.ui.pages.sound
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -11,6 +12,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -34,6 +38,7 @@ import com.wavlin.music.sound.equalizer.profiles.FilterType
 import com.wavlin.music.ui.kit.flutter.FlutterEqGraph
 import com.wavlin.music.ui.kit.flutter.FlutterVisuals
 import com.wavlin.music.sound.equalizer.profiles.ParametricEQBand
+import kotlinx.coroutines.delay
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.ceil
@@ -54,6 +59,7 @@ private data class BiquadCoeffs(
     val a2: Double
 )
 
+private const val CURTAIN_HOLD_MS = 250L
 private const val SAMPLE_RATE = 48000
 private const val MIN_FREQ = 20.0
 private const val MAX_FREQ = 20000.0
@@ -76,6 +82,7 @@ fun EqFrequencyResponseGraph(
     modifier: Modifier = Modifier,
     showBandMarkers: Boolean = false,
     graphHeight: androidx.compose.ui.unit.Dp = 200.dp,
+    scrolling: Boolean = false,
 ) {
     val context = LocalContext.current
     val token = remember { Any() }
@@ -84,7 +91,24 @@ fun EqFrequencyResponseGraph(
         onDispose { FlutterVisuals.releaseEqGraph(token) }
     }
     if (useFlutter) {
-        FlutterEqFrequencyResponseGraph(bands, preamp, modifier, showBandMarkers, graphHeight)
+        // The Flutter view is a TextureView and lags the list while it scrolls, so the Compose graph
+        // is drawn over it from the first scrolled frame until shortly after the list settles. The
+        // Flutter view stays attached underneath, so nothing is torn down and rebuilt.
+        var curtain by remember { mutableStateOf(false) }
+        LaunchedEffect(scrolling) {
+            if (scrolling) {
+                curtain = true
+            } else {
+                delay(CURTAIN_HOLD_MS)
+                curtain = false
+            }
+        }
+        Box(modifier) {
+            FlutterEqFrequencyResponseGraph(bands, preamp, Modifier, showBandMarkers, graphHeight)
+            if (curtain) {
+                ComposeEqFrequencyResponseGraph(bands, preamp, Modifier, showBandMarkers, graphHeight)
+            }
+        }
     } else {
         ComposeEqFrequencyResponseGraph(bands, preamp, modifier, showBandMarkers, graphHeight)
     }
