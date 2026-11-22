@@ -78,28 +78,13 @@ import com.wavlin.music.db.entities.SearchHistory
 import com.wavlin.music.media.queue.YouTubeQueue
 import com.wavlin.music.ui.kit.HideOnScrollFAB
 import com.wavlin.music.core.ext.toMediaItem
+import com.wavlin.music.integration.spotify.SpotifyDirectDownloader
 import com.wavlin.music.integration.spotify.SpotifyImporter
-import com.wavlin.music.integration.spotify.SpotifyMatcher
-import com.wavlin.music.data.local.LocalSongs
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.media.queue.ListQueue
 import com.wavlin.music.ui.sheets.AddToPlaylistDialog
 import com.wavlin.music.ui.sheets.DownloadDestinationDialog
 import com.wavlin.music.db.entities.Song
-import kotlinx.coroutines.flow.first
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.HttpTimeout
-import io.ktor.client.request.get
-import io.ktor.client.request.header
-import io.ktor.client.statement.bodyAsText
-import io.ktor.client.statement.readBytes
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
-import kotlinx.serialization.json.contentOrNull
-import java.io.File
-import android.net.Uri
 import com.wavlin.innertube.models.SongItem
 import com.wavlin.music.integration.spotify.SpotifyTrack
 import com.wavlin.music.integration.spotify.SpotifyProvider
@@ -307,116 +292,19 @@ fun SearchScreen(
                 isDownloadingSpotify = true
                 coroutineScope.launch(Dispatchers.IO) {
                     try {
-                        val httpClient = HttpClient(CIO) {
-                            install(HttpTimeout) {
-                                requestTimeoutMillis = 30_000
-                                connectTimeoutMillis = 10_000
-                            }
-                            // Don't throw on 4xx/5xx so getOrNull() can handle failures gracefully
-                            expectSuccess = false
-                        }
-                        val jsonParser = Json { ignoreUnknownKeys = true }
-
-                        // ── Step 1: spotifydown.com ──────────────────────────
-                        // Fetch the main page first to establish a session/cookies, then call the API.
-                        val spotifyTrackId = track.url?.let {
-                            Regex("spotify\\.com/track/([A-Za-z0-9]+)").find(it)?.groupValues?.getOrNull(1)
-                        }
-                        var audioUrl: String? = null
-                        if (spotifyTrackId != null) {
-                            audioUrl = runCatching {
-                                // Prime the session so the API endpoint accepts the request
-                                httpClient.get("https://spotifydown.com/") {
-                                    header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36")
-                                    header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
-                                }
-                                val resp = httpClient.get(
-                                    "https://spotifydown.com/api/download?trackId=$spotifyTrackId",
-                                ) {
-                                    header("Origin", "https://spotifydown.com")
-                                    header("Referer", "https://spotifydown.com/")
-                                    header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36")
-                                    header("Accept", "application/json, text/plain, */*")
-                                    header("Accept-Language", "en-US,en;q=0.9")
-                                }.bodyAsText()
-                                val j = jsonParser.parseToJsonElement(resp).jsonObject
-                                val success = j["success"]?.jsonPrimitive?.contentOrNull?.toBooleanStrictOrNull()
-                                if (success == true) j["link"]?.jsonPrimitive?.contentOrNull else null
-                            }.getOrNull()
-                        }
-
-                        if (audioUrl != null) {
-                            // spotifydown gave a direct link — download bytes and save as local file
-                            val audioBytes = httpClient.get(audioUrl) {
-                                header("User-Agent", "Mozilla/5.0 (Linux; Android 10; Mobile)")
-                            }.readBytes()
-                            httpClient.close()
-
-                            val safeName = "${track.artist} - ${track.title}"
-                                .replace(Regex("[/\\\\:*?\"<>|]"), "_")
-                            val musicDir = context.getExternalFilesDir(android.os.Environment.DIRECTORY_MUSIC)
-                                ?: context.filesDir
-                            val audioFile = File(musicDir, "$safeName.opus")
-                            audioFile.writeBytes(audioBytes)
-
-                            val added = LocalSongs.add(
-                                context, database, Uri.fromFile(audioFile),
-                                track.title, track.artist, track.coverUrl,
-                            )
-                            withContext(Dispatchers.Main) {
-                                if (added != null) {
-                                    playerConnection?.playQueue(
-                                        ListQueue(title = added.title, items = listOf(added.toMediaItem())),
-                                    )
-                                    downloadedMetadata = added
-                                    spotifyUnmatched = null
-                                } else {
-                                    Toast.makeText(context, "Saved but couldn't read the file", Toast.LENGTH_SHORT).show()
-                                }
-                                isDownloadingSpotify = false
-                            }
-                            return@launch
-                        }
-
-                        httpClient.close()
-
-                        // ── Step 2: YouTube search → ExoPlayer download ──────
-                        // Use the app's own innertube WEB client (YouTube.searchFirstVideoId) instead
-                        // of a raw HTTP call with a stale API key.  The WEB client searches all of
-                        // YouTube — not just YouTube Music — so it can find tracks that are only
-                        // available as regular YouTube uploads.
-                        val videoId = SpotifyMatcher.matchVideoId(track.title, track.artist, track.durationSeconds)
-
-                        if (videoId == null) {
-                            withContext(Dispatchers.Main) {
-                                Toast.makeText(
-                                    context,
-                                    "No exact YouTube match for \"${track.title}\" — try searching manually",
-                                    Toast.LENGTH_LONG,
-                                ).show()
-                                isDownloadingSpotify = false
-                            }
-                            return@launch
-                        }
-
-                        // Register the song so DownloadUtil can resolve its stream
-                        database.insert(
-                            MediaMetadata(
-                                id = videoId,
-                                title = track.title,
-                                artists = track.artist.split(",").map {
-                                    MediaMetadata.Artist(id = null, name = it.trim())
-                                },
-                                duration = track.durationSeconds,
-                                thumbnailUrl = track.coverUrl,
-                            ),
-                        )
-                        val song = database.song(videoId).first()
+                        // Delegate entirely to SpotifyDirectDownloader which tries api.spotifydown.com
+                        // (Spotify CDN — exact track) before falling back to spotifydown.com (YouTube-sourced).
+                        val added = SpotifyDirectDownloader.downloadAsLocalSong(context, database, track)
                         withContext(Dispatchers.Main) {
-                            if (song != null) {
-                                pendingDownloadSongs = listOf(song)
+                            if (added != null) {
+                                playerConnection?.playQueue(
+                                    ListQueue(title = added.title, items = listOf(added.toMediaItem())),
+                                )
+                                downloadedMetadata = added
+                                spotifyUnmatched = null
+                            } else {
+                                Toast.makeText(context, "Download failed — no source returned audio", Toast.LENGTH_SHORT).show()
                             }
-                            spotifyUnmatched = null
                             isDownloadingSpotify = false
                         }
                     } catch (e: CancellationException) {
