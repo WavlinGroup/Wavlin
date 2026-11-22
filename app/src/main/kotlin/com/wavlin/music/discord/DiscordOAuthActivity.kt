@@ -7,6 +7,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.withTimeout
 import timber.log.Timber
+import com.wavlin.music.integration.discord.DiscordAuthException
 
 data class AuthCodeResult(val code: String, val state: String)
 

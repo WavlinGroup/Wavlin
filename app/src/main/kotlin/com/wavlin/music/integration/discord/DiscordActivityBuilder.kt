@@ -1,4 +1,4 @@
-package com.wavlin.music.discord
+package com.wavlin.music.integration.discord
 
 import com.wavlin.music.db.entities.Song
 import timber.log.Timber

@@ -1,4 +1,4 @@
-package com.wavlin.music.discord
+package com.wavlin.music.integration.discord
 
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope

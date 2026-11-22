@@ -1,4 +1,4 @@
-package com.wavlin.music.discord
+package com.wavlin.music.integration.discord
 
 import android.content.Context
 import android.content.SharedPreferences

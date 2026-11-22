@@ -1,4 +1,4 @@
-package com.wavlin.music.discord
+package com.wavlin.music.integration.discord
 
 object DiscordDefaults {
     const val YOUTUBE_WATCH_URL = "https://music.youtube.com/watch?v="

@@ -1,4 +1,4 @@
-package com.wavlin.music.discord
+package com.wavlin.music.integration.discord
 
 import org.json.JSONObject
 import org.junit.Assert.assertEquals

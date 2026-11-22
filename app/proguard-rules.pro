@@ -213,8 +213,8 @@
 }
 
 ## Discord RPC JNI
--keep class com.wavlin.music.discord.DiscordRpcManager { *; }
--keepclassmembers class com.wavlin.music.discord.DiscordRpcManager {
+-keep class com.wavlin.music.integration.discord.DiscordRpcManager { *; }
+-keepclassmembers class com.wavlin.music.integration.discord.DiscordRpcManager {
     native <methods>;
 }
 

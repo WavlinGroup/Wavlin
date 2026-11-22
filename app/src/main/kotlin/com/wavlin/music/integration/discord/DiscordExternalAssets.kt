@@ -1,4 +1,4 @@
-package com.wavlin.music.discord
+package com.wavlin.music.integration.discord
 
 import io.ktor.client.HttpClient
 import io.ktor.client.request.header

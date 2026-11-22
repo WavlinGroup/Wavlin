@@ -1,4 +1,4 @@
-package com.wavlin.music.discord
+package com.wavlin.music.integration.discord
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
@@ -7,9 +7,9 @@ import android.util.Base64
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
 import com.wavlin.music.BuildConfig
-import com.wavlin.music.discord.DiscordDefaults.DISCORD_OAUTH_AUTHORIZE
-import com.wavlin.music.discord.DiscordDefaults.DISCORD_OAUTH_TOKEN
-import com.wavlin.music.discord.DiscordDefaults.DISCORD_SCOPES
+import com.wavlin.music.integration.discord.DiscordDefaults.DISCORD_OAUTH_AUTHORIZE
+import com.wavlin.music.integration.discord.DiscordDefaults.DISCORD_OAUTH_TOKEN
+import com.wavlin.music.integration.discord.DiscordDefaults.DISCORD_SCOPES
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.HttpTimeout
@@ -27,6 +27,7 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.SecureRandom
+import com.wavlin.music.discord.DiscordOAuthActivity
 
 data class DiscordAuthResult(
     val accessToken: String,

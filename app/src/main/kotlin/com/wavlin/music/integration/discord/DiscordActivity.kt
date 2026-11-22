@@ -1,4 +1,4 @@
-package com.wavlin.music.discord
+package com.wavlin.music.integration.discord
 
 data class DiscordActivity(
     val activityType: Int = 2,

@@ -96,9 +96,9 @@ import com.wavlin.music.core.config.DiscordUserStatusKey
 import com.wavlin.music.core.config.DiscordUsernameKey
 import com.wavlin.music.core.config.EnableDiscordRPCKey
 import com.wavlin.music.db.entities.Song
-import com.wavlin.music.discord.DiscordDefaults
-import com.wavlin.music.discord.DiscordRpcManager
-import com.wavlin.music.discord.DiscordTemplateRenderer
+import com.wavlin.music.integration.discord.DiscordDefaults
+import com.wavlin.music.integration.discord.DiscordRpcManager
+import com.wavlin.music.integration.discord.DiscordTemplateRenderer
 import com.wavlin.music.ui.component.EnumDialog
 import com.wavlin.music.ui.component.DefaultDialog
 import com.wavlin.music.ui.component.IconButton
