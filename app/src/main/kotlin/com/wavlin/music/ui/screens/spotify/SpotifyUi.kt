@@ -34,7 +34,7 @@ import com.wavlin.music.R
 import com.wavlin.music.core.config.ListThumbnailSize
 import com.wavlin.music.core.config.ThumbnailCornerRadius
 import com.wavlin.music.db.MusicDatabase
-import com.wavlin.music.playback.PlayerConnection
+import com.wavlin.music.media.session.PlayerConnection
 import com.wavlin.music.integration.spotify.SpotifyDirectDownloader
 import com.wavlin.music.integration.spotify.account.SpotifyPlayback
 import com.wavlin.music.integration.spotify.account.SpotifyWebTrack

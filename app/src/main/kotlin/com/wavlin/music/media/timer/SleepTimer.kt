@@ -3,7 +3,7 @@
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
-package com.wavlin.music.playback
+package com.wavlin.music.media.timer
 
 import androidx.media3.common.C
 import androidx.compose.runtime.getValue

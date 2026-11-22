@@ -50,7 +50,7 @@ import com.wavlin.music.core.config.GridItemSize
 import com.wavlin.music.core.config.GridItemsSizeKey
 import com.wavlin.music.core.config.GridThumbnailHeight
 import com.wavlin.music.models.toMediaMetadata
-import com.wavlin.music.playback.queues.YouTubeQueue
+import com.wavlin.music.media.queue.YouTubeQueue
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.LocalMenuState
 import com.wavlin.music.ui.component.YouTubeGridItem

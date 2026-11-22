@@ -87,7 +87,7 @@ import com.wavlin.music.core.config.YtmSyncKey
 import com.wavlin.music.core.ext.matchesNormalizedQuery
 import com.wavlin.music.core.ext.normalizeForSearch
 import com.wavlin.music.core.ext.toMediaItem
-import com.wavlin.music.playback.queues.ListQueue
+import com.wavlin.music.media.queue.ListQueue
 import com.wavlin.music.ui.component.ChipsRow
 import com.wavlin.music.ui.component.DefaultDialog
 import com.wavlin.music.ui.component.HideOnScrollFAB

@@ -15,7 +15,7 @@ import com.wavlin.music.core.config.AddToPlaylistSortTypeKey
 import com.wavlin.music.core.config.PlaylistSortType
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.core.ext.toEnum
-import com.wavlin.music.playback.DownloadUtil
+import com.wavlin.music.media.download.DownloadUtil
 import com.wavlin.music.core.util.SyncUtils
 import com.wavlin.music.core.util.dataStore
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -110,8 +110,8 @@ import com.wavlin.music.core.config.ThumbnailCornerRadius
 import com.wavlin.music.db.entities.ArtistEntity
 import com.wavlin.music.integration.together.ListenTogetherManager
 import com.wavlin.music.models.MediaMetadata
-import com.wavlin.music.playback.CastConnectionHandler
-import com.wavlin.music.playback.PlayerConnection
+import com.wavlin.music.media.cast.CastConnectionHandler
+import com.wavlin.music.media.session.PlayerConnection
 import com.wavlin.music.ui.screens.settings.DarkMode
 import com.wavlin.music.ui.utils.resize
 import com.wavlin.music.core.util.joinToArtistString

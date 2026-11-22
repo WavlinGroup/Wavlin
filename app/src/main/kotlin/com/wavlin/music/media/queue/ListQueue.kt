@@ -3,7 +3,7 @@
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
-package com.wavlin.music.playback.queues
+package com.wavlin.music.media.queue
 
 import androidx.media3.common.MediaItem
 import com.wavlin.music.models.MediaMetadata

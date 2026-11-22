@@ -9,12 +9,11 @@ import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.models.PersistQueue
 import com.wavlin.music.models.QueueData
 import com.wavlin.music.models.QueueType
-import com.wavlin.music.playback.queues.ListQueue
-import com.wavlin.music.playback.queues.LocalAlbumRadio
-import com.wavlin.music.playback.queues.Queue
-import com.wavlin.music.playback.queues.YouTubeAlbumRadio
-import com.wavlin.music.playback.queues.YouTubeQueue
-
+import com.wavlin.music.media.queue.ListQueue
+import com.wavlin.music.media.queue.LocalAlbumRadio
+import com.wavlin.music.media.queue.Queue
+import com.wavlin.music.media.queue.YouTubeAlbumRadio
+import com.wavlin.music.media.queue.YouTubeQueue
 fun Queue.toPersistQueue(
     title: String?,
     items: List<MediaMetadata>,

@@ -50,7 +50,7 @@ import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
 import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.playback.ExoDownloadService
-import com.wavlin.music.playback.queues.ListQueue
+import com.wavlin.music.media.queue.ListQueue
 import com.wavlin.music.ui.component.ActionPromptDialog
 import com.wavlin.music.ui.component.EmptyPlaceholder
 import com.wavlin.music.ui.component.IconButton

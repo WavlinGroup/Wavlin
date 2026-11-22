@@ -50,7 +50,7 @@ import com.wavlin.music.core.ext.filterYoutubeShorts
 import com.wavlin.music.core.ext.matchesNormalizedQuery
 import com.wavlin.music.core.ext.normalizeForSearch
 import com.wavlin.music.core.ext.toEnum
-import com.wavlin.music.playback.DownloadUtil
+import com.wavlin.music.media.download.DownloadUtil
 import com.wavlin.music.core.util.PodcastRefreshTrigger
 import com.wavlin.music.core.util.SyncUtils
 import com.wavlin.music.core.util.dataStore

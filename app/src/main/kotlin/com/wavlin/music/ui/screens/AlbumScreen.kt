@@ -81,7 +81,7 @@ import com.wavlin.music.R
 import com.wavlin.music.core.config.HideExplicitKey
 import com.wavlin.music.core.config.HideVideoSongsKey
 import com.wavlin.music.db.entities.Album
-import com.wavlin.music.playback.queues.LocalAlbumRadio
+import com.wavlin.music.media.queue.LocalAlbumRadio
 import com.wavlin.music.ui.component.ClickableArtistText
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.LocalMenuState

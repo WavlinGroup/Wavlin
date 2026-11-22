@@ -531,7 +531,7 @@ private fun ThumbnailItem(
     textBackgroundColor: Color,
     layoutDirection: LayoutDirection,
     onSeek: (String, Boolean) -> Unit,
-    playerConnection: com.wavlin.music.playback.PlayerConnection,
+    playerConnection: com.wavlin.music.media.session.PlayerConnection,
     context: android.content.Context,
     isLandscape: Boolean = false,
     isListenTogetherGuest: Boolean = false,

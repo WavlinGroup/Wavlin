@@ -1,4 +1,4 @@
-package com.wavlin.music.playback.alarm
+package com.wavlin.music.media.alarm
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Build
 import com.wavlin.music.playback.MusicService
 import java.util.Calendar
+import com.wavlin.music.playback.alarm.MusicAlarmReceiver
 
 object MusicAlarmScheduler {
     fun scheduleFromPreferences(context: Context) {

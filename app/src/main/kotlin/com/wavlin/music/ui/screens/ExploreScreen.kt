@@ -67,7 +67,7 @@ import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
 import com.wavlin.music.core.config.ListItemHeight
 import com.wavlin.music.models.toMediaMetadata
-import com.wavlin.music.playback.queues.YouTubeQueue
+import com.wavlin.music.media.queue.YouTubeQueue
 import com.wavlin.music.ui.component.LocalMenuState
 import com.wavlin.music.ui.component.NavigationTitle
 import com.wavlin.music.ui.component.YouTubeGridItem

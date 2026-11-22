@@ -78,7 +78,7 @@ import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.db.entities.PodcastEntity
 import com.wavlin.music.db.entities.SpeedDialItem
 import com.wavlin.music.core.ext.toMediaItem
-import com.wavlin.music.playback.queues.ListQueue
+import com.wavlin.music.media.queue.ListQueue
 import com.wavlin.music.ui.component.ChipsRow
 import com.wavlin.music.ui.component.HideOnScrollFAB
 import com.wavlin.music.ui.component.LocalMenuState

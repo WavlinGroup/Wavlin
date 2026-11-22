@@ -37,7 +37,7 @@ import com.wavlin.music.core.config.ArtistSongSortType
 import com.wavlin.music.db.entities.SpeedDialItem
 import com.wavlin.music.db.entities.Artist
 import com.wavlin.music.core.ext.toMediaItem
-import com.wavlin.music.playback.queues.ListQueue
+import com.wavlin.music.media.queue.ListQueue
 import com.wavlin.music.ui.component.ArtistListItem
 import com.wavlin.music.ui.component.Material3MenuGroup
 import com.wavlin.music.ui.component.Material3MenuItemData

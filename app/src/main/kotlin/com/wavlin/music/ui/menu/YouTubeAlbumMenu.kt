@@ -72,7 +72,7 @@ import com.wavlin.music.db.entities.Song
 import com.wavlin.music.db.entities.SpeedDialItem
 import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.playback.ExoDownloadService
-import com.wavlin.music.playback.queues.YouTubeAlbumRadio
+import com.wavlin.music.media.queue.YouTubeAlbumRadio
 import com.wavlin.music.ui.component.ListDialog
 import com.wavlin.music.ui.component.Material3MenuGroup
 import com.wavlin.music.ui.component.Material3MenuItemData

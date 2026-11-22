@@ -58,7 +58,7 @@ import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.playback.ExoDownloadService
-import com.wavlin.music.playback.queues.ListQueue
+import com.wavlin.music.media.queue.ListQueue
 import com.wavlin.music.ui.component.DefaultDialog
 import com.wavlin.music.ui.component.Material3MenuGroup
 import com.wavlin.music.ui.component.Material3MenuItemData

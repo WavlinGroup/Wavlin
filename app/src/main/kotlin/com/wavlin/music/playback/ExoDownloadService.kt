@@ -21,6 +21,7 @@ import androidx.media3.exoplayer.scheduler.Scheduler
 import com.wavlin.music.R
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import com.wavlin.music.media.download.DownloadUtil
 
 
 @AndroidEntryPoint

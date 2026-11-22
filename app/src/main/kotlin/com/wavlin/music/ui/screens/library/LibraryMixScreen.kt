@@ -84,7 +84,7 @@ import com.wavlin.music.core.ext.matchesNormalizedQuery
 import com.wavlin.music.core.ext.normalizeForSearch
 import com.wavlin.music.core.ext.reversed
 import com.wavlin.music.core.ext.toMediaItem
-import com.wavlin.music.playback.queues.ListQueue
+import com.wavlin.music.media.queue.ListQueue
 import com.wavlin.music.ui.component.AlbumGridItem
 import com.wavlin.music.ui.component.GlassIconButton
 import com.wavlin.music.ui.component.GlassOverlay

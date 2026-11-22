@@ -3,7 +3,7 @@
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
-package com.wavlin.music.playback
+package com.wavlin.music.media.session
 
 import android.content.Context
 import androidx.media3.common.MediaItem
@@ -33,7 +33,7 @@ import com.wavlin.music.core.ext.getQueueWindows
 import com.wavlin.music.core.ext.metadata
 import com.wavlin.music.core.ext.togglePlayPause
 import com.wavlin.music.playback.MusicService.MusicBinder
-import com.wavlin.music.playback.queues.Queue
+import com.wavlin.music.media.queue.Queue
 import com.wavlin.music.core.util.dataStore
 import com.wavlin.music.core.util.get
 import com.wavlin.music.core.util.reportException
@@ -52,6 +52,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
+import com.wavlin.music.playback.MusicService
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PlayerConnection(

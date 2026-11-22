@@ -1,4 +1,4 @@
-package com.wavlin.music.playback.alarm
+package com.wavlin.music.media.alarm
 
 import android.content.Context
 import android.os.Build

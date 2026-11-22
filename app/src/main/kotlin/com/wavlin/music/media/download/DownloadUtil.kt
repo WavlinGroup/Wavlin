@@ -3,7 +3,7 @@
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
-package com.wavlin.music.playback
+package com.wavlin.music.media.download
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -47,6 +47,7 @@ import java.time.LocalDateTime
 import java.util.concurrent.Executor
 import javax.inject.Inject
 import javax.inject.Singleton
+import com.wavlin.music.playback.ExoDownloadService
 
 @Singleton
 class DownloadUtil

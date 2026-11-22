@@ -1,4 +1,4 @@
-package com.wavlin.music.cast
+package com.wavlin.music.media.cast
 
 import android.content.Context
 import androidx.media3.cast.CastPlayer

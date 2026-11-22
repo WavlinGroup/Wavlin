@@ -75,14 +75,14 @@ import com.wavlin.music.core.config.PauseSearchHistoryKey
 import com.wavlin.music.core.config.SearchSource
 import com.wavlin.music.core.config.SearchSourceKey
 import com.wavlin.music.db.entities.SearchHistory
-import com.wavlin.music.playback.queues.YouTubeQueue
+import com.wavlin.music.media.queue.YouTubeQueue
 import com.wavlin.music.ui.component.HideOnScrollFAB
 import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.integration.spotify.SpotifyImporter
 import com.wavlin.music.integration.spotify.SpotifyMatcher
 import com.wavlin.music.data.local.LocalSongs
 import com.wavlin.music.models.MediaMetadata
-import com.wavlin.music.playback.queues.ListQueue
+import com.wavlin.music.media.queue.ListQueue
 import com.wavlin.music.ui.menu.AddToPlaylistDialog
 import com.wavlin.music.ui.menu.DownloadDestinationDialog
 import com.wavlin.music.db.entities.Song

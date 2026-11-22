@@ -5,7 +5,7 @@
 
 package com.wavlin.music.core.inject
 
-import com.wavlin.music.playback.VideoCanvasManager
+import com.wavlin.music.media.canvas.VideoCanvasManager
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent

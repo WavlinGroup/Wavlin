@@ -54,9 +54,9 @@ import androidx.core.net.toUri
 import com.wavlin.music.LocalDatabase
 import com.wavlin.music.R
 import com.wavlin.music.db.entities.Playlist
-import com.wavlin.music.playback.alarm.MusicAlarmEntry
-import com.wavlin.music.playback.alarm.MusicAlarmScheduler
-import com.wavlin.music.playback.alarm.MusicAlarmStore
+import com.wavlin.music.media.alarm.MusicAlarmEntry
+import com.wavlin.music.media.alarm.MusicAlarmScheduler
+import com.wavlin.music.media.alarm.MusicAlarmStore
 import com.wavlin.music.ui.component.DefaultDialog
 import com.wavlin.music.ui.component.Material3SettingsGroup
 import com.wavlin.music.ui.component.Material3SettingsItem

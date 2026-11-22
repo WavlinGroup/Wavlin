@@ -122,7 +122,7 @@ import com.wavlin.music.db.entities.Playlist
 import com.wavlin.music.db.entities.Song
 import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.models.MediaMetadata
-import com.wavlin.music.playback.queues.LocalAlbumRadio
+import com.wavlin.music.media.queue.LocalAlbumRadio
 import com.wavlin.music.ui.utils.resize
 import com.wavlin.music.core.util.joinByBullet
 import com.wavlin.music.core.util.joinToArtistString

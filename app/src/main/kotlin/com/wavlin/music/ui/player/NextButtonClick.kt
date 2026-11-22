@@ -9,7 +9,7 @@ import android.os.SystemClock
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.wavlin.music.core.config.DoubleTapToSkipNextKey
-import com.wavlin.music.playback.PlayerConnection
+import com.wavlin.music.media.session.PlayerConnection
 import com.wavlin.music.core.util.rememberPreference
 private const val DOUBLE_TAP_WINDOW_MS = 400L
 

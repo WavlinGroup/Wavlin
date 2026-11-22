@@ -47,7 +47,7 @@ import com.wavlin.music.core.config.ArtistSongSortTypeKey
 import com.wavlin.music.core.config.CONTENT_TYPE_HEADER
 import com.wavlin.music.core.config.HideExplicitKey
 import com.wavlin.music.core.ext.toMediaItem
-import com.wavlin.music.playback.queues.ListQueue
+import com.wavlin.music.media.queue.ListQueue
 import com.wavlin.music.ui.component.HideOnScrollFAB
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.LocalMenuState

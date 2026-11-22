@@ -131,10 +131,10 @@ import com.wavlin.music.db.entities.PlaylistSongMap
 import com.wavlin.music.db.entities.Song
 import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.models.toMediaMetadata
-import com.wavlin.music.playback.queues.ListQueue
-import com.wavlin.music.playback.queues.LocalAlbumRadio
-import com.wavlin.music.playback.queues.YouTubeAlbumRadio
-import com.wavlin.music.playback.queues.YouTubeQueue
+import com.wavlin.music.media.queue.ListQueue
+import com.wavlin.music.media.queue.LocalAlbumRadio
+import com.wavlin.music.media.queue.YouTubeAlbumRadio
+import com.wavlin.music.media.queue.YouTubeQueue
 import com.wavlin.music.ui.component.AlbumGridItem
 import com.wavlin.music.ui.component.ArtistGridItem
 import com.wavlin.music.ui.component.HideOnScrollFAB

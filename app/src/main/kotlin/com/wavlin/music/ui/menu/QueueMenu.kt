@@ -69,7 +69,7 @@ import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.playback.ExoDownloadService
-import com.wavlin.music.playback.queues.YouTubeQueue
+import com.wavlin.music.media.queue.YouTubeQueue
 import com.wavlin.music.ui.component.BottomSheetState
 import com.wavlin.music.ui.component.ListDialog
 import com.wavlin.music.ui.component.Material3MenuGroup

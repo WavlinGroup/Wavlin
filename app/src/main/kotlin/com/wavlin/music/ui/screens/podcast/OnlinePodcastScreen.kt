@@ -79,7 +79,7 @@ import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.core.ext.toMediaItem
-import com.wavlin.music.playback.queues.ListQueue
+import com.wavlin.music.media.queue.ListQueue
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.LocalMenuState
 import com.wavlin.music.ui.component.YouTubeListItem

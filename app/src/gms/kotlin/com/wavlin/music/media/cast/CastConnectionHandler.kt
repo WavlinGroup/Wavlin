@@ -1,4 +1,4 @@
-package com.wavlin.music.playback
+package com.wavlin.music.media.cast
 
 import android.content.Context
 import android.net.Uri
@@ -32,6 +32,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import com.wavlin.music.playback.MusicService
 
 /**
  * Manages Google Cast connections and media playback on Cast devices.

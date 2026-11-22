@@ -8,6 +8,7 @@ import com.wavlin.music.playback.MusicService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import com.wavlin.music.media.alarm.MusicAlarmScheduler
 
 class MusicAlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {

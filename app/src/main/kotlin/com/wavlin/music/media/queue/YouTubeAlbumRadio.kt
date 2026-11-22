@@ -3,55 +3,50 @@
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
-package com.wavlin.music.playback.queues
+package com.wavlin.music.media.queue
 
 import androidx.media3.common.MediaItem
 import com.wavlin.innertube.YouTube
 import com.wavlin.innertube.models.WatchEndpoint
-import com.wavlin.music.db.entities.AlbumWithSongs
 import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.models.MediaMetadata
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 
-class LocalAlbumRadio(
-    private val albumWithSongs: AlbumWithSongs,
-    private val startIndex: Int = 0,
+class YouTubeAlbumRadio(
+    private var playlistId: String,
 ) : Queue {
     override val preloadItem: MediaMetadata? = null
 
-    private lateinit var playlistId: String
     private val endpoint: WatchEndpoint
         get() = WatchEndpoint(
             playlistId = playlistId
         )
 
+    private var albumSongCount = 0
     private var continuation: String? = null
     private var firstTimeLoaded: Boolean = false
 
     override suspend fun getInitialStatus(): Queue.Status = withContext(IO) {
+        val albumSongs = YouTube.albumSongs(playlistId).getOrThrow()
+        albumSongCount = albumSongs.size
         Queue.Status(
-            title = albumWithSongs.album.title,
-            items = albumWithSongs.songs.map { it.toMediaItem() },
-            mediaItemIndex = startIndex
+            title = albumSongs.first().album?.name.orEmpty(),
+            items = albumSongs.map { it.toMediaItem() },
+            mediaItemIndex = 0
         )
     }
 
     override fun hasNextPage(): Boolean = !firstTimeLoaded || continuation != null
 
     override suspend fun nextPage(): List<MediaItem> = withContext(IO) {
-        if (!firstTimeLoaded) {
-            playlistId = YouTube.album(albumWithSongs.album.id).getOrThrow().album.playlistId
-            val nextResult = YouTube.next(endpoint, continuation).getOrThrow()
-            continuation = nextResult.continuation
-            firstTimeLoaded = true
-            return@withContext nextResult.items.subList(
-                albumWithSongs.songs.size,
-                nextResult.items.size
-            ).map { it.toMediaItem() }
-        }
         val nextResult = YouTube.next(endpoint, continuation).getOrThrow()
         continuation = nextResult.continuation
-        nextResult.items.map { it.toMediaItem() }
+        if (!firstTimeLoaded) {
+            firstTimeLoaded = true
+            nextResult.items.subList(albumSongCount, nextResult.items.size).map { it.toMediaItem() }
+        } else {
+            nextResult.items.map { it.toMediaItem() }
+        }
     }
 }

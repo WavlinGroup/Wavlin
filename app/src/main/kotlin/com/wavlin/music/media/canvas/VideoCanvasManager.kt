@@ -3,7 +3,7 @@
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
-package com.wavlin.music.playback
+package com.wavlin.music.media.canvas
 
 import android.content.Context
 import com.wavlin.music.integration.spotify.SpotifyCanvasClient

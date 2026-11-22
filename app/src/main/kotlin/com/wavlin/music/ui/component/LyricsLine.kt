@@ -63,7 +63,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wavlin.music.integration.lyrics.LyricsEntry
 import com.wavlin.music.integration.lyrics.WordTimestamp
-import com.wavlin.music.playback.PlayerConnection
+import com.wavlin.music.media.session.PlayerConnection
 import com.wavlin.music.ui.screens.settings.LyricsPosition
 import kotlinx.coroutines.isActive
 import kotlin.math.abs

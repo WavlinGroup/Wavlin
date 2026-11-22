@@ -178,11 +178,11 @@ import com.wavlin.music.db.entities.SearchHistory
 import com.wavlin.music.core.ext.toEnum
 import com.wavlin.music.integration.lyrics.LyricsProviderRegistry
 import com.wavlin.music.models.toMediaMetadata
-import com.wavlin.music.playback.DownloadUtil
+import com.wavlin.music.media.download.DownloadUtil
 import com.wavlin.music.playback.MusicService
 import com.wavlin.music.playback.MusicService.MusicBinder
-import com.wavlin.music.playback.PlayerConnection
-import com.wavlin.music.playback.queues.YouTubeQueue
+import com.wavlin.music.media.session.PlayerConnection
+import com.wavlin.music.media.queue.YouTubeQueue
 import com.wavlin.music.ui.component.AccountDrawerContent
 import com.wavlin.music.ui.component.AccountDrawerHost
 import com.wavlin.music.ui.component.AppNavigationBar

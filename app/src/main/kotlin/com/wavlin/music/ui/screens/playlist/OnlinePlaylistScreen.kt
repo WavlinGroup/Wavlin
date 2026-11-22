@@ -94,7 +94,7 @@ import com.wavlin.music.db.entities.Playlist
 import com.wavlin.music.db.entities.PlaylistEntity
 import com.wavlin.music.db.entities.PlaylistSongMap
 import com.wavlin.music.models.toMediaMetadata
-import com.wavlin.music.playback.queues.YouTubePlaylistQueue
+import com.wavlin.music.media.queue.YouTubePlaylistQueue
 import com.wavlin.music.ui.component.ExpandableText
 import com.wavlin.music.ui.component.glassPanel
 import com.wavlin.music.ui.component.glassStrokeBrush

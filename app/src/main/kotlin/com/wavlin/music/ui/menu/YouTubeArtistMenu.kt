@@ -37,7 +37,7 @@ import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
 import com.wavlin.music.db.entities.SpeedDialItem
 import com.wavlin.music.db.entities.ArtistEntity
-import com.wavlin.music.playback.queues.YouTubeQueue
+import com.wavlin.music.media.queue.YouTubeQueue
 import com.wavlin.music.ui.component.Material3MenuGroup
 import com.wavlin.music.ui.component.Material3MenuItemData
 import com.wavlin.music.ui.component.NewAction

@@ -150,7 +150,7 @@
 -keep class com.wavlin.music.models.PersistPlayerState { *; }
 -keep class com.wavlin.music.models.QueueData { *; }
 -keep class com.wavlin.music.models.QueueType { *; }
--keep class com.wavlin.music.playback.queues.** { *; }
+-keep class com.wavlin.music.media.queue.** { *; }
 
 # Keep serialization methods for queue persistence
 -keepclassmembers class * implements java.io.Serializable {
@@ -165,6 +165,7 @@
 
 ## Google Cast Rules
 -keep class com.wavlin.music.cast.** { *; }
+-keep class com.wavlin.music.media.cast.** { *; }
 -keep class com.google.android.gms.cast.** { *; }
 -keep class androidx.mediarouter.** { *; }
 

@@ -57,7 +57,7 @@ import com.wavlin.music.LocalNavController
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
-import com.wavlin.music.playback.queues.YouTubeQueue
+import com.wavlin.music.media.queue.YouTubeQueue
 import com.wavlin.music.integration.spotify.SpotifyImporter
 import com.wavlin.music.integration.spotify.SpotifyMatcher
 import com.wavlin.music.integration.spotify.SpotifyProvider

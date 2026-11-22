@@ -97,8 +97,8 @@ import com.wavlin.music.core.config.PauseSearchHistoryKey
 import com.wavlin.music.db.entities.SearchHistory
 import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.models.toMediaMetadata
-import com.wavlin.music.playback.queues.ListQueue
-import com.wavlin.music.playback.queues.YouTubeQueue
+import com.wavlin.music.media.queue.ListQueue
+import com.wavlin.music.media.queue.YouTubeQueue
 import com.wavlin.music.ui.component.ChipsRow
 import com.wavlin.music.ui.component.EmptyPlaceholder
 import com.wavlin.music.ui.component.HideOnScrollFAB

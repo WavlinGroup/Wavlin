@@ -88,8 +88,8 @@ import com.wavlin.music.BuildConfig
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
-import com.wavlin.music.playback.PlayerConnection
-import com.wavlin.music.playback.queues.YouTubeQueue
+import com.wavlin.music.media.session.PlayerConnection
+import com.wavlin.music.media.queue.YouTubeQueue
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.Material3SettingsGroup
 import com.wavlin.music.ui.component.Material3SettingsItem

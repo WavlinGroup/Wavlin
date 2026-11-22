@@ -150,7 +150,7 @@ import com.wavlin.music.core.ext.move
 import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.playback.ExoDownloadService
-import com.wavlin.music.playback.queues.ListQueue
+import com.wavlin.music.media.queue.ListQueue
 import com.wavlin.music.ui.component.PlaylistShareSheet
 import com.wavlin.music.ui.component.ActionPromptDialog
 import com.wavlin.music.ui.component.glassPanel

@@ -20,8 +20,8 @@ import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.models.MediaMetadata.Album
 import com.wavlin.music.models.MediaMetadata.Artist
 import com.wavlin.music.models.toMediaMetadata
-import com.wavlin.music.playback.PlayerConnection
-import com.wavlin.music.playback.queues.YouTubeQueue
+import com.wavlin.music.media.session.PlayerConnection
+import com.wavlin.music.media.queue.YouTubeQueue
 import com.wavlin.music.core.util.dataStore
 import com.wavlin.music.core.util.getArtistSeparator
 import com.wavlin.music.core.util.joinToArtistString

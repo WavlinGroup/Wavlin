@@ -56,7 +56,7 @@ import com.wavlin.music.db.entities.Artist
 import com.wavlin.music.db.entities.Playlist
 import com.wavlin.music.db.entities.Song
 import com.wavlin.music.core.ext.toMediaItem
-import com.wavlin.music.playback.queues.ListQueue
+import com.wavlin.music.media.queue.ListQueue
 import com.wavlin.music.ui.component.AlbumListItem
 import com.wavlin.music.ui.component.ArtistListItem
 import com.wavlin.music.ui.component.ChipsRow
