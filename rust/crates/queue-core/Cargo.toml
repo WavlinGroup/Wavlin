@@ -1,0 +1,9 @@
+[package]
+name = "queue-core"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+description = "Wavlin queue core: shuffle permutations ported from MusicService.applyShuffleOrder and the play-next shuffle rebuild"
+
+[lib]
+crate-type = ["rlib"]
