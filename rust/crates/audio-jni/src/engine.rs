@@ -4,6 +4,7 @@
 //! guards its DSP state with a mutex. Audio bytes are decoded with `from_ne_bytes`: the Kotlin
 //! side uses native-order buffers, and decoding by bytes avoids unaligned reads.
 
+use audio_dsp::atmos::DolbyAtmos;
 use audio_dsp::biquad::FilterType;
 use audio_dsp::eq::{EqBand, EqProfile, Equalizer};
 use audio_dsp::normalizer::{self, SampleFormat};
@@ -217,6 +218,77 @@ impl SilenceEngine {
     }
 }
 
+pub struct AtmosEngine {
+    state: Mutex<(DolbyAtmos, Scratch)>,
+}
+
+impl Default for AtmosEngine {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl AtmosEngine {
+    pub fn new() -> Self {
+        Self { state: Mutex::new((DolbyAtmos::new(), Scratch::default())) }
+    }
+
+    pub fn set_parameters(&self, enabled: bool, dialogue_level: i32, stereo_level: i32, volume: f32, immersive: bool, speaker: bool) {
+        lock(&self.state).0.set_parameters(enabled, dialogue_level, stereo_level, volume, immersive, speaker);
+    }
+
+    pub fn set_graphic_eq(&self, gains_db: &[f32]) -> bool {
+        lock(&self.state).0.set_graphic_eq(gains_db)
+    }
+
+    pub fn configure(&self, sample_rate: i32, channel_count: i32) -> bool {
+        let Ok(channels) = usize::try_from(channel_count) else { return false };
+        lock(&self.state).0.configure(sample_rate, channels).is_ok()
+    }
+
+    pub fn clear_state(&self) {
+        lock(&self.state).0.clear_state();
+    }
+
+    pub fn applied_speaker(&self) -> bool {
+        lock(&self.state).0.applied_speaker()
+    }
+
+    /// Returns the number of bytes written to `output`. A bypassed buffer is copied byte for byte.
+    pub fn process(&self, input: &[u8], output: &mut [u8], is_float: bool) -> usize {
+        let mut guard = lock(&self.state);
+        let (atmos, scratch) = &mut *guard;
+        if atmos.will_bypass() {
+            let n = input.len().min(output.len());
+            output[..n].copy_from_slice(&input[..n]);
+            return n;
+        }
+        if is_float {
+            let n = input.len().min(output.len()) / 4;
+            scratch.f32_in.clear();
+            scratch.f32_in.extend(input.chunks_exact(4).take(n).map(|c| f32::from_ne_bytes([c[0], c[1], c[2], c[3]])));
+            scratch.f32_out.clear();
+            scratch.f32_out.resize(n, 0.0);
+            let written = atmos.process_f32(&scratch.f32_in, &mut scratch.f32_out);
+            for (dst, v) in output.chunks_exact_mut(4).zip(&scratch.f32_out[..written]) {
+                dst.copy_from_slice(&v.to_ne_bytes());
+            }
+            written * 4
+        } else {
+            let n = input.len().min(output.len()) / 2;
+            scratch.i16_in.clear();
+            scratch.i16_in.extend(input.chunks_exact(2).take(n).map(|c| i16::from_ne_bytes([c[0], c[1]])));
+            scratch.i16_out.clear();
+            scratch.i16_out.resize(n, 0);
+            let written = atmos.process_i16(&scratch.i16_in, &mut scratch.i16_out);
+            for (dst, v) in output.chunks_exact_mut(2).zip(&scratch.i16_out[..written]) {
+                dst.copy_from_slice(&v.to_ne_bytes());
+            }
+            written * 2
+        }
+    }
+}
+
 /// Builds an [`EqProfile`] from the flat arrays passed over JNI. `params` holds
 /// `frequency, gain, q` per band.
 pub fn profile_from_arrays(preamp_db: f64, params: &[f64], types: &[i32], enabled: &[bool]) -> Option<EqProfile> {
@@ -373,5 +445,57 @@ mod tests {
         engine.clear_state();
         assert!(!engine.is_silent());
         assert_eq!(engine.analyze(&silent, false), 0);
+    }
+
+    #[test]
+    fn atmos_engine_bypasses_byte_exact_and_matches_direct_dsp_when_on() {
+        let samples: Vec<f32> = (0..4000).map(|i| (i as f32 * 0.013).sin() * 0.4).collect();
+        let input = f32_bytes(&samples);
+        let mut out = vec![0u8; input.len()];
+        let engine = AtmosEngine::new();
+        assert!(engine.configure(44100, 2));
+        assert_eq!(engine.process(&input, &mut out, true), input.len());
+        assert_eq!(out, input);
+
+        engine.set_parameters(true, 3, 1, 0.5, false, false);
+        assert_eq!(engine.process(&input, &mut out, true), input.len());
+        let mut direct = DolbyAtmos::new();
+        direct.configure(44100, 2).unwrap();
+        direct.set_parameters(true, 3, 1, 0.5, false, false);
+        let mut expected = vec![0.0f32; samples.len()];
+        direct.process_f32(&samples, &mut expected);
+        assert_eq!(out, f32_bytes(&expected));
+    }
+
+    #[test]
+    fn atmos_engine_s16_matches_direct_dsp() {
+        let samples: Vec<i16> = (0..4000).map(|i| ((i as f32 * 0.013).sin() * 9000.0) as i16).collect();
+        let input = i16_bytes(&samples);
+        let mut out = vec![0u8; input.len()];
+        let engine = AtmosEngine::new();
+        engine.configure(48000, 2);
+        engine.set_parameters(true, 2, 0, 0.8, true, true);
+        assert_eq!(engine.process(&input, &mut out, false), input.len());
+        let mut direct = DolbyAtmos::new();
+        direct.configure(48000, 2).unwrap();
+        direct.set_parameters(true, 2, 0, 0.8, true, true);
+        let mut expected = vec![0i16; samples.len()];
+        direct.process_i16(&samples, &mut expected);
+        assert_eq!(out, i16_bytes(&expected));
+        assert!(engine.applied_speaker());
+    }
+
+    #[test]
+    fn atmos_engine_rejects_bad_format_and_bad_eq_length() {
+        let engine = AtmosEngine::new();
+        assert!(!engine.configure(0, 2));
+        assert!(!engine.configure(44100, -1));
+        assert!(!engine.set_graphic_eq(&[0.0; 3]));
+        assert!(engine.set_graphic_eq(&[0.0; 10]));
+        let input = f32_bytes(&[0.1, 0.2, 0.3, 0.4]);
+        let mut out = vec![0u8; input.len()];
+        engine.set_parameters(true, 3, 0, 0.5, false, false);
+        assert_eq!(engine.process(&input, &mut out, true), input.len());
+        assert_eq!(out, input);
     }
 }

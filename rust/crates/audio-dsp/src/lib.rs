@@ -6,10 +6,12 @@
 //!   `sound/equalizer/engine/CustomEqualizerAudioProcessor.kt` -> [`biquad`], [`eq`]
 //! - `sound/processors/VolumeNormalizationAudioProcessor.kt` -> [`normalizer`]
 //! - `sound/processors/SilenceDetectorAudioProcessor.kt` -> [`silence`]
+//! - `sound/processors/DolbyAtmosAudioProcessor.kt` -> [`atmos`]
 //!
 //! All constants are carried over unchanged from the Kotlin code. The ExoPlayer
 //! `AudioProcessor` shells (buffer handling, configure/flush lifecycle) are not in this crate.
 
+pub mod atmos;
 pub mod biquad;
 pub mod eq;
 pub mod normalizer;

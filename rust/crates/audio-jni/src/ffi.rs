@@ -4,8 +4,8 @@
 //! shim catches panics so nothing unwinds across the FFI boundary; failures return a sentinel
 //! (0, false or -1) and Kotlin falls back to its own path.
 
-use crate::engine::{profile_from_arrays, EqEngine, NormalizerEngine, ReverbEngine, SilenceEngine};
-use jni::objects::{JBooleanArray, JByteBuffer, JClass, JDoubleArray, JIntArray};
+use crate::engine::{profile_from_arrays, AtmosEngine, EqEngine, NormalizerEngine, ReverbEngine, SilenceEngine};
+use jni::objects::{JBooleanArray, JByteBuffer, JClass, JDoubleArray, JFloatArray, JIntArray};
 use jni::sys::{jboolean, jdouble, jfloat, jint, jlong, JNI_FALSE, JNI_TRUE};
 use jni::JNIEnv;
 use std::panic::{catch_unwind, AssertUnwindSafe};
@@ -372,5 +372,113 @@ pub extern "system" fn Java_com_wavlin_music_sound_nativeaudio_NativeAudio_silen
         // SAFETY: the range was bounds-checked against the buffer; it is only read.
         let src = unsafe { std::slice::from_raw_parts(inp.0, inp.1) };
         jint::try_from(engine.analyze(src, instant_mode != JNI_FALSE)).unwrap_or(-1)
+    })
+}
+
+#[no_mangle]
+pub extern "system" fn Java_com_wavlin_music_sound_nativeaudio_NativeAudio_atmosCreate(_env: JNIEnv, _class: JClass) -> jlong {
+    guard(0, || create(AtmosEngine::new()))
+}
+
+#[no_mangle]
+pub extern "system" fn Java_com_wavlin_music_sound_nativeaudio_NativeAudio_atmosDestroy(_env: JNIEnv, _class: JClass, handle: jlong) {
+    // SAFETY: Kotlin destroys each handle exactly once, after the last use.
+    guard((), || unsafe { destroy::<AtmosEngine>(handle) })
+}
+
+#[no_mangle]
+pub extern "system" fn Java_com_wavlin_music_sound_nativeaudio_NativeAudio_atmosSetParameters(
+    _env: JNIEnv,
+    _class: JClass,
+    handle: jlong,
+    enabled: jboolean,
+    dialogue_level: jint,
+    stereo_level: jint,
+    volume: jfloat,
+    immersive: jboolean,
+    speaker: jboolean,
+) {
+    guard((), || {
+        // SAFETY: see `engine_ref`.
+        if let Some(e) = unsafe { engine_ref::<AtmosEngine>(handle) } {
+            e.set_parameters(enabled != JNI_FALSE, dialogue_level, stereo_level, volume, immersive != JNI_FALSE, speaker != JNI_FALSE);
+        }
+    })
+}
+
+/// `gains_db` must hold exactly 10 values. Returns false when it does not (old curve kept).
+#[no_mangle]
+pub extern "system" fn Java_com_wavlin_music_sound_nativeaudio_NativeAudio_atmosSetGraphicEq(env: JNIEnv, _class: JClass, handle: jlong, gains_db: JFloatArray) -> jboolean {
+    let ok = guard(false, || {
+        // SAFETY: see `engine_ref`.
+        let Some(engine) = (unsafe { engine_ref::<AtmosEngine>(handle) }) else { return false };
+        let Ok(len) = env.get_array_length(&gains_db) else { return false };
+        let Ok(len) = usize::try_from(len) else { return false };
+        let mut gains = vec![0.0f32; len];
+        if env.get_float_array_region(&gains_db, 0, &mut gains).is_err() {
+            return false;
+        }
+        engine.set_graphic_eq(&gains)
+    });
+    if ok { JNI_TRUE } else { JNI_FALSE }
+}
+
+#[no_mangle]
+pub extern "system" fn Java_com_wavlin_music_sound_nativeaudio_NativeAudio_atmosConfigure(
+    _env: JNIEnv,
+    _class: JClass,
+    handle: jlong,
+    sample_rate: jint,
+    channel_count: jint,
+) -> jboolean {
+    let ok = guard(false, || {
+        // SAFETY: see `engine_ref`.
+        unsafe { engine_ref::<AtmosEngine>(handle) }.map_or(false, |e| e.configure(sample_rate, channel_count))
+    });
+    if ok { JNI_TRUE } else { JNI_FALSE }
+}
+
+#[no_mangle]
+pub extern "system" fn Java_com_wavlin_music_sound_nativeaudio_NativeAudio_atmosClearState(_env: JNIEnv, _class: JClass, handle: jlong) {
+    guard((), || {
+        // SAFETY: see `engine_ref`.
+        if let Some(e) = unsafe { engine_ref::<AtmosEngine>(handle) } {
+            e.clear_state();
+        }
+    })
+}
+
+#[no_mangle]
+pub extern "system" fn Java_com_wavlin_music_sound_nativeaudio_NativeAudio_atmosAppliedSpeaker(_env: JNIEnv, _class: JClass, handle: jlong) -> jboolean {
+    let applied = guard(false, || {
+        // SAFETY: see `engine_ref`.
+        unsafe { engine_ref::<AtmosEngine>(handle) }.map_or(false, |e| e.applied_speaker())
+    });
+    if applied { JNI_TRUE } else { JNI_FALSE }
+}
+
+/// Returns the bytes written to `output`, or -1 on any failure (Kotlin then runs its own DSP).
+#[no_mangle]
+pub extern "system" fn Java_com_wavlin_music_sound_nativeaudio_NativeAudio_atmosProcess(
+    env: JNIEnv,
+    _class: JClass,
+    handle: jlong,
+    input: JByteBuffer,
+    input_offset: jint,
+    length: jint,
+    output: JByteBuffer,
+    is_float: jboolean,
+) -> jint {
+    guard(-1, || {
+        // SAFETY: see `engine_ref`.
+        let Some(engine) = (unsafe { engine_ref::<AtmosEngine>(handle) }) else { return -1 };
+        let Some(inp) = direct_range(&env, &input, input_offset, length) else { return -1 };
+        let Some(out) = direct_range(&env, &output, 0, length) else { return -1 };
+        if ranges_overlap(inp, out) {
+            return -1;
+        }
+        // SAFETY: both ranges were bounds-checked against their buffers and do not overlap.
+        let (src, dst) = unsafe { (std::slice::from_raw_parts(inp.0, inp.1), std::slice::from_raw_parts_mut(out.0, out.1)) };
+        jint::try_from(engine.process(src, dst, is_float != JNI_FALSE)).unwrap_or(-1)
     })
 }
