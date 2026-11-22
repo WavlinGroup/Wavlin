@@ -183,7 +183,7 @@ import com.wavlin.music.db.entities.LyricsEntity
 import com.wavlin.music.core.ext.metadata
 import com.wavlin.music.core.ext.togglePlayPause
 import com.wavlin.music.core.ext.toggleRepeatMode
-import com.wavlin.music.listentogether.RoomRole
+import com.wavlin.music.integration.together.RoomRole
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.ui.component.BottomSheet
 import com.wavlin.music.ui.component.BottomSheetState

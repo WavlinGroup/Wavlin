@@ -18,8 +18,8 @@ import androidx.media3.datasource.cache.SimpleCache
 import com.wavlin.music.core.config.MaxSongCacheSizeKey
 import com.wavlin.music.db.InternalDatabase
 import com.wavlin.music.db.MusicDatabase
-import com.wavlin.music.listentogether.ListenTogetherClient
-import com.wavlin.music.listentogether.ListenTogetherManager
+import com.wavlin.music.integration.together.ListenTogetherClient
+import com.wavlin.music.integration.together.ListenTogetherManager
 import com.wavlin.music.core.util.dataStore
 import com.wavlin.music.core.util.get
 import dagger.Module

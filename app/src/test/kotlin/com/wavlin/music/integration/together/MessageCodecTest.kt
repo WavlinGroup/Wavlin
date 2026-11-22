@@ -1,4 +1,4 @@
-package com.wavlin.music.listentogether
+package com.wavlin.music.integration.together
 
 import com.google.protobuf.ByteString
 import com.wavlin.music.listentogether.proto.Listentogether

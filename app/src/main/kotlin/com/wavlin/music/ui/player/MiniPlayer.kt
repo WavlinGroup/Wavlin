@@ -108,7 +108,7 @@ import com.wavlin.music.core.config.SelectedThemeColorKey
 import com.wavlin.music.core.config.SwipeThumbnailKey
 import com.wavlin.music.core.config.ThumbnailCornerRadius
 import com.wavlin.music.db.entities.ArtistEntity
-import com.wavlin.music.listentogether.ListenTogetherManager
+import com.wavlin.music.integration.together.ListenTogetherManager
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.playback.CastConnectionHandler
 import com.wavlin.music.playback.PlayerConnection

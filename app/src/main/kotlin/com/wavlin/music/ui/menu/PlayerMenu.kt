@@ -88,8 +88,8 @@ import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
 import com.wavlin.music.core.config.ListItemHeight
 import com.wavlin.music.core.config.VarispeedKey
-import com.wavlin.music.listentogether.ConnectionState
-import com.wavlin.music.listentogether.ListenTogetherEvent
+import com.wavlin.music.integration.together.ConnectionState
+import com.wavlin.music.integration.together.ListenTogetherEvent
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.playback.ExoDownloadService
 import com.wavlin.music.db.entities.Song
@@ -177,8 +177,8 @@ fun PlayerMenu(
     }
 
     val listenTogetherManager = LocalListenTogetherManager.current
-    val listenTogetherRoleState = listenTogetherManager?.role?.collectAsStateWithLifecycle(initialValue = com.wavlin.music.listentogether.RoomRole.NONE)
-    val isListenTogetherGuest = listenTogetherRoleState?.value == com.wavlin.music.listentogether.RoomRole.GUEST
+    val listenTogetherRoleState = listenTogetherManager?.role?.collectAsStateWithLifecycle(initialValue = com.wavlin.music.integration.together.RoomRole.NONE)
+    val isListenTogetherGuest = listenTogetherRoleState?.value == com.wavlin.music.integration.together.RoomRole.GUEST
     val pendingSuggestions by listenTogetherManager?.pendingSuggestions?.collectAsStateWithLifecycle(initialValue = emptyList())
         ?: remember { mutableStateOf(emptyList()) }
 

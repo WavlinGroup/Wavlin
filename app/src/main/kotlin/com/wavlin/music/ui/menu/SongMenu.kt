@@ -592,7 +592,7 @@ fun SongMenu(
                                 onClick = {
                                     val durationMs = if (song.song.duration > 0) song.song.duration.toLong() * 1000 else 180000L
                                     val trackInfo =
-                                        com.wavlin.music.listentogether.TrackInfo(
+                                        com.wavlin.music.integration.together.TrackInfo(
                                             id = song.id,
                                             title = song.song.title,
                                             artist = orderedArtists.joinToString(", ") { it.name },

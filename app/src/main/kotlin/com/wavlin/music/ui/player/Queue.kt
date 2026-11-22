@@ -135,7 +135,7 @@ import com.wavlin.music.core.config.UseNewPlayerDesignKey
 import com.wavlin.music.core.ext.metadata
 import com.wavlin.music.core.ext.move
 import com.wavlin.music.core.ext.toggleRepeatMode
-import com.wavlin.music.listentogether.RoomRole
+import com.wavlin.music.integration.together.RoomRole
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.ui.component.ActionPromptDialog
 import com.wavlin.music.ui.component.BottomSheet
@@ -191,7 +191,7 @@ fun Queue(
 
     // Listen Together state (reactive)
     val listenTogetherManager = LocalListenTogetherManager.current
-    val listenTogetherRoleState = listenTogetherManager?.role?.collectAsStateWithLifecycle(initialValue = com.wavlin.music.listentogether.RoomRole.NONE)
+    val listenTogetherRoleState = listenTogetherManager?.role?.collectAsStateWithLifecycle(initialValue = com.wavlin.music.integration.together.RoomRole.NONE)
     val isListenTogetherGuest = listenTogetherRoleState?.value == RoomRole.GUEST
 
     val playerConnection = LocalPlayerConnection.current ?: return

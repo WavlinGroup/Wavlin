@@ -6,7 +6,7 @@
 package com.wavlin.music.viewmodels
 
 import androidx.lifecycle.ViewModel
-import com.wavlin.music.listentogether.ListenTogetherManager
+import com.wavlin.music.integration.together.ListenTogetherManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

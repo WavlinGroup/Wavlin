@@ -84,7 +84,7 @@ import com.wavlin.music.core.config.PlayerHorizontalPadding
 import com.wavlin.music.core.config.SeekExtraSeconds
 import com.wavlin.music.core.config.SwipeThumbnailKey
 import com.wavlin.music.core.config.ThumbnailCornerRadius
-import com.wavlin.music.listentogether.RoomRole
+import com.wavlin.music.integration.together.RoomRole
 import com.wavlin.music.ui.component.CastButton
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.core.util.rememberPreference

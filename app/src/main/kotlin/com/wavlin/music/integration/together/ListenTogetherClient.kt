@@ -3,7 +3,7 @@
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
-package com.wavlin.music.listentogether
+package com.wavlin.music.integration.together
 
 import android.Manifest
 import android.app.NotificationChannel
@@ -63,6 +63,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
 import javax.inject.Inject
 import javax.inject.Singleton
+import com.wavlin.music.listentogether.ListenTogetherActionReceiver
 
 /**
  * Connection state for the Listen Together feature

@@ -1,4 +1,4 @@
-package com.wavlin.music.listentogether
+package com.wavlin.music.integration.together
 
 import kotlin.math.max
 

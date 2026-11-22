@@ -3,7 +3,7 @@
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
-package com.wavlin.music.listentogether
+package com.wavlin.music.integration.together
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json

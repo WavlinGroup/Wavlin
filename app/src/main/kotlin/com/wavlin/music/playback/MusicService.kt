@@ -300,7 +300,7 @@ class MusicService :
     lateinit var widgetManager: WavlinWidgetManager
 
     @Inject
-    lateinit var listenTogetherManager: com.wavlin.music.listentogether.ListenTogetherManager
+    lateinit var listenTogetherManager: com.wavlin.music.integration.together.ListenTogetherManager
 
     private lateinit var audioManager: AudioManager
     private var audioFocusRequest: AudioFocusRequest? = null
