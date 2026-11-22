@@ -123,6 +123,7 @@ object FlutterVisuals {
 private fun FlutterSurface(
     visual: VisualEngine,
     modifier: Modifier,
+    opaque: Boolean = true,
 ) {
     val context = LocalContext.current
     val attached = remember { arrayOfNulls<FlutterView>(1) }
@@ -138,7 +139,7 @@ private fun FlutterSurface(
     AndroidView(
         modifier = modifier,
         factory = { ctx ->
-            FlutterView(ctx, FlutterTextureView(ctx)).also { view ->
+            FlutterView(ctx, FlutterTextureView(ctx).also { it.isOpaque = opaque }).also { view ->
                 view.setBackgroundColor(AndroidColor.TRANSPARENT)
                 visual.ensureEngine(ctx)?.let { engine ->
                     view.attachToFlutterEngine(engine)
@@ -177,7 +178,7 @@ fun FlutterReverbVisualizer(
             ),
         )
     }
-    FlutterSurface(visual, modifier.fillMaxWidth().height(130.dp))
+    FlutterSurface(visual, modifier.fillMaxWidth().height(130.dp), opaque = false)
 }
 
 /** [shapes] are "circle", "rect" or "line". The caller must hold [FlutterVisuals.acquireWrappedBackground]. */
