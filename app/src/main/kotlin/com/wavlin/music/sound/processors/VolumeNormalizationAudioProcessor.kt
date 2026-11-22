@@ -3,6 +3,8 @@ package com.wavlin.music.sound.processors
 import androidx.media3.common.C
 import androidx.media3.common.audio.AudioProcessor
 import androidx.media3.common.util.UnstableApi
+import com.wavlin.music.sound.nativeaudio.DirectInputStage
+import com.wavlin.music.sound.nativeaudio.NativeAudio
 import timber.log.Timber
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -18,11 +20,16 @@ class VolumeNormalizationAudioProcessor : AudioProcessor {
     private var bytesPerSample = 0
     private var isActive = false
 
+    // Rust DSP handle (0 = library missing, the Kotlin DSP below is used instead)
+    private val nativeHandle: Long = if (NativeAudio.isAvailable) NativeAudio.normalizerCreate() else 0L
+    private val inputStage = DirectInputStage()
+
     @Volatile
     var enabled = false
         set(value) {
             if (field != value) {
                 field = value
+                if (nativeHandle != 0L) NativeAudio.normalizerSetEnabled(nativeHandle, value)
                 Timber.tag(TAG).d("Normalization processor enabled: $value")
             }
         }
@@ -45,6 +52,7 @@ class VolumeNormalizationAudioProcessor : AudioProcessor {
         if (currentGain.targetGainMb != gainMb) {
             val linearGain = 10.0.pow(gainMb / 2000.0)
             currentGain = GainState(gainMb, linearGain)
+            if (nativeHandle != 0L) NativeAudio.normalizerSetTargetGain(nativeHandle, gainMb)
             Timber.tag(TAG).d("Target gain set to $gainMb mB (Linear multiplier: $linearGain)")
         }
     }
@@ -79,6 +87,8 @@ class VolumeNormalizationAudioProcessor : AudioProcessor {
 
         val sampleCount = inputSize / bytesPerSample
         val out = replaceOutputBuffer(sampleCount * bytesPerSample)
+
+        if (nativeHandle != 0L && processNative(inputBuffer, out, sampleCount * bytesPerSample)) return
 
         inputBuffer.order(ByteOrder.LITTLE_ENDIAN)
         out.order(ByteOrder.LITTLE_ENDIAN)
@@ -188,6 +198,29 @@ class VolumeNormalizationAudioProcessor : AudioProcessor {
             outputBuffer.clear()
         }
         return outputBuffer
+    }
+
+    /** Runs the Rust gain stage into [out]. Returns false when the Kotlin path must run instead. */
+    private fun processNative(inputBuffer: ByteBuffer, out: ByteBuffer, length: Int): Boolean {
+        val formatCode = when (encoding) {
+            C.ENCODING_PCM_16BIT -> NativeAudio.FORMAT_S16
+            C.ENCODING_PCM_24BIT -> NativeAudio.FORMAT_S24
+            C.ENCODING_PCM_32BIT -> NativeAudio.FORMAT_S32
+            C.ENCODING_PCM_FLOAT -> NativeAudio.FORMAT_FLOAT
+            else -> return false
+        }
+        val source = inputStage.prepare(inputBuffer)
+        val written = NativeAudio.normalizerProcess(nativeHandle, source, inputStage.offset, length, out, formatCode)
+        if (written < 0 || written > out.capacity()) return false
+        inputBuffer.position(inputBuffer.position() + written)
+        out.position(0)
+        out.limit(written)
+        return true
+    }
+
+    @Suppress("unused", "ProtectedInFinal")
+    protected fun finalize() {
+        if (nativeHandle != 0L) NativeAudio.normalizerDestroy(nativeHandle)
     }
 
     private fun read24Bit(buffer: ByteBuffer): Int {

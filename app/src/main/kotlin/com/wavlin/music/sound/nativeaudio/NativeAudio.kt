@@ -67,4 +67,40 @@ object NativeAudio {
     @JvmStatic external fun eqDisable(handle: Long)
     @JvmStatic external fun eqResetState(handle: Long)
     @JvmStatic external fun eqProcess(handle: Long, input: ByteBuffer, inputOffset: Int, length: Int, output: ByteBuffer): Int
+
+    /** Sample format codes for [normalizerProcess]. These are this bridge's own codes, not Media3 constants. */
+    const val FORMAT_S16 = 0
+    const val FORMAT_S24 = 1
+    const val FORMAT_S32 = 2
+    const val FORMAT_FLOAT = 3
+
+    @JvmStatic external fun normalizerCreate(): Long
+    @JvmStatic external fun normalizerDestroy(handle: Long)
+    @JvmStatic external fun normalizerSetEnabled(handle: Long, enabled: Boolean)
+    @JvmStatic external fun normalizerSetTargetGain(handle: Long, gainMb: Int)
+
+    /** [length] must be a whole number of samples. Returns the bytes written to [output], or -1. */
+    @JvmStatic external fun normalizerProcess(
+        handle: Long,
+        input: ByteBuffer,
+        inputOffset: Int,
+        length: Int,
+        output: ByteBuffer,
+        formatCode: Int,
+    ): Int
+
+    @JvmStatic external fun silenceCreate(minSilenceDurationUs: Long, silenceThreshold: Int): Long
+    @JvmStatic external fun silenceDestroy(handle: Long)
+    @JvmStatic external fun silenceConfigure(handle: Long, sampleRate: Int, channelCount: Int): Boolean
+    @JvmStatic external fun silenceClearState(handle: Long)
+    @JvmStatic external fun silenceIsSilent(handle: Long): Boolean
+
+    /** Reads 16-bit PCM without modifying it. Returns the long-silence notifications to deliver, or -1. */
+    @JvmStatic external fun silenceAnalyze(
+        handle: Long,
+        input: ByteBuffer,
+        inputOffset: Int,
+        length: Int,
+        instantMode: Boolean,
+    ): Int
 }

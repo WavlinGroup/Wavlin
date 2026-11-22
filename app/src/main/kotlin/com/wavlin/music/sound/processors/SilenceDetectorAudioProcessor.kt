@@ -8,6 +8,8 @@ package com.wavlin.music.sound.processors
 import androidx.media3.common.C
 import androidx.media3.common.audio.AudioProcessor
 import androidx.media3.common.util.UnstableApi
+import com.wavlin.music.sound.nativeaudio.DirectInputStage
+import com.wavlin.music.sound.nativeaudio.NativeAudio
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import kotlin.math.abs
@@ -43,6 +45,14 @@ class SilenceDetectorAudioProcessor(
 
     private var notifiedThisSilence = false
 
+    // Rust DSP handle (0 = library missing, the Kotlin detector below is used instead). The silence
+    // state lives in Rust while the native path works; [usingNative] says which side holds it.
+    private val nativeHandle: Long =
+        if (NativeAudio.isAvailable) NativeAudio.silenceCreate(minSilenceDurationUs, silenceThreshold) else 0L
+    private val inputStage = DirectInputStage()
+    @Volatile
+    private var usingNative = false
+
     override fun configure(inputAudioFormat: AudioProcessor.AudioFormat): AudioProcessor.AudioFormat {
         sampleRate = inputAudioFormat.sampleRate
         channelCount = inputAudioFormat.channelCount
@@ -50,6 +60,10 @@ class SilenceDetectorAudioProcessor(
 
         if (encoding != C.ENCODING_PCM_16BIT) {
             throw AudioProcessor.UnhandledAudioFormatException(inputAudioFormat)
+        }
+
+        if (nativeHandle != 0L) {
+            NativeAudio.silenceConfigure(nativeHandle, sampleRate, channelCount)
         }
 
         return inputAudioFormat
@@ -64,15 +78,44 @@ class SilenceDetectorAudioProcessor(
         }
 
         // Analyze the incoming PCM for silence without mutating the buffer position.
+        analyze(inputBuffer)
+
+        val out = replaceOutputBuffer(inputBuffer.remaining())
+        out.put(inputBuffer)
+        out.flip()
+    }
+
+    private fun analyze(inputBuffer: ByteBuffer) {
+        if (nativeHandle != 0L && analyzeNative(inputBuffer)) {
+            if (!usingNative) {
+                clearSilenceState()
+                usingNative = true
+            }
+            return
+        }
+        if (usingNative) {
+            NativeAudio.silenceClearState(nativeHandle)
+            usingNative = false
+        }
         if (instantModeEnabled && sampleRate > 0 && channelCount > 0) {
             detectSilence(inputBuffer)
         } else {
             clearSilenceState()
         }
+    }
 
-        val out = replaceOutputBuffer(inputBuffer.remaining())
-        out.put(inputBuffer)
-        out.flip()
+    /** Returns false when the Kotlin detector must analyze this buffer instead. */
+    private fun analyzeNative(inputBuffer: ByteBuffer): Boolean {
+        if (!instantModeEnabled) {
+            NativeAudio.silenceClearState(nativeHandle)
+            return true
+        }
+        val length = inputBuffer.remaining()
+        val source = inputStage.prepare(inputBuffer)
+        val notifications = NativeAudio.silenceAnalyze(nativeHandle, source, inputStage.offset, length, instantModeEnabled)
+        if (notifications < 0) return false
+        repeat(notifications) { onLongSilence() }
+        return true
     }
 
     private fun detectSilence(inputBuffer: ByteBuffer) {
@@ -116,9 +159,11 @@ class SilenceDetectorAudioProcessor(
 
     fun resetTracking() {
         clearSilenceState()
+        if (nativeHandle != 0L) NativeAudio.silenceClearState(nativeHandle)
     }
 
-    fun isCurrentlySilent(): Boolean = inSilence
+    fun isCurrentlySilent(): Boolean =
+        if (usingNative) NativeAudio.silenceIsSilent(nativeHandle) else inSilence
 
     override fun queueEndOfStream() {
         inputEnded = true
@@ -137,6 +182,7 @@ class SilenceDetectorAudioProcessor(
         outputBuffer = EMPTY_BUFFER
         inputEnded = false
         clearSilenceState()
+        if (nativeHandle != 0L) NativeAudio.silenceClearState(nativeHandle)
     }
 
     @Deprecated("Deprecated in AudioProcessor")
@@ -154,6 +200,11 @@ class SilenceDetectorAudioProcessor(
             outputBuffer.clear()
         }
         return outputBuffer
+    }
+
+    @Suppress("unused", "ProtectedInFinal")
+    protected fun finalize() {
+        if (nativeHandle != 0L) NativeAudio.silenceDestroy(nativeHandle)
     }
 
     companion object {
