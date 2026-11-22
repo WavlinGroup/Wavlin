@@ -906,6 +906,10 @@ fun BottomSheetPlayer(
                     VideoCanvasPlayer(
                         videoUrl = canvasBackdropUrl,
                         modifier = Modifier.fillMaxSize(),
+                        paused =
+                            menuState.isVisible &&
+                                menuState.heightFraction < 1f &&
+                                com.wavlin.music.ui.kit.LocalPlayerGlassBackdrop.current != null,
                     )
                     Box(
                         modifier =

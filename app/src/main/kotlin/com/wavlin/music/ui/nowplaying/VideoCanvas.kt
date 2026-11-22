@@ -45,9 +45,13 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.wavlin.music.models.MediaMetadata
+import kotlinx.coroutines.delay
 
 /** Inactivity before the player controls fade out and the canvas is shown on its own. */
 const val CANVAS_IDLE_TIMEOUT_MS = 5_000L
+
+/** Wait after the menu sheet starts closing before the canvas video resumes, so its slide-out stays smooth. */
+private const val CANVAS_RESUME_DELAY_MS = 350L
 
 /**
  * Muted, endlessly looping canvas video on its own [ExoPlayer].
@@ -59,10 +63,11 @@ const val CANVAS_IDLE_TIMEOUT_MS = 5_000L
 fun VideoCanvasPlayer(
     videoUrl: String,
     modifier: Modifier = Modifier,
+    paused: Boolean = false,
 ) {
     // A fresh player, surface and fade-in per video: reusing one across songs left the next canvas invisible
     androidx.compose.runtime.key(videoUrl) {
-        VideoCanvasPlayerContent(videoUrl = videoUrl, modifier = modifier)
+        VideoCanvasPlayerContent(videoUrl = videoUrl, modifier = modifier, paused = paused)
     }
 }
 
@@ -70,6 +75,7 @@ fun VideoCanvasPlayer(
 private fun VideoCanvasPlayerContent(
     videoUrl: String,
     modifier: Modifier = Modifier,
+    paused: Boolean = false,
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
     var firstFrameShown by remember(videoUrl) { mutableStateOf(false) }
@@ -105,7 +111,17 @@ private fun VideoCanvasPlayerContent(
     LaunchedEffect(videoUrl) {
         exoPlayer.setMediaItem(MediaItem.fromUri(videoUrl))
         exoPlayer.prepare()
-        exoPlayer.playWhenReady = true
+        exoPlayer.playWhenReady = !paused
+    }
+
+    // The glass menu sheet re-blurs the backdrop on every new video frame; holding the frame keeps it smooth.
+    LaunchedEffect(paused) {
+        if (paused) {
+            exoPlayer.playWhenReady = false
+        } else {
+            delay(CANVAS_RESUME_DELAY_MS)
+            exoPlayer.playWhenReady = true
+        }
     }
 
     AndroidView(
