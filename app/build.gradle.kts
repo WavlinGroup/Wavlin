@@ -11,6 +11,7 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import org.gradle.process.ExecOperations
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.io.ByteArrayOutputStream
 import java.net.URL
 import java.util.Properties
 import javax.inject.Inject
@@ -66,8 +67,8 @@ abstract class BuildRustAudioTask : DefaultTask() {
             execOperations.exec {
                 commandLine("cargo", "ndk", "--version")
                 isIgnoreExitValue = true
-                standardOutput = java.io.ByteArrayOutputStream()
-                errorOutput = java.io.ByteArrayOutputStream()
+                standardOutput = ByteArrayOutputStream()
+                errorOutput = ByteArrayOutputStream()
             }.exitValue == 0
         } catch (e: Exception) {
             false
