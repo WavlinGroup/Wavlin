@@ -10,17 +10,17 @@ use lyrics_core::Packed;
 use std::panic::{catch_unwind, AssertUnwindSafe};
 use std::ptr::null_mut;
 
-type JniResult<T> = jni::errors::Result<T>;
+pub(crate) type JniResult<T> = jni::errors::Result<T>;
 
-fn read_string(env: &mut JNIEnv, s: &JString) -> Option<String> {
+pub(crate) fn read_string(env: &mut JNIEnv, s: &JString) -> Option<String> {
     env.get_string(s).ok().map(String::from)
 }
 
-fn len_i32(len: usize) -> JniResult<i32> {
+pub(crate) fn len_i32(len: usize) -> JniResult<i32> {
     i32::try_from(len).map_err(|_| jni::errors::Error::JavaException)
 }
 
-fn string_array<'l>(env: &mut JNIEnv<'l>, items: &[Option<&str>]) -> JniResult<JObjectArray<'l>> {
+pub(crate) fn string_array<'l>(env: &mut JNIEnv<'l>, items: &[Option<&str>]) -> JniResult<JObjectArray<'l>> {
     let array = env.new_object_array(len_i32(items.len())?, "java/lang/String", JObject::null())?;
     for (i, item) in items.iter().enumerate() {
         if let Some(text) = item {
@@ -98,7 +98,7 @@ fn build_parse_result<'l>(env: &mut JNIEnv<'l>, p: &Packed) -> JniResult<JObject
     Ok(out)
 }
 
-fn guarded<T>(env: &mut JNIEnv, default: T, f: impl FnOnce(&mut JNIEnv) -> JniResult<Option<T>>) -> T {
+pub(crate) fn guarded<T>(env: &mut JNIEnv, default: T, f: impl FnOnce(&mut JNIEnv) -> JniResult<Option<T>>) -> T {
     match catch_unwind(AssertUnwindSafe(|| f(env))) {
         Ok(Ok(Some(value))) => value,
         Ok(Err(_)) | Err(_) => {

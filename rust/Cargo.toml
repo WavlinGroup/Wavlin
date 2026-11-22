@@ -3,6 +3,7 @@ resolver = "2"
 members = [
     "crates/audio-dsp",
     "crates/audio-jni",
+    "crates/cipher-core",
     "crates/lyrics-core",
 ]
 
