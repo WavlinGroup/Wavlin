@@ -1436,6 +1436,8 @@ fun HomeScreen(
                                             3
                                         }
                                     val itemsPerPage = columns * rows
+                                    val usedRows = if (items.size < itemsPerPage) (items.size + columns) / columns else rows
+                                    val randomizeIndex = if (items.size < itemsPerPage) items.size else itemsPerPage - 1
                                     val itemWidth = availableWidth / columns
 
                                     val pagerState = rememberPagerState(pageCount = { (items.size + itemsPerPage - 1) / itemsPerPage })
@@ -1452,18 +1454,18 @@ fun HomeScreen(
                                             modifier =
                                                 Modifier
                                                     .fillMaxWidth()
-                                                    .height(itemWidth * rows),
+                                                    .height(itemWidth * usedRows),
                                         ) { page ->
                                             val pageStartIndex = page * itemsPerPage
                                             val pageItems = remember(items, pageStartIndex, itemsPerPage) { items.drop(pageStartIndex).take(itemsPerPage) }
 
                                             Column(modifier = Modifier.fillMaxSize()) {
-                                                for (row in 0 until rows) {
+                                                for (row in 0 until usedRows) {
                                                     Row(modifier = Modifier.fillMaxWidth()) {
                                                         for (col in 0 until columns) {
                                                             val itemIndex = row * columns + col
 
-                                                            val isRandomizeSlot = (page == 0 && itemIndex == itemsPerPage - 1)
+                                                            val isRandomizeSlot = (page == 0 && itemIndex == randomizeIndex)
 
                                                             if (isRandomizeSlot) {
                                                                 Box(

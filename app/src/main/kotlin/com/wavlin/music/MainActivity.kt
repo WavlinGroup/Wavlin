@@ -1190,6 +1190,7 @@ class MainActivity : ComponentActivity() {
                                                 )
                                             }
                                         },
+                                        expandedHeight = if (pinkWallpaper) 64.dp else 52.dp,
                                         scrollBehavior = topAppBarScrollBehavior,
                                         colors =
                                             TopAppBarDefaults.topAppBarColors(
