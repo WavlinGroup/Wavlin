@@ -7,6 +7,7 @@ package com.wavlin.music.sound.processors
 
 import androidx.media3.common.audio.AudioProcessor
 import androidx.media3.common.util.UnstableApi
+import com.wavlin.music.sound.nativeaudio.NativeAudio
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
@@ -62,6 +63,10 @@ class ReverbAudioProcessor : AudioProcessor {
     private var isFloat         = true   // PCM_FLOAT → true, PCM_16BIT → false
     private var bytesPerSample  = 4      // 4 for float, 2 for s16, 0 for unsupported
 
+    // Rust DSP handle (0 = library missing, Kotlin DSP below is used instead)
+    private val nativeHandle: Long = if (NativeAudio.isAvailable) NativeAudio.reverbCreate() else 0L
+    private var inputStage: ByteBuffer = EMPTY   // copy target for non-direct input buffers
+
     private var buffer: ByteBuffer       = EMPTY   // reusable storage
     private var outputBuffer: ByteBuffer = EMPTY   // pending output handed out by getOutput()
     private var inputEnded               = false
@@ -81,9 +86,13 @@ class ReverbAudioProcessor : AudioProcessor {
         damp2 = 1.0f - damp1
         wet   = wetLevel.coerceIn(0f, 1f) * WET_SCALE
         pushParamsToCombFilters()
+        if (nativeHandle != 0L) NativeAudio.reverbSetParameters(nativeHandle, room, damping, wetLevel)
     }
 
-    fun setEnabled(enabled: Boolean) { active = enabled }
+    fun setEnabled(enabled: Boolean) {
+        active = enabled
+        if (nativeHandle != 0L) NativeAudio.reverbSetEnabled(nativeHandle, enabled)
+    }
 
     // ─────────────────────────────────────────────────────────────────────────
     // AudioProcessor
@@ -99,6 +108,9 @@ class ReverbAudioProcessor : AudioProcessor {
         if (inputAudioFormat.sampleRate != sampleRate) {
             sampleRate = inputAudioFormat.sampleRate
             rebuildFilters()
+        }
+        if (nativeHandle != 0L) {
+            NativeAudio.reverbConfigure(nativeHandle, inputAudioFormat.sampleRate, inputAudioFormat.channelCount)
         }
         return inputAudioFormat
     }
@@ -124,6 +136,8 @@ class ReverbAudioProcessor : AudioProcessor {
             outputBuffer = buffer
             return
         }
+
+        if (nativeHandle != 0L && processNative(inputBuffer, remaining)) return
 
         val frameBytes = bytesPerSample * channelCount
         val frames = remaining / frameBytes
@@ -206,6 +220,7 @@ class ReverbAudioProcessor : AudioProcessor {
         inputEnded   = false
         outputBuffer = EMPTY
         clearFilterState()
+        if (nativeHandle != 0L) NativeAudio.reverbClearState(nativeHandle)
     }
 
     /** Releases audio state only. Settings ([setEnabled]/[setParameters]) are deliberately kept. */
@@ -218,6 +233,37 @@ class ReverbAudioProcessor : AudioProcessor {
     // ─────────────────────────────────────────────────────────────────────────
     // Internals
     // ─────────────────────────────────────────────────────────────────────────
+
+    /** Runs the Rust DSP on [inputBuffer] into [buffer]. Returns false when the Kotlin path must run. */
+    private fun processNative(inputBuffer: ByteBuffer, remaining: Int): Boolean {
+        val source: ByteBuffer
+        val sourceOffset: Int
+        if (inputBuffer.isDirect) {
+            source = inputBuffer
+            sourceOffset = inputBuffer.position()
+        } else {
+            if (inputStage.capacity() < remaining) {
+                inputStage = ByteBuffer.allocateDirect(remaining).order(ByteOrder.nativeOrder())
+            } else {
+                inputStage.clear()
+            }
+            inputStage.put(inputBuffer.duplicate())
+            source = inputStage
+            sourceOffset = 0
+        }
+        val written = NativeAudio.reverbProcess(nativeHandle, source, sourceOffset, remaining, buffer, isFloat)
+        if (written < 0) return false
+        inputBuffer.position(inputBuffer.limit())
+        buffer.position(0)
+        buffer.limit(written)
+        outputBuffer = buffer
+        return true
+    }
+
+    @Suppress("unused", "ProtectedInFinal")
+    protected fun finalize() {
+        if (nativeHandle != 0L) NativeAudio.reverbDestroy(nativeHandle)
+    }
 
     private fun toShort(v: Float): Short =
         (v * 32768f).coerceIn(-32768f, 32767f).toInt().toShort()
