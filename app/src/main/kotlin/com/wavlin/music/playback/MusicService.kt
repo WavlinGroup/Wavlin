@@ -2197,6 +2197,12 @@ class MusicService :
                 }
                 prevList.reverse() // preserve original forward order
 
+                val nativeOrder = NativeQueue.playNextOrder(prevList, orderAfter, currentIndex, insertIndex, items.size, size)
+                if (nativeOrder != null) {
+                    player.setShuffleOrder(DefaultShuffleOrder(nativeOrder, System.currentTimeMillis()))
+                    return
+                }
+
                 val existingOrder = (prevList + orderAfter).filter { it != currentIndex && it !in newIndices }
 
                 // Build new shuffle order: current -> newly inserted (in insertion order) -> rest
@@ -2874,6 +2880,11 @@ class MusicService :
         shufflePlaylistFirst: Boolean,
     ) {
         if (totalCount == 0) return
+
+        NativeQueue.shuffleOrder(currentIndex, totalCount, shufflePlaylistFirst, originalQueueSize)?.let { order ->
+            player.setShuffleOrder(DefaultShuffleOrder(order, System.currentTimeMillis()))
+            return
+        }
 
         if (shufflePlaylistFirst && originalQueueSize > 0 && originalQueueSize < totalCount) {
             // Shuffle original items and added items separately
