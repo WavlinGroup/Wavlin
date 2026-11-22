@@ -380,7 +380,11 @@ val buildRustAudio = tasks.register<BuildRustAudioTask>("buildRustAudio") {
     requireRust.set(providers.environmentVariable("WAVLIN_REQUIRE_RUST").map { it == "true" }.orElse(false))
 }
 
-android.sourceSets.getByName("main").jniLibs.srcDir(buildRustAudio.flatMap { it.outputDir })
+androidComponents {
+    onVariants { variant ->
+        variant.sources.jniLibs?.addGeneratedSourceDirectory(buildRustAudio, BuildRustAudioTask::outputDir)
+    }
+}
 
 tasks.configureEach {
     if (name.startsWith("merge") && name.endsWith("JniLibFolders")) {
