@@ -1,4 +1,4 @@
-package com.wavlin.music.recognition
+package com.wavlin.music.integration.identify
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive

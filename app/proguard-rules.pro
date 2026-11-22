@@ -172,8 +172,8 @@
 -dontwarn com.google.re2j.**
 
 # Vibra fingerprint library
--keep class com.wavlin.music.recognition.VibraSignature { *; }
--keepclassmembers class com.wavlin.music.recognition.VibraSignature {
+-keep class com.wavlin.music.integration.identify.VibraSignature { *; }
+-keepclassmembers class com.wavlin.music.integration.identify.VibraSignature {
     native <methods>;
 }
 

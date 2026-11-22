@@ -7,7 +7,7 @@
  * Special thanks to Aleksey Saenko for the music recognition implementation.
  */
 
-package com.wavlin.music.recognition
+package com.wavlin.music.integration.identify
 
 import android.Manifest
 import android.annotation.SuppressLint

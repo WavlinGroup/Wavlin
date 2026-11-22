@@ -27,6 +27,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import java.net.HttpURLConnection
 import java.net.URL
+import com.wavlin.music.integration.identify.MusicRecognitionService
 
 class RecognitionForegroundService : Service() {
     private val serviceScope = CoroutineScope(Dispatchers.Main.immediate + SupervisorJob())

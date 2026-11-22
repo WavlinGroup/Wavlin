@@ -1,4 +1,4 @@
-package com.wavlin.music.recognition
+package com.wavlin.music.integration.identify
 
 import android.util.Base64
 import timber.log.Timber

@@ -110,23 +110,23 @@ fun RecognitionScreen(
     // recognition that must not be cancelled; Success/NoMatch/Error are results pending
     // display and history saving.
     LaunchedEffect(Unit) {
-        if (com.wavlin.music.recognition.MusicRecognitionService.recognitionStatus.value
+        if (com.wavlin.music.integration.identify.MusicRecognitionService.recognitionStatus.value
                 is RecognitionStatus.Ready
         ) {
-            com.wavlin.music.recognition.MusicRecognitionService
+            com.wavlin.music.integration.identify.MusicRecognitionService
                 .reset()
         }
     }
 
     DisposableEffect(Unit) {
         onDispose {
-            com.wavlin.music.recognition.MusicRecognitionService
+            com.wavlin.music.integration.identify.MusicRecognitionService
                 .reset()
         }
     }
 
     // Observe recognition status from service for real-time updates (Listening -> Processing -> Result)
-    val recognitionStatus by com.wavlin.music.recognition.MusicRecognitionService.recognitionStatus
+    val recognitionStatus by com.wavlin.music.integration.identify.MusicRecognitionService.recognitionStatus
         .collectAsStateWithLifecycle()
 
     var hasPermission by remember {
@@ -143,7 +143,7 @@ fun RecognitionScreen(
             hasPermission = isGranted
             if (isGranted) {
                 coroutineScope.launch {
-                    com.wavlin.music.recognition.MusicRecognitionService
+                    com.wavlin.music.integration.identify.MusicRecognitionService
                         .recognize(context)
                 }
             }
@@ -152,7 +152,7 @@ fun RecognitionScreen(
     fun startRecognition() {
         if (hasPermission) {
             coroutineScope.launch {
-                com.wavlin.music.recognition.MusicRecognitionService
+                com.wavlin.music.integration.identify.MusicRecognitionService
                     .recognize(context)
             }
         } else {
@@ -162,7 +162,7 @@ fun RecognitionScreen(
 
     LaunchedEffect(Unit) {
         if (autoStart &&
-            com.wavlin.music.recognition.MusicRecognitionService.recognitionStatus.value
+            com.wavlin.music.integration.identify.MusicRecognitionService.recognitionStatus.value
                 is RecognitionStatus.Ready
         ) {
             startRecognition()
@@ -170,13 +170,13 @@ fun RecognitionScreen(
     }
 
     fun resetToReady() {
-        com.wavlin.music.recognition.MusicRecognitionService
+        com.wavlin.music.integration.identify.MusicRecognitionService
             .reset()
     }
 
     fun saveToHistory(result: RecognitionResult) {
         // Skip if the widget service already persisted this result to avoid a duplicate entry
-        if (com.wavlin.music.recognition.MusicRecognitionService.resultSavedExternally) return
+        if (com.wavlin.music.integration.identify.MusicRecognitionService.resultSavedExternally) return
         coroutineScope.launch(Dispatchers.IO) {
             database.query {
                 insert(
@@ -254,7 +254,7 @@ fun RecognitionScreen(
                     is RecognitionStatus.Listening -> {
                         ListeningState(
                             onCancel = {
-                                com.wavlin.music.recognition.MusicRecognitionService
+                                com.wavlin.music.integration.identify.MusicRecognitionService
                                     .reset()
                             },
                         )

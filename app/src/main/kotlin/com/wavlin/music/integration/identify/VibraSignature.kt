@@ -1,4 +1,4 @@
-package com.wavlin.music.recognition
+package com.wavlin.music.integration.identify
 
 /**
  * Audio fingerprint generator for Shazam-compatible signatures.
