@@ -1,0 +1,9 @@
+[package]
+name = "lyrics-core"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+description = "Wavlin lyrics core: LRC and rich-sync parsing and credit-line filtering, ported from LyricsUtils.kt"
+
+[lib]
+crate-type = ["rlib"]
