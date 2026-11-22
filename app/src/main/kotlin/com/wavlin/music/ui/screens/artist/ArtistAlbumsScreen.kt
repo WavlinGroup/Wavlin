@@ -57,7 +57,7 @@ import com.wavlin.music.core.config.GridThumbnailHeight
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.LibraryAlbumGridItem
 import com.wavlin.music.ui.component.LocalMenuState
-import com.wavlin.music.ui.utils.backToMain
+import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.ui.state.ArtistAlbumsViewModel
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)

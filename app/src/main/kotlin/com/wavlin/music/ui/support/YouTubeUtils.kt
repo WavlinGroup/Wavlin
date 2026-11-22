@@ -5,7 +5,7 @@
 
 @file:Suppress("LocalVariableName")
 
-package com.wavlin.music.ui.utils
+package com.wavlin.music.ui.support
 
 // Compiled once. resize() runs for every thumbnail on every composition, and building these regexes
 // each call put Pattern.compile on the UI thread while Home rows scroll in.

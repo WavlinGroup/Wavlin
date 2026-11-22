@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
 import com.wavlin.music.R
-import com.wavlin.music.ui.theme.WavlinTheme
+import com.wavlin.music.ui.style.WavlinTheme
 import com.wavlin.music.core.util.CrashHandler
 import java.io.File
 import java.text.SimpleDateFormat

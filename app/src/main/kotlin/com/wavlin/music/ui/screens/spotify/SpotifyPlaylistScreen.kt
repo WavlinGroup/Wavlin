@@ -13,7 +13,7 @@ import com.wavlin.music.ui.screens.playlist.heroTitleColor
 import com.wavlin.music.ui.screens.playlist.heroTopButtonModifier
 import com.wavlin.music.ui.screens.playlist.heroTopIconTint
 import com.wavlin.music.ui.screens.playlist.heroTopScrimColor
-import com.wavlin.music.ui.theme.PinkInk
+import com.wavlin.music.ui.style.PinkInk
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
@@ -95,7 +95,7 @@ import com.wavlin.music.integration.spotify.account.thumbnailUrl
 import com.wavlin.music.integration.spotify.account.toImportTrack
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.pinkTopBarColors
-import com.wavlin.music.ui.utils.backToMain
+import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.ui.state.SpotifyPlaylistState
 import com.wavlin.music.ui.state.SpotifyPlaylistViewModel
 import kotlinx.coroutines.launch

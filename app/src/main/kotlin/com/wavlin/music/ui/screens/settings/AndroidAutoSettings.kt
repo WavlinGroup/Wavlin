@@ -54,7 +54,7 @@ import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.Material3SettingsGroup
 import com.wavlin.music.ui.component.Material3SettingsItem
 import com.wavlin.music.ui.component.PreferenceEntry
-import com.wavlin.music.ui.utils.backToMain
+import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.rememberPreference
 import kotlinx.coroutines.flow.map
 import sh.calvin.reorderable.ReorderableItem

@@ -79,7 +79,7 @@ import com.wavlin.music.ui.component.LocalPinkLilyTheme
 import com.wavlin.music.ui.component.PinkGlassTint
 import com.wavlin.music.ui.component.pinkGlassEdge
 import com.wavlin.music.ui.component.VolumeSlider
-import com.wavlin.music.ui.theme.PinkSwoosh
+import com.wavlin.music.ui.style.PinkSwoosh
 import com.wavlin.music.core.util.rememberEnumPreference
 import kotlin.math.roundToInt
 

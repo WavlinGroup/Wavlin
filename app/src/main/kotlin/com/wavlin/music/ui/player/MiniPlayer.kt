@@ -113,7 +113,7 @@ import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.media.cast.CastConnectionHandler
 import com.wavlin.music.media.session.PlayerConnection
 import com.wavlin.music.ui.screens.settings.DarkMode
-import com.wavlin.music.ui.utils.resize
+import com.wavlin.music.ui.support.resize
 import com.wavlin.music.core.util.joinToArtistString
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.core.util.rememberPreference
@@ -134,9 +134,9 @@ import coil3.request.allowHardware
 import coil3.toBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import com.wavlin.music.ui.theme.DefaultThemeColor
-import com.wavlin.music.ui.theme.PlayerColorExtractor
-import com.wavlin.music.ui.theme.SecretPinkThemeColor
+import com.wavlin.music.ui.style.DefaultThemeColor
+import com.wavlin.music.ui.style.PlayerColorExtractor
+import com.wavlin.music.ui.style.SecretPinkThemeColor
 import com.wavlin.music.ui.component.LocalHazeState
 import com.wavlin.music.ui.component.LocalPinkLilyTheme
 import com.wavlin.music.ui.component.LilySlicedBackground

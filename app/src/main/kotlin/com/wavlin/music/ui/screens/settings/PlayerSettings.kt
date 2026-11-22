@@ -77,7 +77,7 @@ import com.wavlin.music.ui.component.EnumDialog
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.Material3SettingsGroup
 import com.wavlin.music.ui.component.Material3SettingsItem
-import com.wavlin.music.ui.utils.backToMain
+import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.core.util.rememberPreference
 import kotlin.math.roundToInt
@@ -92,8 +92,7 @@ import com.wavlin.music.ui.component.decodeDayTimes
 import com.wavlin.music.ui.component.encodeDayTimes
 import com.wavlin.music.core.config.SleepTimerFadeOutKey
 import com.wavlin.music.core.config.SleepTimerStopAfterCurrentSongKey
-import com.wavlin.music.ui.utils.getLoudnessLevelLabel
-
+import com.wavlin.music.ui.support.getLoudnessLevelLabel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerSettings(

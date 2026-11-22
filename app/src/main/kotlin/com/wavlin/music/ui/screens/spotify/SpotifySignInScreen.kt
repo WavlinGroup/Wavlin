@@ -69,7 +69,7 @@ import com.wavlin.music.integration.spotify.account.SpotifyAuth
 import com.wavlin.music.integration.spotify.account.SpotifyAuthState
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.pinkTopBarColors
-import com.wavlin.music.ui.utils.backToMain
+import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.ui.state.SpotifyViewModel
 val SpotifyGreen = Color(0xFF1DB954)
 

@@ -104,7 +104,7 @@ import com.wavlin.music.ui.component.DefaultDialog
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.Material3SettingsGroup
 import com.wavlin.music.ui.component.Material3SettingsItem
-import com.wavlin.music.ui.utils.backToMain
+import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.dataStore
 import com.wavlin.music.core.util.makeTimeString
 import com.wavlin.music.core.util.safeDataStoreEdit

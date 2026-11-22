@@ -60,7 +60,7 @@ import com.wavlin.music.db.entities.RecognitionHistory
 import com.wavlin.music.ui.component.DefaultDialog
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.LocalMenuState
-import com.wavlin.music.ui.utils.backToMain
+import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.SearchRoutes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

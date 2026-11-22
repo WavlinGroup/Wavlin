@@ -51,7 +51,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wavlin.music.R
-import com.wavlin.music.ui.theme.bbhBartle
+import com.wavlin.music.ui.style.bbhBartle
 import kotlinx.coroutines.delay
 
 private const val FADE_IN_DURATION = 1000

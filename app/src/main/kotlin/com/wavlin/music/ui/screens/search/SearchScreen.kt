@@ -6,8 +6,8 @@
 package com.wavlin.music.ui.screens.search
 
 import androidx.compose.foundation.layout.Box
-import com.wavlin.music.ui.theme.playball
-import com.wavlin.music.ui.theme.PinkInk
+import com.wavlin.music.ui.style.playball
+import com.wavlin.music.ui.style.PinkInk
 import com.wavlin.music.ui.component.LilyDiscBox
 import com.wavlin.music.ui.component.LocalPinkLilyTheme
 import androidx.compose.ui.text.font.FontFamily

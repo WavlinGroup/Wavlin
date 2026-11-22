@@ -19,10 +19,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wavlin.music.R
-import com.wavlin.music.ui.theme.PinkInk
-import com.wavlin.music.ui.theme.PinkSwoosh
-import com.wavlin.music.ui.theme.playball
-
+import com.wavlin.music.ui.style.PinkInk
+import com.wavlin.music.ui.style.PinkSwoosh
+import com.wavlin.music.ui.style.playball
 /**
  * Big handwritten page title for the Secret Pink theme: Playball script, a faint heart
  * and a hand-drawn swoosh underline that tapers off to the right.

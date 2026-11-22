@@ -229,7 +229,7 @@ import com.wavlin.music.core.util.reportException
 import com.wavlin.music.widget.WavlinWidgetManager
 import com.wavlin.music.widget.MusicWidgetReceiver
 import com.wavlin.music.widget.PlaylistWidgetReceiver
-import com.wavlin.music.ui.utils.resize
+import com.wavlin.music.ui.support.resize
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CancellationException
 import kotlin.coroutines.coroutineContext

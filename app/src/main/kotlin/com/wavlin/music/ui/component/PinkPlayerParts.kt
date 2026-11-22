@@ -44,10 +44,9 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wavlin.music.R
-import com.wavlin.music.ui.theme.PinkInk
-import com.wavlin.music.ui.theme.PinkSwoosh
-import com.wavlin.music.ui.theme.playball
-
+import com.wavlin.music.ui.style.PinkInk
+import com.wavlin.music.ui.style.PinkSwoosh
+import com.wavlin.music.ui.style.playball
 /** Secret Pink glass in a capsule shape: a circle for square-ish sizes, a pill for wide ones. */
 @Composable
 fun Modifier.lilyGlassAuto(): Modifier = this.pinkGlass(RoundedCornerShape(50), floating = false)

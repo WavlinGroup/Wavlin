@@ -13,8 +13,7 @@ import com.wavlin.innertube.models.SongItem
 import com.wavlin.music.db.entities.Song
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.models.toMediaMetadata
-import com.wavlin.music.ui.utils.resize
-
+import com.wavlin.music.ui.support.resize
 val MediaItem.metadata: MediaMetadata?
     get() = localConfiguration?.tag as? MediaMetadata
 

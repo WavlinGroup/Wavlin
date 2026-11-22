@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.res.imageResource
-import com.wavlin.music.ui.theme.PinkInk
+import com.wavlin.music.ui.style.PinkInk
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi

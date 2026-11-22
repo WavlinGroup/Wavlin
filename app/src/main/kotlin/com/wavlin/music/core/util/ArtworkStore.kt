@@ -11,7 +11,7 @@ import coil3.intercept.Interceptor
 import coil3.request.ImageRequest
 import coil3.request.ImageResult
 import com.wavlin.music.db.MusicDatabase
-import com.wavlin.music.ui.utils.resize
+import com.wavlin.music.ui.support.resize
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first

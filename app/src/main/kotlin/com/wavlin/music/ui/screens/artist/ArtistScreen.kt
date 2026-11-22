@@ -125,10 +125,10 @@ import com.wavlin.music.ui.menu.YouTubeAlbumMenu
 import com.wavlin.music.ui.menu.YouTubeArtistMenu
 import com.wavlin.music.ui.menu.YouTubePlaylistMenu
 import com.wavlin.music.ui.menu.YouTubeSongMenu
-import com.wavlin.music.ui.utils.backToMain
-import com.wavlin.music.ui.utils.fadingEdge
-import com.wavlin.music.ui.utils.isScrollingUp
-import com.wavlin.music.ui.utils.resize
+import com.wavlin.music.ui.support.backToMain
+import com.wavlin.music.ui.support.fadingEdge
+import com.wavlin.music.ui.support.isScrollingUp
+import com.wavlin.music.ui.support.resize
 import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.ui.state.ArtistViewModel
 import com.valentinilk.shimmer.shimmer

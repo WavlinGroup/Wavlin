@@ -71,8 +71,8 @@ import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import com.wavlin.music.ui.component.FilledIconButton
-import com.wavlin.music.ui.theme.PinkInk
-import com.wavlin.music.ui.theme.playball
+import com.wavlin.music.ui.style.PinkInk
+import com.wavlin.music.ui.style.playball
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -199,10 +199,10 @@ import com.wavlin.music.ui.component.WavySlider
 import com.wavlin.music.ui.component.rememberBottomSheetState
 import com.wavlin.music.ui.menu.PlayerMenu
 import com.wavlin.music.ui.screens.settings.DarkMode
-import com.wavlin.music.ui.theme.PlayerColorExtractor
-import com.wavlin.music.ui.theme.PlayerSliderColors
-import com.wavlin.music.ui.utils.ShowMediaInfo
-import com.wavlin.music.ui.utils.ShowOffsetDialog
+import com.wavlin.music.ui.style.PlayerColorExtractor
+import com.wavlin.music.ui.style.PlayerSliderColors
+import com.wavlin.music.ui.support.ShowMediaInfo
+import com.wavlin.music.ui.support.ShowOffsetDialog
 import com.wavlin.music.core.util.dataStore
 import com.wavlin.music.core.util.makeTimeString
 import com.wavlin.music.core.util.rememberEnumPreference

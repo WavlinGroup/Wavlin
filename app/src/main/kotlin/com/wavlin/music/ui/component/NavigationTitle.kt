@@ -32,8 +32,8 @@ import androidx.compose.ui.Modifier
 import androidx.annotation.DrawableRes
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
-import com.wavlin.music.ui.theme.PinkInk
-import com.wavlin.music.ui.theme.playball
+import com.wavlin.music.ui.style.PinkInk
+import com.wavlin.music.ui.style.playball
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow

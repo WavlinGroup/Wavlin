@@ -28,8 +28,7 @@ import com.wavlin.innertube.models.SongItem
 import com.wavlin.innertube.models.YTItem
 import com.wavlin.music.R
 import com.wavlin.music.core.config.ThumbnailCornerRadius
-import com.wavlin.music.ui.utils.resize
-
+import com.wavlin.music.ui.support.resize
 @Composable
 fun SpeedDialGridItem(
     item: YTItem,

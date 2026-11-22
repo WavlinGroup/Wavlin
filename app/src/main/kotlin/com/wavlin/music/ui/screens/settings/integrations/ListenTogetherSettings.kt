@@ -94,7 +94,7 @@ import com.wavlin.music.ui.component.DefaultDialog
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.IntegrationCard
 import com.wavlin.music.ui.component.IntegrationCardItem
-import com.wavlin.music.ui.utils.backToMain
+import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.ui.state.ListenTogetherViewModel
 import kotlinx.coroutines.flow.collectLatest

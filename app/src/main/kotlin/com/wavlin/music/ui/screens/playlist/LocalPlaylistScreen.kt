@@ -172,12 +172,12 @@ import com.wavlin.music.ui.component.SongListItem
 import com.wavlin.music.ui.component.SortHeader
 import com.wavlin.music.ui.component.TextFieldDialog
 import com.wavlin.music.ui.menu.CustomThumbnailMenu
-import com.wavlin.music.ui.theme.PlayerColorExtractor
+import com.wavlin.music.ui.style.PlayerColorExtractor
 import com.wavlin.music.ui.menu.LocalPlaylistMenu
 import com.wavlin.music.ui.menu.SelectionSongMenu
 import com.wavlin.music.ui.menu.SongMenu
 import com.wavlin.music.ui.screens.settings.DarkMode
-import com.wavlin.music.ui.utils.backToMain
+import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.makeTimeString
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.core.util.rememberPreference
@@ -1849,8 +1849,8 @@ internal fun Modifier.headerGlass(kind: Int): Modifier {
         this
             .clip(shape)
             .background(
-                if (kind == 3) com.wavlin.music.ui.theme.PinkSwoosh.copy(alpha = 0.5f) else Color.White.copy(alpha = 0.45f),
-            ).border(1.dp, com.wavlin.music.ui.theme.PinkSwoosh.copy(alpha = 0.65f), shape)
+                if (kind == 3) com.wavlin.music.ui.style.PinkSwoosh.copy(alpha = 0.5f) else Color.White.copy(alpha = 0.45f),
+            ).border(1.dp, com.wavlin.music.ui.style.PinkSwoosh.copy(alpha = 0.65f), shape)
     } else {
         this.glassPanel(shape = shape)
     }

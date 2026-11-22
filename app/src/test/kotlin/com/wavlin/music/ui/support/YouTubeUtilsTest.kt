@@ -1,4 +1,4 @@
-package com.wavlin.music.ui.utils
+package com.wavlin.music.ui.support
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

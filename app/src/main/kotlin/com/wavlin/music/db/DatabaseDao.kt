@@ -55,7 +55,7 @@ import com.wavlin.music.core.ext.reversed
 import com.wavlin.music.core.ext.toSQLiteQuery
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.models.toMediaMetadata
-import com.wavlin.music.ui.utils.resize
+import com.wavlin.music.ui.support.resize
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map

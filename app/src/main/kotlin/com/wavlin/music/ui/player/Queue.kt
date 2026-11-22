@@ -145,7 +145,7 @@ import com.wavlin.music.ui.component.LocalMenuState
 import com.wavlin.music.ui.menu.PlayerMenu
 import com.wavlin.music.ui.menu.QueueMenu
 import com.wavlin.music.ui.menu.SelectionMediaMetadataMenu
-import com.wavlin.music.ui.utils.ShowMediaInfo
+import com.wavlin.music.ui.support.ShowMediaInfo
 import com.wavlin.music.core.util.dataStore
 import com.wavlin.music.core.util.makeTimeString
 import com.wavlin.music.core.util.rememberPreference

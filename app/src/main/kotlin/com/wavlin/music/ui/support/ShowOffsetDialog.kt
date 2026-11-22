@@ -1,4 +1,4 @@
-package com.wavlin.music.ui.utils
+package com.wavlin.music.ui.support
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

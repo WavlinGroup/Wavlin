@@ -43,7 +43,7 @@ import com.wavlin.music.R
 import com.wavlin.music.db.entities.SongWithStats
 import com.wavlin.music.ui.screens.wrapped.components.AnimatedBackground
 import com.wavlin.music.ui.screens.wrapped.components.ShapeType
-import com.wavlin.music.ui.theme.bbh_bartle
+import com.wavlin.music.ui.style.bbh_bartle
 import kotlinx.coroutines.delay
 
 @Composable

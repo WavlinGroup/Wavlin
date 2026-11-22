@@ -17,7 +17,7 @@ import com.wavlin.innertube.utils.completed
 import com.wavlin.music.core.config.HideYoutubeShortsKey
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.db.entities.PodcastEntity
-import com.wavlin.music.ui.utils.resize
+import com.wavlin.music.ui.support.resize
 import com.wavlin.music.core.util.dataStore
 import com.wavlin.music.core.util.get
 import com.wavlin.music.core.util.reportException

@@ -98,7 +98,7 @@ import com.wavlin.music.ui.component.SongListItem
 import com.wavlin.music.ui.component.SortHeader
 import com.wavlin.music.ui.menu.SelectionSongMenu
 import com.wavlin.music.ui.menu.SongMenu
-import com.wavlin.music.ui.utils.isScrollingUp
+import com.wavlin.music.ui.support.isScrollingUp
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.ui.state.LibrarySongsViewModel

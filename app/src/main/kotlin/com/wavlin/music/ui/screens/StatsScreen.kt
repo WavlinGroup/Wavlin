@@ -88,7 +88,7 @@ import com.wavlin.music.ui.component.TimeTransfer
 import com.wavlin.music.ui.menu.AlbumMenu
 import com.wavlin.music.ui.menu.ArtistMenu
 import com.wavlin.music.ui.menu.SongMenu
-import com.wavlin.music.ui.utils.backToMain
+import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.joinByBullet
 import com.wavlin.music.core.util.makeTimeString
 import com.wavlin.music.core.util.rememberPreference

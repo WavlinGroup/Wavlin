@@ -11,7 +11,7 @@ import com.wavlin.innertube.models.SongItem
 import com.wavlin.innertube.models.WatchEndpoint.WatchEndpointMusicSupportedConfigs.WatchEndpointMusicConfig.Companion.MUSIC_VIDEO_TYPE_ATV
 import com.wavlin.music.db.entities.Song
 import com.wavlin.music.db.entities.SongEntity
-import com.wavlin.music.ui.utils.resize
+import com.wavlin.music.ui.support.resize
 import java.io.Serializable
 import java.time.LocalDateTime
 

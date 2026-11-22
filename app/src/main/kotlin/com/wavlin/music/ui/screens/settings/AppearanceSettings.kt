@@ -114,9 +114,9 @@ import com.wavlin.music.ui.component.Material3SettingsItem
 import com.wavlin.music.ui.component.PlayerSliderTrack
 import com.wavlin.music.ui.component.SquigglySlider
 import com.wavlin.music.ui.component.WavySlider
-import com.wavlin.music.ui.theme.DefaultThemeColor
-import com.wavlin.music.ui.theme.PlayerSliderColors
-import com.wavlin.music.ui.utils.backToMain
+import com.wavlin.music.ui.style.DefaultThemeColor
+import com.wavlin.music.ui.style.PlayerSliderColors
+import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.core.util.rememberPreference
 import kotlinx.coroutines.launch

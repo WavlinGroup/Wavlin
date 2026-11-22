@@ -69,7 +69,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
-import com.wavlin.music.ui.utils.resize
+import com.wavlin.music.ui.support.resize
 import com.wavlin.innertube.models.PodcastItem
 import timber.log.Timber
 import com.wavlin.music.LocalDatabase
@@ -84,7 +84,7 @@ import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.LocalMenuState
 import com.wavlin.music.ui.component.YouTubeListItem
 import com.wavlin.music.ui.menu.YouTubeSongMenu
-import com.wavlin.music.ui.utils.backToMain
+import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.ui.state.OnlinePodcastViewModel
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable

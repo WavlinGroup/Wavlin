@@ -3,7 +3,7 @@
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
-package com.wavlin.music.ui.theme
+package com.wavlin.music.ui.style
 
 import android.graphics.Bitmap
 import android.os.Build

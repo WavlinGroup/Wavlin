@@ -50,9 +50,8 @@ import com.wavlin.music.R
 import com.wavlin.music.core.config.AppBarHeight
 import com.wavlin.music.ui.component.LocalPinkLilyTheme
 import com.wavlin.music.ui.component.pinkGlass
-import com.wavlin.music.ui.theme.PinkInk
-import com.wavlin.music.ui.utils.fadingEdge
-
+import com.wavlin.music.ui.style.PinkInk
+import com.wavlin.music.ui.support.fadingEdge
 /** List padding for a screen whose first item is a full-bleed hero: no top padding while the hero shows. */
 @Composable
 internal fun heroListPadding(heroVisible: Boolean): PaddingValues {

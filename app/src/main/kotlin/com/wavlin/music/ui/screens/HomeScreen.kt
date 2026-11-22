@@ -160,8 +160,8 @@ import com.wavlin.music.ui.menu.YouTubeAlbumMenu
 import com.wavlin.music.ui.menu.YouTubeArtistMenu
 import com.wavlin.music.ui.menu.YouTubePlaylistMenu
 import com.wavlin.music.ui.menu.YouTubeSongMenu
-import com.wavlin.music.ui.utils.SnapLayoutInfoProvider
-import com.wavlin.music.ui.utils.resize
+import com.wavlin.music.ui.support.SnapLayoutInfoProvider
+import com.wavlin.music.ui.support.resize
 import com.wavlin.music.core.util.joinByBullet
 import com.wavlin.music.core.util.joinToArtistString
 import com.wavlin.music.core.util.makeTimeString

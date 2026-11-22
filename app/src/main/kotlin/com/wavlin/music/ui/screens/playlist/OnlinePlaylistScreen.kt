@@ -104,8 +104,8 @@ import com.wavlin.music.ui.component.YouTubeListItem
 import com.wavlin.music.ui.menu.YouTubePlaylistMenu
 import com.wavlin.music.ui.menu.YouTubeSelectionSongMenu
 import com.wavlin.music.ui.menu.YouTubeSongMenu
-import com.wavlin.music.ui.utils.backToMain
-import com.wavlin.music.ui.utils.resize
+import com.wavlin.music.ui.support.backToMain
+import com.wavlin.music.ui.support.resize
 import com.wavlin.music.core.util.makeTimeString
 import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.ui.state.OnlinePlaylistViewModel

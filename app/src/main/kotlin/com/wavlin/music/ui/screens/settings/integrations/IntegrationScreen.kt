@@ -26,8 +26,7 @@ import com.wavlin.music.R
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.IntegrationCard
 import com.wavlin.music.ui.component.IntegrationCardItem
-import com.wavlin.music.ui.utils.backToMain
-
+import com.wavlin.music.ui.support.backToMain
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IntegrationScreen(

@@ -3,7 +3,7 @@
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
-package com.wavlin.music.ui.theme
+package com.wavlin.music.ui.style
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

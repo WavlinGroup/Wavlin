@@ -113,7 +113,7 @@ import com.wavlin.music.integration.together.SuggestionReceivedPayload
 import com.wavlin.music.integration.together.UserInfo
 import com.wavlin.music.ui.component.DefaultDialog
 import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.utils.backToMain
+import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.rememberPreference
 import kotlinx.coroutines.launch
 import androidx.compose.material3.IconButton as MaterialIconButton
@@ -520,7 +520,7 @@ private fun HeaderSection(isInRoom: Boolean = false) {
                 Icon(
                     painter = painterResource(R.drawable.group_outlined),
                     contentDescription = null,
-                    tint = if (pink) com.wavlin.music.ui.theme.PinkInk else cs.onPrimaryContainer,
+                    tint = if (pink) com.wavlin.music.ui.style.PinkInk else cs.onPrimaryContainer,
                     modifier = Modifier.size(30.dp),
                 )
             }
@@ -1537,9 +1537,9 @@ private fun Button(
             colors =
                 ButtonDefaults.buttonColors(
                     containerColor = androidx.compose.ui.graphics.Color.Transparent,
-                    contentColor = com.wavlin.music.ui.theme.PinkInk,
+                    contentColor = com.wavlin.music.ui.style.PinkInk,
                     disabledContainerColor = androidx.compose.ui.graphics.Color.Transparent,
-                    disabledContentColor = com.wavlin.music.ui.theme.PinkInk.copy(alpha = 0.4f),
+                    disabledContentColor = com.wavlin.music.ui.style.PinkInk.copy(alpha = 0.4f),
                 ),
             elevation = null,
             content = content,

@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wavlin.music.R
 import com.wavlin.music.ui.screens.wrapped.components.AnimatedDecorativeElement
-import com.wavlin.music.ui.theme.bbh_bartle
+import com.wavlin.music.ui.style.bbh_bartle
 import kotlin.random.Random
 
 @Composable

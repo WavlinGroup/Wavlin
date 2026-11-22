@@ -81,8 +81,8 @@ import com.wavlin.music.ui.component.DefaultDialog
 import com.wavlin.music.ui.component.ListItem
 import com.wavlin.music.ui.component.LocalPinkLilyTheme
 import com.wavlin.music.ui.component.lilyNinePatch
-import com.wavlin.music.ui.theme.PinkInk
-import com.wavlin.music.ui.theme.playball
+import com.wavlin.music.ui.style.PinkInk
+import com.wavlin.music.ui.style.playball
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

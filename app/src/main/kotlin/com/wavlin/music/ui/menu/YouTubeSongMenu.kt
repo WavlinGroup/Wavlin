@@ -81,8 +81,8 @@ import com.wavlin.music.ui.component.Material3MenuGroup
 import com.wavlin.music.ui.component.Material3MenuItemData
 import com.wavlin.music.ui.component.NewAction
 import com.wavlin.music.ui.component.NewActionGrid
-import com.wavlin.music.ui.utils.ShowMediaInfo
-import com.wavlin.music.ui.utils.resize
+import com.wavlin.music.ui.support.ShowMediaInfo
+import com.wavlin.music.ui.support.resize
 import com.wavlin.music.core.util.joinByBullet
 import com.wavlin.music.core.util.makeTimeString
 import kotlinx.coroutines.Dispatchers

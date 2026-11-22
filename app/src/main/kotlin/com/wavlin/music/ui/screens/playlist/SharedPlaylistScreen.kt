@@ -52,7 +52,7 @@ import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.YouTubeListItem
 import com.wavlin.music.ui.component.pinkTopBarColors
 import com.wavlin.music.ui.screens.spotify.SpotifySaveDialog
-import com.wavlin.music.ui.utils.backToMain
+import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.ui.state.SharedPlaylistState
 import com.wavlin.music.ui.state.SharedPlaylistViewModel
 import kotlinx.coroutines.Dispatchers

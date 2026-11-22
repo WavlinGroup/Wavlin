@@ -81,9 +81,9 @@ import com.wavlin.music.core.config.SecretPinkThemeUnlockedKey
 import com.wavlin.music.core.config.SelectedThemeColorKey
 import com.wavlin.music.ui.component.TextFieldDialog
 import com.wavlin.music.ui.component.LocalPinkLilyTheme
-import com.wavlin.music.ui.theme.DefaultThemeColor
-import com.wavlin.music.ui.theme.SecretPinkThemeColor
-import com.wavlin.music.ui.theme.WavlinTheme
+import com.wavlin.music.ui.style.DefaultThemeColor
+import com.wavlin.music.ui.style.SecretPinkThemeColor
+import com.wavlin.music.ui.style.WavlinTheme
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.core.util.rememberPreference
 data class ThemePalette(

@@ -42,7 +42,7 @@ import com.wavlin.music.ui.component.shimmer.ShimmerHost
 import com.wavlin.music.ui.menu.YouTubeAlbumMenu
 import com.wavlin.music.ui.menu.YouTubeArtistMenu
 import com.wavlin.music.ui.menu.YouTubePlaylistMenu
-import com.wavlin.music.ui.utils.backToMain
+import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.ui.state.BrowseViewModel
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)

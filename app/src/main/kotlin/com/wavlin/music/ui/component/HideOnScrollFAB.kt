@@ -31,8 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.R
-import com.wavlin.music.ui.utils.isScrollingUp
-
+import com.wavlin.music.ui.support.isScrollingUp
 /**
  * Circular glass icon button built from bare primitives instead of Material3's
  * FloatingActionButton/SmallFloatingActionButton. Those compute their own shadow/elevation

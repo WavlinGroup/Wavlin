@@ -43,7 +43,7 @@ import com.wavlin.music.ui.screens.wrapped.WrappedConstants
 import com.wavlin.music.ui.screens.wrapped.components.AnimatedBackground
 import com.wavlin.music.ui.screens.wrapped.components.AutoResizingText
 import com.wavlin.music.ui.screens.wrapped.components.ShapeType
-import com.wavlin.music.ui.theme.bbh_bartle
+import com.wavlin.music.ui.style.bbh_bartle
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 

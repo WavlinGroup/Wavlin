@@ -55,8 +55,7 @@ import com.wavlin.music.ui.component.ActionPromptDialog
 import com.wavlin.music.ui.component.EmptyPlaceholder
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.SongListItem
-import com.wavlin.music.ui.utils.backToMain
-
+import com.wavlin.music.ui.support.backToMain
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun DownloadedSongsScreen(navController: NavController) {

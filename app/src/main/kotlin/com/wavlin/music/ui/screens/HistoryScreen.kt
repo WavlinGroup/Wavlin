@@ -80,7 +80,7 @@ import com.wavlin.music.ui.component.YouTubeListItem
 import com.wavlin.music.ui.menu.SelectionMediaMetadataMenu
 import com.wavlin.music.ui.menu.SongMenu
 import com.wavlin.music.ui.menu.YouTubeSongMenu
-import com.wavlin.music.ui.utils.backToMain
+import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.ui.state.DateAgo
 import com.wavlin.music.ui.state.HistoryViewModel

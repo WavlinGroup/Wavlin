@@ -96,7 +96,7 @@ import com.wavlin.music.ui.component.DefaultDialog
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.LocalInterfaceAppleMusic
 import com.wavlin.music.ui.component.pinkTopBarColors
-import com.wavlin.music.ui.utils.backToMain
+import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.ui.state.AccountSettingsViewModel
 import com.wavlin.music.ui.state.HomeViewModel

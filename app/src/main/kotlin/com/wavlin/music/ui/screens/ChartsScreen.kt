@@ -80,8 +80,8 @@ import com.wavlin.music.ui.component.shimmer.GridItemPlaceHolder
 import com.wavlin.music.ui.component.shimmer.ShimmerHost
 import com.wavlin.music.ui.component.shimmer.TextPlaceholder
 import com.wavlin.music.ui.menu.YouTubeSongMenu
-import com.wavlin.music.ui.utils.SnapLayoutInfoProvider
-import com.wavlin.music.ui.utils.backToMain
+import com.wavlin.music.ui.support.SnapLayoutInfoProvider
+import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.ui.state.ChartsViewModel
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
