@@ -29,6 +29,14 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android,armv7-linux-androideabi
+
+      - name: Install cargo-ndk
+        run: cargo install cargo-ndk --locked
+
       - name: Restore PR debug keystore
         id: pr_keystore
         uses: actions/cache/restore@v5
@@ -60,6 +68,7 @@ jobs:
         run: ./gradlew --console=plain assembleFossDebug :app:lintFossDebug --warning-mode summary
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
+          WAVLIN_REQUIRE_RUST: "true"
           WAVLIN_APPLICATION_ID: com.wavlin.music.pr.p${{ github.event.number }}
           WAVLIN_APP_NAME: Wavlin PR ${{ github.event.number }}
           WAVLIN_DEBUG_KEYSTORE_PATH: pr-debug.keystore

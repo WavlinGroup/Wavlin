@@ -50,6 +50,14 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android,armv7-linux-androideabi
+
+      - name: Install cargo-ndk
+        run: cargo install cargo-ndk --locked
+
       - name: Check release signing secrets
         id: check_release_secrets
         env:
@@ -65,6 +73,7 @@ jobs:
       - name: Build Release APK and Run Lint
         run: ./gradlew --console=plain assemble${{ matrix.variantName }}Release :app:lint${{ matrix.variantName }}Release --warning-mode summary
         env:
+          WAVLIN_REQUIRE_RUST: "true"
           WAVLIN_APPLICATION_ID: com.wavlin.music
           WAVLIN_APP_NAME: Wavlin
           PULL_REQUEST: "false"

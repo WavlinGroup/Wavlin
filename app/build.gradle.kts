@@ -1,4 +1,5 @@
 import org.gradle.api.DefaultTask
+import org.gradle.api.GradleException
 import org.gradle.api.file.DirectoryProperty
 
 import org.gradle.api.file.RegularFileProperty
@@ -6,6 +7,7 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import org.gradle.process.ExecOperations
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -35,6 +37,60 @@ plugins {
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
+}
+
+abstract class BuildRustAudioTask : DefaultTask() {
+    @get:Internal
+    abstract val rustWorkspace: DirectoryProperty
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @get:Input
+    abstract val requireRust: Property<Boolean>
+
+    @get:Inject
+    abstract val execOperations: ExecOperations
+
+    init {
+        // cargo does its own incremental work, so always hand over to it.
+        outputs.upToDateWhen { false }
+    }
+
+    @TaskAction
+    fun build() {
+        val outDir = outputDir.get().asFile
+        outDir.mkdirs()
+
+        val cargoNdkReady = try {
+            execOperations.exec {
+                commandLine("cargo", "ndk", "--version")
+                isIgnoreExitValue = true
+                standardOutput = java.io.ByteArrayOutputStream()
+                errorOutput = java.io.ByteArrayOutputStream()
+            }.exitValue == 0
+        } catch (e: Exception) {
+            false
+        }
+
+        if (!cargoNdkReady) {
+            val message = "cargo-ndk not found: libwavlin_audio.so was not built, the app will use the Kotlin audio DSP"
+            if (requireRust.get()) throw GradleException(message)
+            logger.warn(message)
+            return
+        }
+
+        execOperations.exec {
+            workingDir = rustWorkspace.get().asFile
+            commandLine(
+                "cargo", "ndk",
+                "-t", "arm64-v8a",
+                "-t", "armeabi-v7a",
+                "-o", outDir.absolutePath,
+                "build", "--release", "-p", "audio-jni",
+            )
+        }
+    }
 }
 
 abstract class GenerateProtoTask : DefaultTask() {
@@ -312,6 +368,22 @@ val generateProto = if (protoFile.exists()) {
 tasks.configureEach {
     if (name.startsWith("compile") || name.startsWith("assemble")) {
         generateProto?.let { dependsOn(it) }
+    }
+}
+
+val buildRustAudio = tasks.register<BuildRustAudioTask>("buildRustAudio") {
+    group = "build"
+    description = "Builds libwavlin_audio.so from rust/ with cargo-ndk"
+    rustWorkspace.set(rootProject.layout.projectDirectory.dir("rust"))
+    outputDir.set(layout.buildDirectory.dir("rustJniLibs"))
+    requireRust.set(providers.environmentVariable("WAVLIN_REQUIRE_RUST").map { it == "true" }.orElse(false))
+}
+
+android.sourceSets.getByName("main").jniLibs.srcDir(buildRustAudio.flatMap { it.outputDir })
+
+tasks.configureEach {
+    if (name.startsWith("merge") && name.endsWith("JniLibFolders")) {
+        dependsOn(buildRustAudio)
     }
 }
 
