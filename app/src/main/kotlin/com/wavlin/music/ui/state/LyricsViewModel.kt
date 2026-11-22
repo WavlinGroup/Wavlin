@@ -10,7 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.wavlin.music.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
 import com.wavlin.music.integration.lyrics.LyricsEntry
 import com.wavlin.music.integration.lyrics.LyricsUtils
-import com.wavlin.music.ui.component.LyricsListItem
+import com.wavlin.music.ui.kit.LyricsListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers

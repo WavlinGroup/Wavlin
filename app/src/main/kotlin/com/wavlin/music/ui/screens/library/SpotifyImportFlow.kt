@@ -63,8 +63,8 @@ import com.wavlin.music.integration.spotify.SpotifyMatcher
 import com.wavlin.music.integration.spotify.SpotifyProvider
 import com.wavlin.music.integration.spotify.SpotifyResult
 import com.wavlin.music.integration.spotify.SpotifyTrack
-import com.wavlin.music.ui.component.GlassDialog
-import com.wavlin.music.ui.component.GlassIconButton
+import com.wavlin.music.ui.kit.GlassDialog
+import com.wavlin.music.ui.kit.GlassIconButton
 import com.wavlin.music.ui.screens.search.SpotifyPlaylistPreviewDialog
 import com.wavlin.music.ui.screens.search.SpotifyTrackDialog
 import com.wavlin.music.core.util.SearchRoutes

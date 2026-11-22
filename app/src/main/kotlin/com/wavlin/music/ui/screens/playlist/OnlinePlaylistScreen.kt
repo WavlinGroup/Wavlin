@@ -5,7 +5,7 @@
 
 package com.wavlin.music.ui.screens.playlist
 
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
@@ -95,12 +95,12 @@ import com.wavlin.music.db.entities.PlaylistEntity
 import com.wavlin.music.db.entities.PlaylistSongMap
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.media.queue.YouTubePlaylistQueue
-import com.wavlin.music.ui.component.ExpandableText
-import com.wavlin.music.ui.component.glassPanel
-import com.wavlin.music.ui.component.glassStrokeBrush
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.LocalMenuState
-import com.wavlin.music.ui.component.YouTubeListItem
+import com.wavlin.music.ui.kit.ExpandableText
+import com.wavlin.music.ui.kit.glassPanel
+import com.wavlin.music.ui.kit.glassStrokeBrush
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.LocalMenuState
+import com.wavlin.music.ui.kit.YouTubeListItem
 import com.wavlin.music.ui.menu.YouTubePlaylistMenu
 import com.wavlin.music.ui.menu.YouTubeSelectionSongMenu
 import com.wavlin.music.ui.menu.YouTubeSongMenu

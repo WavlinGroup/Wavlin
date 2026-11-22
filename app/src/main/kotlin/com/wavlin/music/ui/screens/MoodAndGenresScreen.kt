@@ -58,9 +58,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.wavlin.innertube.pages.MoodAndGenres
 import com.wavlin.music.LocalPlayerAwareWindowInsets
-import com.wavlin.music.ui.component.HubArt
-import com.wavlin.music.ui.component.shimmer.ShimmerHost
-import com.wavlin.music.ui.component.shimmer.TextPlaceholder
+import com.wavlin.music.ui.kit.HubArt
+import com.wavlin.music.ui.kit.shimmer.ShimmerHost
+import com.wavlin.music.ui.kit.shimmer.TextPlaceholder
 import com.wavlin.music.ui.screens.hub.HubBackButton
 import com.wavlin.music.ui.state.MoodAndGenresViewModel
 @Composable

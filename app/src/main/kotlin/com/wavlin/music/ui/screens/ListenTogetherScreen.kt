@@ -5,12 +5,12 @@
 
 package com.wavlin.music.ui.screens
 
-import com.wavlin.music.ui.component.pinkGlassPanel
-import com.wavlin.music.ui.component.pinkTopBarColors
-import com.wavlin.music.ui.component.LocalPinkLilyTheme
-import com.wavlin.music.ui.component.ScriptTitle
-import com.wavlin.music.ui.component.lilyGlassAuto
-import com.wavlin.music.ui.component.lilyNinePatch
+import com.wavlin.music.ui.kit.pinkGlassPanel
+import com.wavlin.music.ui.kit.pinkTopBarColors
+import com.wavlin.music.ui.kit.LocalPinkLilyTheme
+import com.wavlin.music.ui.kit.ScriptTitle
+import com.wavlin.music.ui.kit.lilyGlassAuto
+import com.wavlin.music.ui.kit.lilyNinePatch
 import android.content.Context
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -111,8 +111,8 @@ import com.wavlin.music.integration.together.ListenTogetherEvent
 import com.wavlin.music.integration.together.RoomRole
 import com.wavlin.music.integration.together.SuggestionReceivedPayload
 import com.wavlin.music.integration.together.UserInfo
-import com.wavlin.music.ui.component.DefaultDialog
-import com.wavlin.music.ui.component.IconButton
+import com.wavlin.music.ui.kit.DefaultDialog
+import com.wavlin.music.ui.kit.IconButton
 import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.rememberPreference
 import kotlinx.coroutines.launch

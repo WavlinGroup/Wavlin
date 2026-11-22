@@ -41,8 +41,7 @@ import com.wavlin.music.integration.spotify.account.SpotifyWebTrack
 import com.wavlin.music.integration.spotify.account.artistNames
 import com.wavlin.music.integration.spotify.account.thumbnailUrl
 import com.wavlin.music.integration.spotify.account.toImportTrack
-import com.wavlin.music.ui.component.ListItem
-
+import com.wavlin.music.ui.kit.ListItem
 /**
  * Plays [tracks] through YouTube Music. A track YouTube doesn't have is fetched from Spotify and
  * saved on the device instead (see [SpotifyDirectDownloader]). Tells the person when nothing could be played.
@@ -74,7 +73,7 @@ fun SpotifyTrackItem(
     ListItem(
         title = track.name,
         subtitle = {
-            com.wavlin.music.ui.component.Icon.Download(downloadState)
+            com.wavlin.music.ui.kit.Icon.Download(downloadState)
             Text(
                 text = track.artistNames,
                 style = MaterialTheme.typography.bodyMedium,

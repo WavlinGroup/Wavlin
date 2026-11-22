@@ -5,7 +5,7 @@
 
 package com.wavlin.music.ui.screens.settings
 
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import android.text.format.Formatter
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -51,10 +51,10 @@ import com.wavlin.music.R
 import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.playback.ExoDownloadService
 import com.wavlin.music.media.queue.ListQueue
-import com.wavlin.music.ui.component.ActionPromptDialog
-import com.wavlin.music.ui.component.EmptyPlaceholder
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.SongListItem
+import com.wavlin.music.ui.kit.ActionPromptDialog
+import com.wavlin.music.ui.kit.EmptyPlaceholder
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.SongListItem
 import com.wavlin.music.ui.support.backToMain
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable

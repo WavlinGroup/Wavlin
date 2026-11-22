@@ -67,10 +67,10 @@ import com.wavlin.music.R
 import com.wavlin.music.db.entities.PlaylistSong
 import com.wavlin.music.db.entities.Song
 import com.wavlin.music.core.ext.move
-import com.wavlin.music.ui.component.ItemThumbnail
-import com.wavlin.music.ui.component.LocalInterfaceAppleMusic
-import com.wavlin.music.ui.component.LocalPinkLilyTheme
-import com.wavlin.music.ui.component.artworkShape
+import com.wavlin.music.ui.kit.ItemThumbnail
+import com.wavlin.music.ui.kit.LocalInterfaceAppleMusic
+import com.wavlin.music.ui.kit.LocalPinkLilyTheme
+import com.wavlin.music.ui.kit.artworkShape
 import com.wavlin.music.ui.player.queueGlass
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource

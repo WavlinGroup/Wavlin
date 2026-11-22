@@ -5,7 +5,7 @@
 
 package com.wavlin.music.ui.screens.artist
 
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -103,22 +103,22 @@ import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.media.queue.ListQueue
 import com.wavlin.music.media.queue.YouTubeQueue
-import com.wavlin.music.ui.component.AlbumGridItem
-import com.wavlin.music.ui.component.ExpandableText
-import com.wavlin.music.ui.component.HideOnScrollFAB
-import com.wavlin.music.ui.component.GlassIconButton
-import com.wavlin.music.ui.component.glassPanel
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.LinkSegment
-import com.wavlin.music.ui.component.LocalMenuState
-import com.wavlin.music.ui.component.NavigationTitle
-import com.wavlin.music.ui.component.SongListItem
-import com.wavlin.music.ui.component.YouTubeGridItem
-import com.wavlin.music.ui.component.YouTubeListItem
-import com.wavlin.music.ui.component.shimmer.ButtonPlaceholder
-import com.wavlin.music.ui.component.shimmer.ListItemPlaceHolder
-import com.wavlin.music.ui.component.shimmer.ShimmerHost
-import com.wavlin.music.ui.component.shimmer.TextPlaceholder
+import com.wavlin.music.ui.kit.AlbumGridItem
+import com.wavlin.music.ui.kit.ExpandableText
+import com.wavlin.music.ui.kit.HideOnScrollFAB
+import com.wavlin.music.ui.kit.GlassIconButton
+import com.wavlin.music.ui.kit.glassPanel
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.LinkSegment
+import com.wavlin.music.ui.kit.LocalMenuState
+import com.wavlin.music.ui.kit.NavigationTitle
+import com.wavlin.music.ui.kit.SongListItem
+import com.wavlin.music.ui.kit.YouTubeGridItem
+import com.wavlin.music.ui.kit.YouTubeListItem
+import com.wavlin.music.ui.kit.shimmer.ButtonPlaceholder
+import com.wavlin.music.ui.kit.shimmer.ListItemPlaceHolder
+import com.wavlin.music.ui.kit.shimmer.ShimmerHost
+import com.wavlin.music.ui.kit.shimmer.TextPlaceholder
 import com.wavlin.music.ui.menu.AlbumMenu
 import com.wavlin.music.ui.menu.SongMenu
 import com.wavlin.music.ui.menu.YouTubeAlbumMenu

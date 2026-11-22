@@ -5,7 +5,7 @@
 
 package com.wavlin.music.ui.screens.settings
 
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -42,9 +42,9 @@ import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.R
 import com.wavlin.music.core.config.CheckForUpdatesKey
 import com.wavlin.music.core.config.UpdateNotificationsEnabledKey
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.Material3SettingsGroup
-import com.wavlin.music.ui.component.Material3SettingsItem
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.Material3SettingsGroup
+import com.wavlin.music.ui.kit.Material3SettingsItem
 import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.Updater
 import com.wavlin.music.core.util.rememberPreference

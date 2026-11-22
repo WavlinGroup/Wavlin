@@ -5,7 +5,7 @@
 
 package com.wavlin.music.ui.screens.playlist
 
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.widget.Toast
@@ -112,20 +112,20 @@ import com.wavlin.music.db.entities.Song
 import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.playback.ExoDownloadService
 import com.wavlin.music.media.queue.ListQueue
-import com.wavlin.music.ui.component.DefaultDialog
-import com.wavlin.music.ui.component.DraggableScrollbar
-import com.wavlin.music.ui.component.EmptyPlaceholder
-import com.wavlin.music.ui.component.GlassIconButton
-import com.wavlin.music.ui.component.GlassOverlay
-import com.wavlin.music.ui.component.LocalInterfaceAppleMusic
-import com.wavlin.music.ui.component.LocalPinkLilyTheme
-import com.wavlin.music.ui.component.glassPanel
-import com.wavlin.music.ui.component.glassStrokeBrush
-import com.wavlin.music.ui.component.HideOnScrollFAB
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.LocalMenuState
-import com.wavlin.music.ui.component.SongListItem
-import com.wavlin.music.ui.component.SortHeader
+import com.wavlin.music.ui.kit.DefaultDialog
+import com.wavlin.music.ui.kit.DraggableScrollbar
+import com.wavlin.music.ui.kit.EmptyPlaceholder
+import com.wavlin.music.ui.kit.GlassIconButton
+import com.wavlin.music.ui.kit.GlassOverlay
+import com.wavlin.music.ui.kit.LocalInterfaceAppleMusic
+import com.wavlin.music.ui.kit.LocalPinkLilyTheme
+import com.wavlin.music.ui.kit.glassPanel
+import com.wavlin.music.ui.kit.glassStrokeBrush
+import com.wavlin.music.ui.kit.HideOnScrollFAB
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.LocalMenuState
+import com.wavlin.music.ui.kit.SongListItem
+import com.wavlin.music.ui.kit.SortHeader
 import com.wavlin.music.ui.menu.AutoPlaylistMenu
 import com.wavlin.music.ui.menu.SelectionSongMenu
 import com.wavlin.music.ui.menu.SongMenu
@@ -974,7 +974,7 @@ private fun AutoPlaylistHeader(
     likeLength: Int,
     downloadState: Int,
     onShowRemoveDownloadDialog: () -> Unit,
-    menuState: com.wavlin.music.ui.component.MenuState,
+    menuState: com.wavlin.music.ui.kit.MenuState,
     modifier: Modifier = Modifier,
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return

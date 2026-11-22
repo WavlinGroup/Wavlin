@@ -79,8 +79,8 @@ import com.wavlin.music.core.config.PureBlackKey
 import com.wavlin.music.core.config.PureBlackMiniPlayerKey
 import com.wavlin.music.core.config.SecretPinkThemeUnlockedKey
 import com.wavlin.music.core.config.SelectedThemeColorKey
-import com.wavlin.music.ui.component.TextFieldDialog
-import com.wavlin.music.ui.component.LocalPinkLilyTheme
+import com.wavlin.music.ui.kit.TextFieldDialog
+import com.wavlin.music.ui.kit.LocalPinkLilyTheme
 import com.wavlin.music.ui.style.DefaultThemeColor
 import com.wavlin.music.ui.style.SecretPinkThemeColor
 import com.wavlin.music.ui.style.WavlinTheme

@@ -19,7 +19,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import com.wavlin.music.LocalDatabase
 import com.wavlin.music.R
 import com.wavlin.music.db.entities.PlaylistEntity
-import com.wavlin.music.ui.component.TextFieldDialog
+import com.wavlin.music.ui.kit.TextFieldDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch

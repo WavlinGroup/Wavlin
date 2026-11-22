@@ -48,8 +48,8 @@ import coil3.compose.AsyncImage
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.R
 import com.wavlin.music.core.config.AppBarHeight
-import com.wavlin.music.ui.component.LocalPinkLilyTheme
-import com.wavlin.music.ui.component.pinkGlass
+import com.wavlin.music.ui.kit.LocalPinkLilyTheme
+import com.wavlin.music.ui.kit.pinkGlass
 import com.wavlin.music.ui.style.PinkInk
 import com.wavlin.music.ui.support.fadingEdge
 /** List padding for a screen whose first item is a full-bleed hero: no top padding while the hero shows. */

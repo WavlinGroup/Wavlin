@@ -5,7 +5,7 @@
 
 package com.wavlin.music.ui.screens.settings
 
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -54,10 +54,10 @@ import coil3.compose.AsyncImage
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.R
 import com.wavlin.music.db.entities.Song
-import com.wavlin.music.ui.component.DefaultDialog
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.Material3SettingsGroup
-import com.wavlin.music.ui.component.Material3SettingsItem
+import com.wavlin.music.ui.kit.DefaultDialog
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.Material3SettingsGroup
+import com.wavlin.music.ui.kit.Material3SettingsItem
 import com.wavlin.music.ui.menu.AddToPlaylistDialogOnline
 import com.wavlin.music.ui.menu.CsvColumnMappingDialog
 import com.wavlin.music.ui.menu.CsvImportProgressDialog

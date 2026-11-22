@@ -43,8 +43,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.R
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.AppIcon
 import com.wavlin.music.core.util.IconUtils

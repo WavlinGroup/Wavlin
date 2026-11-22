@@ -27,8 +27,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.wavlin.music.R
-import com.wavlin.music.ui.component.ChipsRow
-import com.wavlin.music.ui.component.LocalInterfaceAppleMusic
+import com.wavlin.music.ui.kit.ChipsRow
+import com.wavlin.music.ui.kit.LocalInterfaceAppleMusic
 import com.wavlin.music.ui.screens.library.LibrarySegmentedFilter
 
 /** Period picker: a segmented control for the range type, with the concrete periods as chips underneath. */

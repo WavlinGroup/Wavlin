@@ -5,7 +5,7 @@
 
 package com.wavlin.music.ui.screens.settings
 
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -56,10 +56,10 @@ import com.wavlin.music.core.config.OpenRouterBaseUrlKey
 import com.wavlin.music.core.config.OpenRouterModelKey
 import com.wavlin.music.core.config.TranslateLanguageKey
 import com.wavlin.music.core.config.TranslateModeKey
-import com.wavlin.music.ui.component.EnumDialog
-import com.wavlin.music.ui.component.Material3SettingsGroup
-import com.wavlin.music.ui.component.Material3SettingsItem
-import com.wavlin.music.ui.component.TextFieldDialog
+import com.wavlin.music.ui.kit.EnumDialog
+import com.wavlin.music.ui.kit.Material3SettingsGroup
+import com.wavlin.music.ui.kit.Material3SettingsItem
+import com.wavlin.music.ui.kit.TextFieldDialog
 import com.wavlin.music.core.util.rememberPreference
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

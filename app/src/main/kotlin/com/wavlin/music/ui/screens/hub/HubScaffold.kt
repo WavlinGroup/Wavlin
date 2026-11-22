@@ -85,11 +85,11 @@ import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.media.queue.ListQueue
 import com.wavlin.music.media.queue.YouTubeQueue
-import com.wavlin.music.ui.component.HubArt
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.LocalMenuState
-import com.wavlin.music.ui.component.shimmer.GridItemPlaceHolder
-import com.wavlin.music.ui.component.shimmer.ShimmerHost
+import com.wavlin.music.ui.kit.HubArt
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.LocalMenuState
+import com.wavlin.music.ui.kit.shimmer.GridItemPlaceHolder
+import com.wavlin.music.ui.kit.shimmer.ShimmerHost
 import com.wavlin.music.ui.menu.YouTubeAlbumMenu
 import com.wavlin.music.ui.menu.YouTubeArtistMenu
 import com.wavlin.music.ui.menu.YouTubePlaylistMenu

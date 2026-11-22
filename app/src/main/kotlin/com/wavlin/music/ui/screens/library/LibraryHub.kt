@@ -42,8 +42,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.wavlin.music.R
 import com.wavlin.music.core.config.LibraryFilter
-import com.wavlin.music.ui.component.LocalInterfaceAppleMusic
-
+import com.wavlin.music.ui.kit.LocalInterfaceAppleMusic
 @Immutable
 data class LibraryCategory(
     val filter: LibraryFilter,

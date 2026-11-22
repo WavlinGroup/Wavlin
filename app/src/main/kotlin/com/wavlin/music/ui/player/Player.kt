@@ -5,8 +5,8 @@
 
 package com.wavlin.music.ui.player
 
-import com.wavlin.music.ui.component.LocalInterfaceAppleMusic
-import com.wavlin.music.ui.component.SleepTimerOverlay
+import com.wavlin.music.ui.kit.LocalInterfaceAppleMusic
+import com.wavlin.music.ui.kit.SleepTimerOverlay
 import androidx.compose.runtime.CompositionLocalProvider
 import com.kyant.backdrop.backdrops.layerBackdrop
 import androidx.activity.compose.BackHandler
@@ -70,7 +70,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import com.wavlin.music.ui.component.FilledIconButton
+import com.wavlin.music.ui.kit.FilledIconButton
 import com.wavlin.music.ui.style.PinkInk
 import com.wavlin.music.ui.style.playball
 import androidx.compose.material3.Icon
@@ -185,18 +185,18 @@ import com.wavlin.music.core.ext.togglePlayPause
 import com.wavlin.music.core.ext.toggleRepeatMode
 import com.wavlin.music.integration.together.RoomRole
 import com.wavlin.music.models.MediaMetadata
-import com.wavlin.music.ui.component.BottomSheet
-import com.wavlin.music.ui.component.BottomSheetState
-import com.wavlin.music.ui.component.LocalBottomSheetPageState
-import com.wavlin.music.ui.component.LocalMenuState
-import com.wavlin.music.ui.component.Lyrics
+import com.wavlin.music.ui.kit.BottomSheet
+import com.wavlin.music.ui.kit.BottomSheetState
+import com.wavlin.music.ui.kit.LocalBottomSheetPageState
+import com.wavlin.music.ui.kit.LocalMenuState
+import com.wavlin.music.ui.kit.Lyrics
 import com.wavlin.music.db.entities.FormatEntity
-import com.wavlin.music.ui.component.PlayerSliderTrack
-import com.wavlin.music.ui.component.ResizableIconButton
-import com.wavlin.music.ui.component.SquigglySlider
-import com.wavlin.music.ui.component.TempoPitchOverlay
-import com.wavlin.music.ui.component.WavySlider
-import com.wavlin.music.ui.component.rememberBottomSheetState
+import com.wavlin.music.ui.kit.PlayerSliderTrack
+import com.wavlin.music.ui.kit.ResizableIconButton
+import com.wavlin.music.ui.kit.SquigglySlider
+import com.wavlin.music.ui.kit.TempoPitchOverlay
+import com.wavlin.music.ui.kit.WavySlider
+import com.wavlin.music.ui.kit.rememberBottomSheetState
 import com.wavlin.music.ui.menu.PlayerMenu
 import com.wavlin.music.ui.screens.settings.DarkMode
 import com.wavlin.music.ui.style.PlayerColorExtractor
@@ -217,7 +217,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.max
 import kotlin.math.roundToInt
-import com.wavlin.music.ui.component.Icon as MIcon
+import com.wavlin.music.ui.kit.Icon as MIcon
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomSheetPlayer(
@@ -694,17 +694,17 @@ fun BottomSheetPlayer(
         mutableStateOf(false)
     }
     // Other screens (the more menu, the queue bar) ask for the card through this flag.
-    LaunchedEffect(com.wavlin.music.ui.component.SleepTimerOverlayRequest.requested) {
-        if (com.wavlin.music.ui.component.SleepTimerOverlayRequest.requested) {
-            com.wavlin.music.ui.component.SleepTimerOverlayRequest.requested = false
+    LaunchedEffect(com.wavlin.music.ui.kit.SleepTimerOverlayRequest.requested) {
+        if (com.wavlin.music.ui.kit.SleepTimerOverlayRequest.requested) {
+            com.wavlin.music.ui.kit.SleepTimerOverlayRequest.requested = false
             showSleepTimerDialog = true
         }
     }
 
     var showTempoPitch by remember { mutableStateOf(false) }
-    LaunchedEffect(com.wavlin.music.ui.component.TempoPitchOverlayRequest.requested) {
-        if (com.wavlin.music.ui.component.TempoPitchOverlayRequest.requested) {
-            com.wavlin.music.ui.component.TempoPitchOverlayRequest.requested = false
+    LaunchedEffect(com.wavlin.music.ui.kit.TempoPitchOverlayRequest.requested) {
+        if (com.wavlin.music.ui.kit.TempoPitchOverlayRequest.requested) {
+            com.wavlin.music.ui.kit.TempoPitchOverlayRequest.requested = false
             showTempoPitch = true
         }
     }
@@ -816,7 +816,7 @@ fun BottomSheetPlayer(
         state = state,
         modifier = modifier,
         background = {
-            val playerGlassBackdrop = com.wavlin.music.ui.component.LocalPlayerGlassBackdrop.current
+            val playerGlassBackdrop = com.wavlin.music.ui.kit.LocalPlayerGlassBackdrop.current
             Box(
                 modifier =
                     Modifier
@@ -835,7 +835,7 @@ fun BottomSheetPlayer(
                         ) { thumbnailUrl ->
                             if (thumbnailUrl != null) {
                                 Box(modifier = Modifier.alpha(backgroundAlpha)) {
-                                    com.wavlin.music.ui.component.DownscaledBlurBox(
+                                    com.wavlin.music.ui.kit.DownscaledBlurBox(
                                         radius = if (useDarkTheme) 150.dp else 100.dp,
                                         modifier = Modifier.fillMaxSize(),
                                     ) {
@@ -944,8 +944,8 @@ fun BottomSheetPlayer(
         },
     ) {
         CompositionLocalProvider(
-            com.wavlin.music.ui.component.LocalGlassBackdrop provides
-                (com.wavlin.music.ui.component.LocalPlayerGlassBackdrop.current ?: com.wavlin.music.ui.component.LocalGlassBackdrop.current),
+            com.wavlin.music.ui.kit.LocalGlassBackdrop provides
+                (com.wavlin.music.ui.kit.LocalPlayerGlassBackdrop.current ?: com.wavlin.music.ui.kit.LocalGlassBackdrop.current),
         ) {
         val controlsContent: @Composable ColumnScope.(MediaMetadata) -> Unit = { mediaMetadata ->
             val playPauseRoundness by animateDpAsState(
@@ -2189,7 +2189,7 @@ fun BottomSheetPlayer(
                 )
             },
             onDismiss = { showSleepTimerDialog = false },
-            backdrop = com.wavlin.music.ui.component.LocalPlayerGlassBackdrop.current,
+            backdrop = com.wavlin.music.ui.kit.LocalPlayerGlassBackdrop.current,
             running = sleepTimerEnabled,
             endOfSong =
                 playerConnection.service.sleepTimer
@@ -2208,7 +2208,7 @@ fun BottomSheetPlayer(
         TempoPitchOverlay(
             visible = showTempoPitch,
             onDismiss = { showTempoPitch = false },
-            backdrop = com.wavlin.music.ui.component.LocalPlayerGlassBackdrop.current,
+            backdrop = com.wavlin.music.ui.kit.LocalPlayerGlassBackdrop.current,
         )
 
     }

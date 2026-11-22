@@ -57,9 +57,9 @@ import com.wavlin.music.db.entities.Playlist
 import com.wavlin.music.media.alarm.MusicAlarmEntry
 import com.wavlin.music.media.alarm.MusicAlarmScheduler
 import com.wavlin.music.media.alarm.MusicAlarmStore
-import com.wavlin.music.ui.component.DefaultDialog
-import com.wavlin.music.ui.component.Material3SettingsGroup
-import com.wavlin.music.ui.component.Material3SettingsItem
+import com.wavlin.music.ui.kit.DefaultDialog
+import com.wavlin.music.ui.kit.Material3SettingsGroup
+import com.wavlin.music.ui.kit.Material3SettingsItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex

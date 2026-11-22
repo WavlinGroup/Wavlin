@@ -5,7 +5,7 @@
 
 package com.wavlin.music.ui.screens.settings
 
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import androidx.annotation.StringRes
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -45,9 +45,9 @@ import com.wavlin.music.core.config.StreamSourceTVHTML5Key
 import com.wavlin.music.core.config.StreamSourceVisionOSKey
 import com.wavlin.music.core.config.StreamSourceWebCreatorKey
 import com.wavlin.music.core.config.StreamSourceWebRemixKey
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.Material3SettingsGroup
-import com.wavlin.music.ui.component.Material3SettingsItem
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.Material3SettingsGroup
+import com.wavlin.music.ui.kit.Material3SettingsItem
 import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.rememberPreference
 @OptIn(ExperimentalMaterial3Api::class)

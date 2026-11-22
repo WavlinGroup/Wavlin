@@ -5,7 +5,7 @@
 
 package com.wavlin.music.ui.screens.artist
 
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -51,13 +51,13 @@ import com.wavlin.music.core.config.GridItemsSizeKey
 import com.wavlin.music.core.config.GridThumbnailHeight
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.media.queue.YouTubeQueue
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.LocalMenuState
-import com.wavlin.music.ui.component.YouTubeGridItem
-import com.wavlin.music.ui.component.YouTubeListItem
-import com.wavlin.music.ui.component.shimmer.GridItemPlaceHolder
-import com.wavlin.music.ui.component.shimmer.ListItemPlaceHolder
-import com.wavlin.music.ui.component.shimmer.ShimmerHost
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.LocalMenuState
+import com.wavlin.music.ui.kit.YouTubeGridItem
+import com.wavlin.music.ui.kit.YouTubeListItem
+import com.wavlin.music.ui.kit.shimmer.GridItemPlaceHolder
+import com.wavlin.music.ui.kit.shimmer.ListItemPlaceHolder
+import com.wavlin.music.ui.kit.shimmer.ShimmerHost
 import com.wavlin.music.ui.menu.YouTubeAlbumMenu
 import com.wavlin.music.ui.menu.YouTubeArtistMenu
 import com.wavlin.music.ui.menu.YouTubePlaylistMenu

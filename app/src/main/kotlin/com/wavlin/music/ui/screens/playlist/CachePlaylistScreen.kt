@@ -5,7 +5,7 @@
 
 package com.wavlin.music.ui.screens.playlist
 
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
@@ -87,14 +87,14 @@ import com.wavlin.music.db.entities.Song
 import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.playback.ExoDownloadService
 import com.wavlin.music.media.queue.ListQueue
-import com.wavlin.music.ui.component.DraggableScrollbar
-import com.wavlin.music.ui.component.glassPanel
-import com.wavlin.music.ui.component.glassStrokeBrush
-import com.wavlin.music.ui.component.EmptyPlaceholder
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.LocalMenuState
-import com.wavlin.music.ui.component.SongListItem
-import com.wavlin.music.ui.component.SortHeader
+import com.wavlin.music.ui.kit.DraggableScrollbar
+import com.wavlin.music.ui.kit.glassPanel
+import com.wavlin.music.ui.kit.glassStrokeBrush
+import com.wavlin.music.ui.kit.EmptyPlaceholder
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.LocalMenuState
+import com.wavlin.music.ui.kit.SongListItem
+import com.wavlin.music.ui.kit.SortHeader
 import com.wavlin.music.ui.menu.CachePlaylistMenu
 import com.wavlin.music.ui.menu.SelectionSongMenu
 import com.wavlin.music.ui.menu.SongMenu
@@ -518,7 +518,7 @@ fun CachePlaylistScreen(
 private fun CachePlaylistHeader(
     songs: List<Song>,
     context: android.content.Context,
-    menuState: com.wavlin.music.ui.component.MenuState,
+    menuState: com.wavlin.music.ui.kit.MenuState,
     modifier: Modifier = Modifier
 ) {
     val playerConnection = LocalPlayerConnection.current ?: return

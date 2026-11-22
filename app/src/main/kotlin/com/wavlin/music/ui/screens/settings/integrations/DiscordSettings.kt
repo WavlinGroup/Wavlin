@@ -1,6 +1,6 @@
 package com.wavlin.music.ui.screens.settings.integrations
 
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import android.app.Activity
 import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
@@ -99,11 +99,11 @@ import com.wavlin.music.db.entities.Song
 import com.wavlin.music.integration.discord.DiscordDefaults
 import com.wavlin.music.integration.discord.DiscordRpcManager
 import com.wavlin.music.integration.discord.DiscordTemplateRenderer
-import com.wavlin.music.ui.component.EnumDialog
-import com.wavlin.music.ui.component.DefaultDialog
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.Material3SettingsGroup
-import com.wavlin.music.ui.component.Material3SettingsItem
+import com.wavlin.music.ui.kit.EnumDialog
+import com.wavlin.music.ui.kit.DefaultDialog
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.Material3SettingsGroup
+import com.wavlin.music.ui.kit.Material3SettingsItem
 import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.dataStore
 import com.wavlin.music.core.util.makeTimeString

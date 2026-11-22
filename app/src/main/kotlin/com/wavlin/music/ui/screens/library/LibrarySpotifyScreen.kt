@@ -59,7 +59,7 @@ import com.wavlin.music.core.config.GridThumbnailHeight
 import com.wavlin.music.integration.spotify.account.SpotifyAuthState
 import com.wavlin.music.integration.spotify.account.SpotifyPlaylist
 import com.wavlin.music.integration.spotify.account.thumbnailUrl
-import com.wavlin.music.ui.component.GridItem
+import com.wavlin.music.ui.kit.GridItem
 import com.wavlin.music.ui.screens.spotify.SpotifyCenteredMessage
 import com.wavlin.music.ui.screens.spotify.SpotifyConnectCard
 import com.wavlin.music.ui.screens.spotify.SpotifyTrackItem

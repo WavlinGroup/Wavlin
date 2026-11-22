@@ -8,8 +8,8 @@ package com.wavlin.music.ui.screens.search
 import androidx.compose.foundation.layout.Box
 import com.wavlin.music.ui.style.playball
 import com.wavlin.music.ui.style.PinkInk
-import com.wavlin.music.ui.component.LilyDiscBox
-import com.wavlin.music.ui.component.LocalPinkLilyTheme
+import com.wavlin.music.ui.kit.LilyDiscBox
+import com.wavlin.music.ui.kit.LocalPinkLilyTheme
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.foundation.shape.CircleShape
@@ -76,7 +76,7 @@ import com.wavlin.music.core.config.SearchSource
 import com.wavlin.music.core.config.SearchSourceKey
 import com.wavlin.music.db.entities.SearchHistory
 import com.wavlin.music.media.queue.YouTubeQueue
-import com.wavlin.music.ui.component.HideOnScrollFAB
+import com.wavlin.music.ui.kit.HideOnScrollFAB
 import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.integration.spotify.SpotifyImporter
 import com.wavlin.music.integration.spotify.SpotifyMatcher

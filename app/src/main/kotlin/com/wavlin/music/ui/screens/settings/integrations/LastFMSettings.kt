@@ -5,7 +5,7 @@
 
 package com.wavlin.music.ui.screens.settings.integrations
 
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -63,10 +63,10 @@ import com.wavlin.music.core.config.LastFMUsernameKey
 import com.wavlin.music.core.config.ScrobbleDelayPercentKey
 import com.wavlin.music.core.config.ScrobbleDelaySecondsKey
 import com.wavlin.music.core.config.ScrobbleMinSongDurationKey
-import com.wavlin.music.ui.component.DefaultDialog
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.Material3SettingsGroup
-import com.wavlin.music.ui.component.Material3SettingsItem
+import com.wavlin.music.ui.kit.DefaultDialog
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.Material3SettingsGroup
+import com.wavlin.music.ui.kit.Material3SettingsItem
 import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.makeTimeString
 import com.wavlin.music.core.util.rememberPreference

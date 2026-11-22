@@ -53,8 +53,7 @@ import com.wavlin.music.R
 import com.wavlin.music.integration.spotify.account.SpotifyWebTrack
 import com.wavlin.music.integration.spotify.account.artistNames
 import com.wavlin.music.integration.spotify.account.thumbnailUrl
-import com.wavlin.music.ui.component.IconButton
-
+import com.wavlin.music.ui.kit.IconButton
 /** The audio container format the user wants their Spotify download delivered in. */
 enum class SpotifyDownloadFormat {
     OPUS,

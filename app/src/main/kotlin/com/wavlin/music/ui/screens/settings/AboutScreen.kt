@@ -19,7 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import com.wavlin.music.ui.component.LocalPinkLilyTheme
+import com.wavlin.music.ui.kit.LocalPinkLilyTheme
 import kotlinx.coroutines.delay
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -90,9 +90,9 @@ import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
 import com.wavlin.music.media.session.PlayerConnection
 import com.wavlin.music.media.queue.YouTubeQueue
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.Material3SettingsGroup
-import com.wavlin.music.ui.component.Material3SettingsItem
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.Material3SettingsGroup
+import com.wavlin.music.ui.kit.Material3SettingsItem
 import com.wavlin.music.ui.support.backToMain
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

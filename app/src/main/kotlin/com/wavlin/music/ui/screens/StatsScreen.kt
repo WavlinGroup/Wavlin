@@ -74,17 +74,17 @@ import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.media.queue.ListQueue
 import com.wavlin.music.media.queue.YouTubeQueue
-import com.wavlin.music.ui.component.ArtistListItem
-import com.wavlin.music.ui.component.EmptyPlaceholder
-import com.wavlin.music.ui.component.HideOnScrollFAB
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.LocalAlbumsGrid
-import com.wavlin.music.ui.component.LocalArtistsGrid
-import com.wavlin.music.ui.component.LocalMenuState
-import com.wavlin.music.ui.component.LocalSongsGrid
-import com.wavlin.music.ui.component.NavigationTitle
-import com.wavlin.music.ui.component.PlaylistGridItem
-import com.wavlin.music.ui.component.TimeTransfer
+import com.wavlin.music.ui.kit.ArtistListItem
+import com.wavlin.music.ui.kit.EmptyPlaceholder
+import com.wavlin.music.ui.kit.HideOnScrollFAB
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.LocalAlbumsGrid
+import com.wavlin.music.ui.kit.LocalArtistsGrid
+import com.wavlin.music.ui.kit.LocalMenuState
+import com.wavlin.music.ui.kit.LocalSongsGrid
+import com.wavlin.music.ui.kit.NavigationTitle
+import com.wavlin.music.ui.kit.PlaylistGridItem
+import com.wavlin.music.ui.kit.TimeTransfer
 import com.wavlin.music.ui.menu.AlbumMenu
 import com.wavlin.music.ui.menu.ArtistMenu
 import com.wavlin.music.ui.menu.SongMenu
@@ -799,7 +799,7 @@ fun StatsScreen(
             }
         },
         colors =
-            if (com.wavlin.music.ui.component.LocalPinkLilyTheme.current) {
+            if (com.wavlin.music.ui.kit.LocalPinkLilyTheme.current) {
                 androidx.compose.material3.TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent,
                     scrolledContainerColor = Color.Transparent,

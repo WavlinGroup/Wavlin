@@ -80,7 +80,7 @@ import com.wavlin.music.LocalNavController
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.R
 import com.wavlin.music.sound.equalizer.profiles.SavedEQProfile
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import timber.log.Timber
 import java.util.Locale
 import kotlin.math.roundToInt

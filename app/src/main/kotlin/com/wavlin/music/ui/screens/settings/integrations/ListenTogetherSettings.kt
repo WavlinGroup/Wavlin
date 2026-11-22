@@ -5,7 +5,7 @@
 
 package com.wavlin.music.ui.screens.settings.integrations
 
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
@@ -90,10 +90,10 @@ import com.wavlin.music.integration.together.ListenTogetherServers
 import com.wavlin.music.integration.together.LogEntry
 import com.wavlin.music.integration.together.LogLevel
 import com.wavlin.music.integration.together.RoomRole
-import com.wavlin.music.ui.component.DefaultDialog
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.IntegrationCard
-import com.wavlin.music.ui.component.IntegrationCardItem
+import com.wavlin.music.ui.kit.DefaultDialog
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.IntegrationCard
+import com.wavlin.music.ui.kit.IntegrationCardItem
 import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.ui.state.ListenTogetherViewModel

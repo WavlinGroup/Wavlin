@@ -7,7 +7,7 @@ package com.wavlin.music.ui.screens.settings
 
 import com.wavlin.music.core.config.InterfaceStyleKey
 import com.wavlin.music.core.config.InterfaceStyle
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -106,14 +106,14 @@ import com.wavlin.music.core.config.SwipeThumbnailKey
 import com.wavlin.music.core.config.SwipeToRemoveSongKey
 import com.wavlin.music.core.config.SwipeToSongKey
 import com.wavlin.music.core.config.UseNewPlayerDesignKey
-import com.wavlin.music.ui.component.DefaultDialog
-import com.wavlin.music.ui.component.EnumDialog
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.Material3SettingsGroup
-import com.wavlin.music.ui.component.Material3SettingsItem
-import com.wavlin.music.ui.component.PlayerSliderTrack
-import com.wavlin.music.ui.component.SquigglySlider
-import com.wavlin.music.ui.component.WavySlider
+import com.wavlin.music.ui.kit.DefaultDialog
+import com.wavlin.music.ui.kit.EnumDialog
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.Material3SettingsGroup
+import com.wavlin.music.ui.kit.Material3SettingsItem
+import com.wavlin.music.ui.kit.PlayerSliderTrack
+import com.wavlin.music.ui.kit.SquigglySlider
+import com.wavlin.music.ui.kit.WavySlider
 import com.wavlin.music.ui.style.DefaultThemeColor
 import com.wavlin.music.ui.style.PlayerSliderColors
 import com.wavlin.music.ui.support.backToMain

@@ -38,11 +38,11 @@ import com.wavlin.music.R
 import com.wavlin.music.db.entities.SpeedDialItem
 import com.wavlin.music.db.entities.ArtistEntity
 import com.wavlin.music.media.queue.YouTubeQueue
-import com.wavlin.music.ui.component.Material3MenuGroup
-import com.wavlin.music.ui.component.Material3MenuItemData
-import com.wavlin.music.ui.component.NewAction
-import com.wavlin.music.ui.component.NewActionGrid
-import com.wavlin.music.ui.component.YouTubeListItem
+import com.wavlin.music.ui.kit.Material3MenuGroup
+import com.wavlin.music.ui.kit.Material3MenuItemData
+import com.wavlin.music.ui.kit.NewAction
+import com.wavlin.music.ui.kit.NewActionGrid
+import com.wavlin.music.ui.kit.YouTubeListItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope

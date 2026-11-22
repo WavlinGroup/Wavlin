@@ -5,8 +5,8 @@
 
 package com.wavlin.music.ui.screens.recognition
 
-import com.wavlin.music.ui.component.LocalPinkLilyTheme
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.LocalPinkLilyTheme
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -87,7 +87,7 @@ import coil3.compose.AsyncImage
 import com.wavlin.music.LocalDatabase
 import com.wavlin.music.R
 import com.wavlin.music.db.entities.RecognitionHistory
-import com.wavlin.music.ui.component.IconButton
+import com.wavlin.music.ui.kit.IconButton
 import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.SearchRoutes
 import com.wavlin.shazamkit.models.RecognitionResult

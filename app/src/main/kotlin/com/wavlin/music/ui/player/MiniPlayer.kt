@@ -7,10 +7,10 @@
 
 package com.wavlin.music.ui.player
 
-import com.wavlin.music.ui.component.pinkGlass
-import com.wavlin.music.ui.component.pinkGlassEdge
-import com.wavlin.music.ui.component.appleGlass
-import com.wavlin.music.ui.component.LocalInterfaceAppleMusic
+import com.wavlin.music.ui.kit.pinkGlass
+import com.wavlin.music.ui.kit.pinkGlassEdge
+import com.wavlin.music.ui.kit.appleGlass
+import com.wavlin.music.ui.kit.LocalInterfaceAppleMusic
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
@@ -120,7 +120,7 @@ import com.wavlin.music.core.util.rememberPreference
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
-import com.wavlin.music.ui.component.Icon as MIcon
+import com.wavlin.music.ui.kit.Icon as MIcon
 import androidx.compose.ui.draw.blur
 import com.wavlin.music.core.config.MiniPlayerBackgroundStyle
 import com.wavlin.music.core.config.MiniPlayerBackgroundStyleKey
@@ -137,12 +137,12 @@ import kotlinx.coroutines.withContext
 import com.wavlin.music.ui.style.DefaultThemeColor
 import com.wavlin.music.ui.style.PlayerColorExtractor
 import com.wavlin.music.ui.style.SecretPinkThemeColor
-import com.wavlin.music.ui.component.LocalHazeState
-import com.wavlin.music.ui.component.LocalPinkLilyTheme
-import com.wavlin.music.ui.component.LilySlicedBackground
-import com.wavlin.music.ui.component.pinkLilyHazeStyle
-import com.wavlin.music.ui.component.LocalMenuState
-import com.wavlin.music.ui.component.glassStrokeBrush
+import com.wavlin.music.ui.kit.LocalHazeState
+import com.wavlin.music.ui.kit.LocalPinkLilyTheme
+import com.wavlin.music.ui.kit.LilySlicedBackground
+import com.wavlin.music.ui.kit.pinkLilyHazeStyle
+import com.wavlin.music.ui.kit.LocalMenuState
+import com.wavlin.music.ui.kit.glassStrokeBrush
 import com.wavlin.music.ui.menu.AddToPlaylistDialog
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi

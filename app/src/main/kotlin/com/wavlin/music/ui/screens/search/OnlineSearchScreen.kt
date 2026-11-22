@@ -45,7 +45,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import com.wavlin.music.ui.component.pinkAwareFill
+import com.wavlin.music.ui.kit.pinkAwareFill
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -73,9 +73,9 @@ import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.media.queue.ListQueue
 import com.wavlin.music.media.queue.YouTubeQueue
-import com.wavlin.music.ui.component.LocalMenuState
-import com.wavlin.music.ui.component.CategoryCard
-import com.wavlin.music.ui.component.YouTubeListItem
+import com.wavlin.music.ui.kit.LocalMenuState
+import com.wavlin.music.ui.kit.CategoryCard
+import com.wavlin.music.ui.kit.YouTubeListItem
 import com.wavlin.music.ui.menu.YouTubeAlbumMenu
 import com.wavlin.music.ui.menu.YouTubeArtistMenu
 import com.wavlin.music.ui.menu.YouTubePlaylistMenu

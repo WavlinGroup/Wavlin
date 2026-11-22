@@ -5,7 +5,7 @@
 
 package com.wavlin.music.ui.screens.settings
 
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -55,10 +55,10 @@ import com.wavlin.music.core.config.EnableSongCacheKey
 import com.wavlin.music.core.config.MaxImageCacheSizeKey
 import com.wavlin.music.core.config.MaxSongCacheSizeKey
 import com.wavlin.music.core.ext.tryOrNull
-import com.wavlin.music.ui.component.ActionPromptDialog
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.Material3SettingsGroup
-import com.wavlin.music.ui.component.Material3SettingsItem
+import com.wavlin.music.ui.kit.ActionPromptDialog
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.Material3SettingsGroup
+import com.wavlin.music.ui.kit.Material3SettingsItem
 import android.text.format.Formatter
 import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.rememberPreference

@@ -46,9 +46,9 @@ import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.playback.ExoDownloadService
 import com.wavlin.music.media.queue.ListQueue
-import com.wavlin.music.ui.component.DefaultDialog
-import com.wavlin.music.ui.component.Material3MenuGroup
-import com.wavlin.music.ui.component.Material3MenuItemData
+import com.wavlin.music.ui.kit.DefaultDialog
+import com.wavlin.music.ui.kit.Material3MenuGroup
+import com.wavlin.music.ui.kit.Material3MenuItemData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch

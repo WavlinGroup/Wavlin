@@ -5,7 +5,7 @@
 
 package com.wavlin.music.ui.screens.settings
 
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
@@ -85,12 +85,12 @@ import com.wavlin.music.core.config.ShowArtistSubscriberCountKey
 import com.wavlin.music.core.config.ShowMonthlyListenersKey
 import com.wavlin.music.core.config.ShowWrappedCardKey
 import com.wavlin.music.core.config.TopSize
-import com.wavlin.music.ui.component.EnumDialog
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.Material3SettingsGroup
-import com.wavlin.music.ui.component.Material3SettingsItem
-import com.wavlin.music.ui.component.DraggableLyricsProviderItem
-import com.wavlin.music.ui.component.DraggableLyricsProviderList
+import com.wavlin.music.ui.kit.EnumDialog
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.Material3SettingsGroup
+import com.wavlin.music.ui.kit.Material3SettingsItem
+import com.wavlin.music.ui.kit.DraggableLyricsProviderItem
+import com.wavlin.music.ui.kit.DraggableLyricsProviderList
 import com.wavlin.music.integration.lyrics.LyricsProviderRegistry
 import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.rememberEnumPreference

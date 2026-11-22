@@ -48,9 +48,9 @@ import com.wavlin.music.db.entities.PlaylistEntity
 import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.media.queue.ListQueue
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.YouTubeListItem
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.YouTubeListItem
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import com.wavlin.music.ui.screens.spotify.SpotifySaveDialog
 import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.ui.state.SharedPlaylistState

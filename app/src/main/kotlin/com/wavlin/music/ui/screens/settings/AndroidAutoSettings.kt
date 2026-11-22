@@ -5,7 +5,7 @@
 
 package com.wavlin.music.ui.screens.settings
 
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -50,10 +50,10 @@ import com.wavlin.music.core.config.AndroidAutoSectionsOrderKey
 import com.wavlin.music.core.config.AndroidAutoTargetPlaylistKey
 import com.wavlin.music.core.config.AndroidAutoYouTubePlaylistsKey
 import com.wavlin.music.core.config.MediaSessionConstants
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.Material3SettingsGroup
-import com.wavlin.music.ui.component.Material3SettingsItem
-import com.wavlin.music.ui.component.PreferenceEntry
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.Material3SettingsGroup
+import com.wavlin.music.ui.kit.Material3SettingsItem
+import com.wavlin.music.ui.kit.PreferenceEntry
 import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.rememberPreference
 import kotlinx.coroutines.flow.map

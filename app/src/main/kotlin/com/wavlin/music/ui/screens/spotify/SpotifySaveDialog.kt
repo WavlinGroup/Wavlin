@@ -31,9 +31,9 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wavlin.music.R
 import com.wavlin.music.db.entities.Playlist
-import com.wavlin.music.ui.component.ListDialog
-import com.wavlin.music.ui.component.PlaylistNameDialog
-import com.wavlin.music.ui.component.PlaylistListItem
+import com.wavlin.music.ui.kit.ListDialog
+import com.wavlin.music.ui.kit.PlaylistNameDialog
+import com.wavlin.music.ui.kit.PlaylistListItem
 import com.wavlin.music.ui.state.PlaylistsViewModel
 /**
  * Lets the user keep a Spotify playlist: save it as a new playlist (with the Spotify cover) in their

@@ -69,10 +69,10 @@ import com.wavlin.music.db.entities.SongEntity
 import com.wavlin.music.integration.lyrics.LyricsTranslationHelper
 import com.wavlin.music.integration.lyrics.LyricsUtils
 import com.wavlin.music.models.MediaMetadata
-import com.wavlin.music.ui.component.DefaultDialog
-import com.wavlin.music.ui.component.ListDialog
-import com.wavlin.music.ui.component.Material3MenuItemData
-import com.wavlin.music.ui.component.TextFieldDialog
+import com.wavlin.music.ui.kit.DefaultDialog
+import com.wavlin.music.ui.kit.ListDialog
+import com.wavlin.music.ui.kit.Material3MenuItemData
+import com.wavlin.music.ui.kit.TextFieldDialog
 import com.wavlin.music.ui.state.LyricsMenuViewModel
 import com.wavlin.music.core.config.OpenRouterApiKey
 import com.wavlin.music.core.config.DeeplApiKey

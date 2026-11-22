@@ -5,7 +5,7 @@
 
 package com.wavlin.music.ui.screens.settings
 
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Build
@@ -33,10 +33,10 @@ import androidx.navigation.NavController
 import com.wavlin.music.BuildConfig
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.R
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.Material3SettingsGroup
-import com.wavlin.music.ui.component.Material3SettingsItem
-import com.wavlin.music.ui.component.ReleaseNotesCard
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.Material3SettingsGroup
+import com.wavlin.music.ui.kit.Material3SettingsItem
+import com.wavlin.music.ui.kit.ReleaseNotesCard
 import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.Updater
 import androidx.compose.runtime.remember

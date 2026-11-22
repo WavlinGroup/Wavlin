@@ -36,7 +36,7 @@ import coil3.request.ImageRequest
 import coil3.request.allowHardware
 import coil3.toBitmap
 import com.wavlin.music.R
-import com.wavlin.music.ui.component.LyricsBackgroundStyle
+import com.wavlin.music.ui.kit.LyricsBackgroundStyle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File

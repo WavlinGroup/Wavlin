@@ -5,7 +5,7 @@
 
 package com.wavlin.music.ui.screens.artist
 
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
@@ -48,11 +48,11 @@ import com.wavlin.music.core.config.CONTENT_TYPE_HEADER
 import com.wavlin.music.core.config.HideExplicitKey
 import com.wavlin.music.core.ext.toMediaItem
 import com.wavlin.music.media.queue.ListQueue
-import com.wavlin.music.ui.component.HideOnScrollFAB
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.LocalMenuState
-import com.wavlin.music.ui.component.SongListItem
-import com.wavlin.music.ui.component.SortHeader
+import com.wavlin.music.ui.kit.HideOnScrollFAB
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.LocalMenuState
+import com.wavlin.music.ui.kit.SongListItem
+import com.wavlin.music.ui.kit.SortHeader
 import com.wavlin.music.ui.menu.SongMenu
 import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.rememberEnumPreference

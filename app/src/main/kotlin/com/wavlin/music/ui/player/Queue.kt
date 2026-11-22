@@ -5,7 +5,7 @@
 
 package com.wavlin.music.ui.player
 
-import com.wavlin.music.ui.component.pinkGlassPanel
+import com.wavlin.music.ui.kit.pinkGlassPanel
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
@@ -74,11 +74,11 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import com.wavlin.music.ui.component.ItemThumbnail
-import com.wavlin.music.ui.component.LocalPinkLilyTheme
-import com.wavlin.music.ui.component.artworkShape
-import com.wavlin.music.ui.component.pinkLilyHazeStyle
-import com.wavlin.music.ui.component.pureBlackHazeStyle
+import com.wavlin.music.ui.kit.ItemThumbnail
+import com.wavlin.music.ui.kit.LocalPinkLilyTheme
+import com.wavlin.music.ui.kit.artworkShape
+import com.wavlin.music.ui.kit.pinkLilyHazeStyle
+import com.wavlin.music.ui.kit.pureBlackHazeStyle
 import com.wavlin.music.core.util.joinByBullet
 import com.wavlin.music.core.util.joinToArtistString
 import dev.chrisbanes.haze.HazeState
@@ -121,9 +121,9 @@ import androidx.datastore.preferences.core.edit
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.exoplayer.source.ShuffleOrder.DefaultShuffleOrder
-import com.wavlin.music.ui.component.LocalInterfaceAppleMusic
-import com.wavlin.music.ui.component.lilyGlassAuto
-import com.wavlin.music.ui.component.lilyNinePatch
+import com.wavlin.music.ui.kit.LocalInterfaceAppleMusic
+import com.wavlin.music.ui.kit.lilyGlassAuto
+import com.wavlin.music.ui.kit.lilyNinePatch
 import com.wavlin.music.LocalNavController
 import com.wavlin.music.LocalListenTogetherManager
 import com.wavlin.music.LocalPlayerConnection
@@ -137,11 +137,11 @@ import com.wavlin.music.core.ext.move
 import com.wavlin.music.core.ext.toggleRepeatMode
 import com.wavlin.music.integration.together.RoomRole
 import com.wavlin.music.models.MediaMetadata
-import com.wavlin.music.ui.component.ActionPromptDialog
-import com.wavlin.music.ui.component.BottomSheet
-import com.wavlin.music.ui.component.BottomSheetState
-import com.wavlin.music.ui.component.LocalBottomSheetPageState
-import com.wavlin.music.ui.component.LocalMenuState
+import com.wavlin.music.ui.kit.ActionPromptDialog
+import com.wavlin.music.ui.kit.BottomSheet
+import com.wavlin.music.ui.kit.BottomSheetState
+import com.wavlin.music.ui.kit.LocalBottomSheetPageState
+import com.wavlin.music.ui.kit.LocalMenuState
 import com.wavlin.music.ui.menu.PlayerMenu
 import com.wavlin.music.ui.menu.QueueMenu
 import com.wavlin.music.ui.menu.SelectionMediaMetadataMenu
@@ -324,7 +324,7 @@ fun Queue(
                         enabled = !isListenTogetherGuest,
                         onClick = {
                             if (!isListenTogetherGuest) {
-                                com.wavlin.music.ui.component.SleepTimerOverlayRequest.requested = true
+                                com.wavlin.music.ui.kit.SleepTimerOverlayRequest.requested = true
                             }
                         },
                         modifier = Modifier.weight(1.2f),
@@ -1239,7 +1239,7 @@ private fun QueueSongRow(
                 overflow = TextOverflow.Ellipsis,
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
-                if (mediaMetadata.explicit) com.wavlin.music.ui.component.Icon.Explicit()
+                if (mediaMetadata.explicit) com.wavlin.music.ui.kit.Icon.Explicit()
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.bodyMedium,

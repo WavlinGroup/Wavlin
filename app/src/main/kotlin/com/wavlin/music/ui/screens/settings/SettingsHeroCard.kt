@@ -33,8 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.wavlin.music.BuildConfig
 import com.wavlin.music.R
-import com.wavlin.music.ui.component.LocalInterfaceAppleMusic
-
+import com.wavlin.music.ui.kit.LocalInterfaceAppleMusic
 /** App identity card at the top of Settings: logo, name and version, opens the About page. */
 @Composable
 fun SettingsHeroCard(

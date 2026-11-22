@@ -5,7 +5,7 @@
 
 package com.wavlin.music.ui.screens.recognition
 
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -57,9 +57,9 @@ import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.R
 import com.wavlin.music.core.config.ThumbnailCornerRadius
 import com.wavlin.music.db.entities.RecognitionHistory
-import com.wavlin.music.ui.component.DefaultDialog
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.LocalMenuState
+import com.wavlin.music.ui.kit.DefaultDialog
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.LocalMenuState
 import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.SearchRoutes
 import kotlinx.coroutines.Dispatchers

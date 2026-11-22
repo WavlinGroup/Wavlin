@@ -5,7 +5,7 @@
 
 package com.wavlin.music.ui.screens.settings.integrations
 
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -23,9 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.R
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.IntegrationCard
-import com.wavlin.music.ui.component.IntegrationCardItem
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.IntegrationCard
+import com.wavlin.music.ui.kit.IntegrationCardItem
 import com.wavlin.music.ui.support.backToMain
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

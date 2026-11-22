@@ -5,7 +5,7 @@
 
 package com.wavlin.music.ui.screens.artist
 
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
@@ -54,9 +54,9 @@ import com.wavlin.music.core.config.CONTENT_TYPE_HEADER
 import com.wavlin.music.core.config.GridItemSize
 import com.wavlin.music.core.config.GridItemsSizeKey
 import com.wavlin.music.core.config.GridThumbnailHeight
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.LibraryAlbumGridItem
-import com.wavlin.music.ui.component.LocalMenuState
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.LibraryAlbumGridItem
+import com.wavlin.music.ui.kit.LocalMenuState
 import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.ui.state.ArtistAlbumsViewModel

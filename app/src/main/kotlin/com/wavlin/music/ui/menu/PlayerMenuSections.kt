@@ -1,6 +1,6 @@
 package com.wavlin.music.ui.menu
 
-import com.wavlin.music.ui.component.LocalInterfaceAppleMusic
+import com.wavlin.music.ui.kit.LocalInterfaceAppleMusic
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -70,15 +70,15 @@ import com.wavlin.music.sound.effects.SystemEffectAvailability
 import com.wavlin.music.sound.effects.SystemEffectController
 import com.wavlin.music.sound.effects.dts.DtsSoundManager
 import com.wavlin.music.sound.effects.reverb.ReverbManager
-import com.wavlin.music.ui.component.ReverbRoomVisualizer
+import com.wavlin.music.ui.kit.ReverbRoomVisualizer
 import com.wavlin.music.sound.effects.xiaomi.XiaomiSoundManager
 import com.wavlin.music.core.config.PlayerBackgroundStyle
 import com.wavlin.music.core.config.PlayerBackgroundStyleKey
 import com.wavlin.music.models.MediaMetadata
-import com.wavlin.music.ui.component.LocalPinkLilyTheme
-import com.wavlin.music.ui.component.PinkGlassTint
-import com.wavlin.music.ui.component.pinkGlassEdge
-import com.wavlin.music.ui.component.VolumeSlider
+import com.wavlin.music.ui.kit.LocalPinkLilyTheme
+import com.wavlin.music.ui.kit.PinkGlassTint
+import com.wavlin.music.ui.kit.pinkGlassEdge
+import com.wavlin.music.ui.kit.VolumeSlider
 import com.wavlin.music.ui.style.PinkSwoosh
 import com.wavlin.music.core.util.rememberEnumPreference
 import kotlin.math.roundToInt
@@ -882,7 +882,7 @@ private fun SettingSwitchRow(
 
 /** Compact SpatialFlow-style card listing the remaining menu actions as divided rows. */
 @Composable
-fun PlayerMenuListCard(items: List<com.wavlin.music.ui.component.Material3MenuItemData>) {
+fun PlayerMenuListCard(items: List<com.wavlin.music.ui.kit.Material3MenuItemData>) {
     if (items.isEmpty()) return
     Column(
         modifier =

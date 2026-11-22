@@ -45,12 +45,12 @@ import com.wavlin.music.db.entities.Playlist
 import com.wavlin.music.db.entities.PlaylistSong
 import com.wavlin.music.db.entities.Song
 import com.wavlin.music.core.config.AccountNameKey
-import com.wavlin.music.ui.component.DefaultDialog
-import com.wavlin.music.ui.component.LocalMenuState
-import com.wavlin.music.ui.component.PlaylistShareSheet
+import com.wavlin.music.ui.kit.DefaultDialog
+import com.wavlin.music.ui.kit.LocalMenuState
+import com.wavlin.music.ui.kit.PlaylistShareSheet
 import com.wavlin.music.core.util.rememberPreference
-import com.wavlin.music.ui.component.Material3MenuGroup
-import com.wavlin.music.ui.component.Material3MenuItemData
+import com.wavlin.music.ui.kit.Material3MenuGroup
+import com.wavlin.music.ui.kit.Material3MenuItemData
 import com.wavlin.music.core.util.PlaylistExporter
 import com.wavlin.music.core.util.getExportFileUri
 import com.wavlin.music.core.util.saveToPublicDocuments

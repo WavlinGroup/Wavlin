@@ -94,13 +94,13 @@ import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.playback.ExoDownloadService
 import com.wavlin.music.db.entities.Song
 import com.wavlin.music.db.entities.SpeedDialItem
-import com.wavlin.music.ui.component.BottomSheetState
-import com.wavlin.music.ui.component.ListDialog
-import com.wavlin.music.ui.component.Material3MenuGroup
-import com.wavlin.music.ui.component.Material3MenuItemData
-import com.wavlin.music.ui.component.NewAction
-import com.wavlin.music.ui.component.NewActionGrid
-import com.wavlin.music.ui.component.VolumeSlider
+import com.wavlin.music.ui.kit.BottomSheetState
+import com.wavlin.music.ui.kit.ListDialog
+import com.wavlin.music.ui.kit.Material3MenuGroup
+import com.wavlin.music.ui.kit.Material3MenuItemData
+import com.wavlin.music.ui.kit.NewAction
+import com.wavlin.music.ui.kit.NewActionGrid
+import com.wavlin.music.ui.kit.VolumeSlider
 import com.wavlin.music.core.util.rememberPreference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -745,7 +745,7 @@ fun PlayerMenu(
                                     },
                                     onClick = {
                                         if (!varispeedMode) {
-                                            com.wavlin.music.ui.component.TempoPitchOverlayRequest.requested = true
+                                            com.wavlin.music.ui.kit.TempoPitchOverlayRequest.requested = true
                                             onDismiss()
                                         }
                                         else showSpeedDialog = true

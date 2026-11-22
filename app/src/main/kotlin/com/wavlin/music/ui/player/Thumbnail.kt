@@ -85,7 +85,7 @@ import com.wavlin.music.core.config.SeekExtraSeconds
 import com.wavlin.music.core.config.SwipeThumbnailKey
 import com.wavlin.music.core.config.ThumbnailCornerRadius
 import com.wavlin.music.integration.together.RoomRole
-import com.wavlin.music.ui.component.CastButton
+import com.wavlin.music.ui.kit.CastButton
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.core.util.rememberPreference
 import kotlinx.coroutines.delay
@@ -605,7 +605,7 @@ private fun ThumbnailItem(
         Box(
             modifier = Modifier
                 .size(side)
-                .clip(RoundedCornerShape(if (com.wavlin.music.ui.component.LocalInterfaceAppleMusic.current) 14.dp else dimensions.cornerRadius))
+                .clip(RoundedCornerShape(if (com.wavlin.music.ui.kit.LocalInterfaceAppleMusic.current) 14.dp else dimensions.cornerRadius))
         ) {
             if (hidePlayerThumbnail) {
                 HiddenThumbnailPlaceholder(textBackgroundColor = textBackgroundColor)

@@ -92,10 +92,10 @@ import com.wavlin.music.core.config.InnerTubeCookieKey
 import com.wavlin.music.core.config.UseLoginForBrowse
 import com.wavlin.music.core.config.YtmSyncKey
 import com.wavlin.music.integration.spotify.account.SpotifyAuthState
-import com.wavlin.music.ui.component.DefaultDialog
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.LocalInterfaceAppleMusic
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.DefaultDialog
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.LocalInterfaceAppleMusic
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.ui.state.AccountSettingsViewModel

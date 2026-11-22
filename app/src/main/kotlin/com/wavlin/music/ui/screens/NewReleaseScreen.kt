@@ -5,7 +5,7 @@
 
 package com.wavlin.music.ui.screens
 
-import com.wavlin.music.ui.component.pinkTopBarColors
+import com.wavlin.music.ui.kit.pinkTopBarColors
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.asPaddingValues
@@ -34,11 +34,11 @@ import com.wavlin.music.R
 import com.wavlin.music.core.config.GridItemSize
 import com.wavlin.music.core.config.GridItemsSizeKey
 import com.wavlin.music.core.config.GridThumbnailHeight
-import com.wavlin.music.ui.component.IconButton
-import com.wavlin.music.ui.component.LocalMenuState
-import com.wavlin.music.ui.component.YouTubeGridItem
-import com.wavlin.music.ui.component.shimmer.GridItemPlaceHolder
-import com.wavlin.music.ui.component.shimmer.ShimmerHost
+import com.wavlin.music.ui.kit.IconButton
+import com.wavlin.music.ui.kit.LocalMenuState
+import com.wavlin.music.ui.kit.YouTubeGridItem
+import com.wavlin.music.ui.kit.shimmer.GridItemPlaceHolder
+import com.wavlin.music.ui.kit.shimmer.ShimmerHost
 import com.wavlin.music.ui.menu.YouTubeAlbumMenu
 import com.wavlin.music.ui.support.backToMain
 import com.wavlin.music.core.util.rememberEnumPreference
