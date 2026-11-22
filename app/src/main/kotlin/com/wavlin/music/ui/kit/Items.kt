@@ -92,7 +92,6 @@ import androidx.media3.exoplayer.offline.Download.STATE_COMPLETED
 import androidx.media3.exoplayer.offline.Download.STATE_DOWNLOADING
 import androidx.media3.exoplayer.offline.Download.STATE_QUEUED
 import coil3.compose.AsyncImage
-import coil3.request.ImageRequest
 import com.wavlin.innertube.YouTube
 import com.wavlin.innertube.models.AlbumItem
 import com.wavlin.innertube.models.ArtistItem
@@ -719,12 +718,7 @@ fun ArtistListItem(
     badges = badges,
     thumbnailContent = {
         AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(artist.artist.thumbnailUrl?.resize(144, 144))
-                .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
-                .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
-                .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
-                .build(),
+            model = rememberArtworkRequest(artist.artist.thumbnailUrl?.resize(144, 144)),
             contentDescription = null,
             modifier = Modifier
                 .size(ListThumbnailSize)
@@ -751,12 +745,7 @@ fun ArtistGridItem(
     badges = badges,
     thumbnailContent = {
         AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(artist.artist.thumbnailUrl?.resize(544, 544))
-                .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
-                .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
-                .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
-                .build(),
+            model = rememberArtworkRequest(artist.artist.thumbnailUrl?.resize(544, 544)),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -1522,12 +1511,7 @@ fun ItemThumbnail(
     ) {
         if (albumIndex == null) {
             AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(thumbnailUrl?.resize(544, 544))
-                    .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
-                    .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
-                    .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
-                    .build(),
+                model = rememberArtworkRequest(thumbnailUrl?.resize(544, 544)),
                 contentDescription = null,
                 contentScale = if (cropAlbumArt) ContentScale.Crop else ContentScale.Fit,
                 modifier = Modifier
@@ -1603,12 +1587,7 @@ fun LocalThumbnail(
             .border(1.dp, glassStrokeBrush(), shape)
     ) {
         AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(thumbnailUrl)
-                .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
-                .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
-                .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
-                .build(),
+            model = rememberArtworkRequest(thumbnailUrl),
             contentDescription = null,
             contentScale = if (cropAlbumArt) ContentScale.Crop else ContentScale.Fit,
             modifier = Modifier.fillMaxSize()
@@ -1714,13 +1693,7 @@ fun PlaylistThumbnail(
             placeHolder()
         }
         1 -> AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(thumbnails[0].resize((size.value * 3).toInt()))
-                .apply { /* Removed cache key extensions due to unresolved in env */ }
-                .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
-                .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
-                .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
-                .build(),
+            model = rememberArtworkRequest(thumbnails[0].resize((size.value * 3).toInt())),
             contentDescription = null,
             contentScale = if (cropAlbumArt) ContentScale.Crop else ContentScale.Fit,
             placeholder = painterResource(R.drawable.queue_music),
@@ -1742,13 +1715,7 @@ fun PlaylistThumbnail(
                         repeat(2) { col ->
                             val index = row * 2 + col
                             AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(thumbnails.getOrNull(index)?.resize((size.value * 1.5).toInt()))
-                                    .apply { /* Removed cache key extensions due to unresolved in env */ }
-                                    .memoryCachePolicy(coil3.request.CachePolicy.ENABLED)
-                                    .diskCachePolicy(coil3.request.CachePolicy.ENABLED)
-                                    .networkCachePolicy(coil3.request.CachePolicy.ENABLED)
-                                    .build(),
+                                model = rememberArtworkRequest(thumbnails.getOrNull(index)?.resize((size.value * 1.5).toInt())),
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop,
                                 placeholder = painterResource(R.drawable.queue_music),

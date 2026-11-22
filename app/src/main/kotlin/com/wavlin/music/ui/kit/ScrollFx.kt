@@ -137,9 +137,9 @@ private fun ScrollFxItem(
     val entryVelocity = remember { fx.state.velocityWithoutObserving() }
     val enterFrom = if (entryVelocity >= 0f) 1f else -1f
     val progress = remember { Animatable(if (abs(entryVelocity) > MovingThresholdPx) 0f else 1f) }
-    var top by remember { mutableFloatStateOf(0f) }
-    var height by remember { mutableFloatStateOf(0f) }
-    val viewportHeight = remember { floatArrayOf(0f) }
+    // Plain array, not state: written on every placement while scrolling and read only in the
+    // graphics layer below, so tracking the item's position never invalidates anything itself.
+    val geometry = remember { floatArrayOf(0f, 0f, 0f) }
     var placed by remember { mutableStateOf(false) }
 
     LaunchedEffect(placed) {
@@ -155,8 +155,8 @@ private fun ScrollFxItem(
                     val enter = progress.value
                     val velocity = fx.state.velocity
                     if (enter >= 1f && velocity == 0f) return@graphicsLayer
-                    val vh = viewportHeight[0]
-                    val spread = if (vh > 0f) ((top + height / 2f) / vh - 0.5f).coerceIn(-0.5f, 1f) else 0f
+                    val vh = geometry[2]
+                    val spread = if (vh > 0f) ((geometry[0] + geometry[1] / 2f) / vh - 0.5f).coerceIn(-0.5f, 1f) else 0f
                     translationY = enterFrom * (1f - enter) * enterOffsetPx + velocity * spread * SpreadFactor
                     val scale = EnterScaleFrom + (1f - EnterScaleFrom) * enter
                     scaleX = scale
@@ -164,9 +164,9 @@ private fun ScrollFxItem(
                     alpha = EnterAlphaFrom + (1f - EnterAlphaFrom) * enter
                     compositingStrategy = CompositingStrategy.ModulateAlpha
                 }.onGloballyPositioned { coordinates ->
-                    top = coordinates.positionInParent().y
-                    height = coordinates.size.height.toFloat()
-                    viewportHeight[0] = fx.listState.layoutInfo.viewportSize.height
+                    geometry[0] = coordinates.positionInParent().y
+                    geometry[1] = coordinates.size.height.toFloat()
+                    geometry[2] = fx.listState.layoutInfo.viewportSize.height
                         .toFloat()
                     if (!placed) placed = true
                 },
