@@ -11,8 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wavlin.music.core.config.ExperimentalLyricsKey
 import com.wavlin.music.core.util.rememberPreference
-import com.wavlin.music.viewmodels.LyricsViewModel
-
+import com.wavlin.music.ui.state.LyricsViewModel
 @Composable
 fun Lyrics(
     sliderPositionProvider: () -> Long?,

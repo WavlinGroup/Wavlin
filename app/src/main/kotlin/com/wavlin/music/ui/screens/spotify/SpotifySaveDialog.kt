@@ -34,8 +34,7 @@ import com.wavlin.music.db.entities.Playlist
 import com.wavlin.music.ui.component.ListDialog
 import com.wavlin.music.ui.component.PlaylistNameDialog
 import com.wavlin.music.ui.component.PlaylistListItem
-import com.wavlin.music.viewmodels.PlaylistsViewModel
-
+import com.wavlin.music.ui.state.PlaylistsViewModel
 /**
  * Lets the user keep a Spotify playlist: save it as a new playlist (with the Spotify cover) in their
  * Playlists, or add its songs to a playlist they already have.

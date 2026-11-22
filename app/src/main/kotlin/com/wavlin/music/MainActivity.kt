@@ -222,7 +222,7 @@ import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.core.util.reportException
 import com.wavlin.music.core.util.setAppLocale
-import com.wavlin.music.viewmodels.HomeViewModel
+import com.wavlin.music.ui.state.HomeViewModel
 import com.wavlin.music.widget.PlaylistWidgetReceiver
 import com.valentinilk.shimmer.LocalShimmerTheme
 import dagger.hilt.android.AndroidEntryPoint

@@ -130,7 +130,7 @@ import com.wavlin.music.ui.utils.fadingEdge
 import com.wavlin.music.ui.utils.isScrollingUp
 import com.wavlin.music.ui.utils.resize
 import com.wavlin.music.core.util.rememberPreference
-import com.wavlin.music.viewmodels.ArtistViewModel
+import com.wavlin.music.ui.state.ArtistViewModel
 import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

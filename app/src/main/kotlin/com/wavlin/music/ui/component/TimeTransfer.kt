@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wavlin.music.R
 import com.wavlin.music.db.entities.SongWithStats
-import com.wavlin.music.viewmodels.StatsViewModel
+import com.wavlin.music.ui.state.StatsViewModel
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 

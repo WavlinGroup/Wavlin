@@ -66,9 +66,8 @@ import com.wavlin.music.ui.menu.YouTubeArtistMenu
 import com.wavlin.music.ui.menu.YouTubePlaylistMenu
 import com.wavlin.music.ui.utils.backToMain
 import com.wavlin.music.core.util.rememberEnumPreference
-import com.wavlin.music.viewmodels.AccountContentType
-import com.wavlin.music.viewmodels.AccountViewModel
-
+import com.wavlin.music.ui.state.AccountContentType
+import com.wavlin.music.ui.state.AccountViewModel
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun AccountScreen(

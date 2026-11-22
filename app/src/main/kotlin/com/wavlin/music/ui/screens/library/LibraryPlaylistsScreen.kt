@@ -89,7 +89,7 @@ import com.wavlin.music.core.ext.matchesNormalizedQuery
 import com.wavlin.music.core.ext.normalizeForSearch
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.core.util.rememberPreference
-import com.wavlin.music.viewmodels.LibraryPlaylistsViewModel
+import com.wavlin.music.ui.state.LibraryPlaylistsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.UUID

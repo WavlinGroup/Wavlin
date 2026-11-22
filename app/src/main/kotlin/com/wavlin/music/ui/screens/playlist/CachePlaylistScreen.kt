@@ -101,7 +101,7 @@ import com.wavlin.music.ui.menu.SongMenu
 import com.wavlin.music.ui.utils.backToMain
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.core.util.rememberPreference
-import com.wavlin.music.viewmodels.CachePlaylistViewModel
+import com.wavlin.music.ui.state.CachePlaylistViewModel
 import java.time.LocalDateTime
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)

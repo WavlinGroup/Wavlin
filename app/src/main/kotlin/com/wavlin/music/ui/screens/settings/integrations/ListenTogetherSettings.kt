@@ -96,7 +96,7 @@ import com.wavlin.music.ui.component.IntegrationCard
 import com.wavlin.music.ui.component.IntegrationCardItem
 import com.wavlin.music.ui.utils.backToMain
 import com.wavlin.music.core.util.rememberPreference
-import com.wavlin.music.viewmodels.ListenTogetherViewModel
+import com.wavlin.music.ui.state.ListenTogetherViewModel
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)

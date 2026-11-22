@@ -65,8 +65,8 @@ import com.wavlin.music.ui.component.LocalMenuState
 import com.wavlin.music.ui.component.PlaylistListItem
 import com.wavlin.music.ui.component.SongListItem
 import com.wavlin.music.ui.menu.SongMenu
-import com.wavlin.music.viewmodels.LocalFilter
-import com.wavlin.music.viewmodels.LocalSearchViewModel
+import com.wavlin.music.ui.state.LocalFilter
+import com.wavlin.music.ui.state.LocalSearchViewModel
 import kotlinx.coroutines.flow.drop
 
 @OptIn(ExperimentalFoundationApi::class)

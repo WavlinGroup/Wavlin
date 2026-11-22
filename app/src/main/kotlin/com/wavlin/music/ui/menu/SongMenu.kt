@@ -97,7 +97,7 @@ import com.wavlin.music.ui.component.NewActionGrid
 import com.wavlin.music.ui.component.SongListItem
 import com.wavlin.music.ui.component.TextFieldDialog
 import com.wavlin.music.ui.utils.ShowMediaInfo
-import com.wavlin.music.viewmodels.CachePlaylistViewModel
+import com.wavlin.music.ui.state.CachePlaylistViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

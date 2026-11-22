@@ -70,8 +70,7 @@ import com.wavlin.music.integration.spotify.account.SpotifyAuthState
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.pinkTopBarColors
 import com.wavlin.music.ui.utils.backToMain
-import com.wavlin.music.viewmodels.SpotifyViewModel
-
+import com.wavlin.music.ui.state.SpotifyViewModel
 val SpotifyGreen = Color(0xFF1DB954)
 
 /** Spotify's own login page in a WebView. Once it holds the `sp_dc` cookie the account is connected. */

@@ -108,7 +108,7 @@ import com.wavlin.music.ui.utils.backToMain
 import com.wavlin.music.ui.utils.resize
 import com.wavlin.music.core.util.makeTimeString
 import com.wavlin.music.core.util.rememberPreference
-import com.wavlin.music.viewmodels.OnlinePlaylistViewModel
+import com.wavlin.music.ui.state.OnlinePlaylistViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -92,7 +92,7 @@ import com.wavlin.music.ui.utils.backToMain
 import com.wavlin.music.core.util.joinByBullet
 import com.wavlin.music.core.util.makeTimeString
 import com.wavlin.music.core.util.rememberPreference
-import com.wavlin.music.viewmodels.StatsViewModel
+import com.wavlin.music.ui.state.StatsViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 

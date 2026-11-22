@@ -101,7 +101,7 @@ import com.wavlin.music.ui.menu.SongMenu
 import com.wavlin.music.ui.utils.isScrollingUp
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.core.util.rememberPreference
-import com.wavlin.music.viewmodels.LibrarySongsViewModel
+import com.wavlin.music.ui.state.LibrarySongsViewModel
 import timber.log.Timber
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

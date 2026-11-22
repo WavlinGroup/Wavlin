@@ -72,7 +72,7 @@ import com.wavlin.music.ui.component.LocalMenuState
 import com.wavlin.music.ui.component.SortHeader
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.core.util.rememberPreference
-import com.wavlin.music.viewmodels.LibraryArtistsViewModel
+import com.wavlin.music.ui.state.LibraryArtistsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

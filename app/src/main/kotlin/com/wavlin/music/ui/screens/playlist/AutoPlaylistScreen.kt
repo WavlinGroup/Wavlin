@@ -134,7 +134,7 @@ import com.wavlin.music.ui.utils.isScrollingUp
 import com.wavlin.music.core.util.makeTimeString
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.core.util.rememberPreference
-import com.wavlin.music.viewmodels.AutoPlaylistViewModel
+import com.wavlin.music.ui.state.AutoPlaylistViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

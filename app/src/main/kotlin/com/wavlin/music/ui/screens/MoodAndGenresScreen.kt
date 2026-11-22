@@ -62,8 +62,7 @@ import com.wavlin.music.ui.component.HubArt
 import com.wavlin.music.ui.component.shimmer.ShimmerHost
 import com.wavlin.music.ui.component.shimmer.TextPlaceholder
 import com.wavlin.music.ui.screens.hub.HubBackButton
-import com.wavlin.music.viewmodels.MoodAndGenresViewModel
-
+import com.wavlin.music.ui.state.MoodAndGenresViewModel
 @Composable
 fun MoodAndGenresScreen(
     navController: NavController,

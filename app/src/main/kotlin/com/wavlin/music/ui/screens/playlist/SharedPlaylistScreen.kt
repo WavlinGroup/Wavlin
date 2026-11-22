@@ -53,8 +53,8 @@ import com.wavlin.music.ui.component.YouTubeListItem
 import com.wavlin.music.ui.component.pinkTopBarColors
 import com.wavlin.music.ui.screens.spotify.SpotifySaveDialog
 import com.wavlin.music.ui.utils.backToMain
-import com.wavlin.music.viewmodels.SharedPlaylistState
-import com.wavlin.music.viewmodels.SharedPlaylistViewModel
+import com.wavlin.music.ui.state.SharedPlaylistState
+import com.wavlin.music.ui.state.SharedPlaylistViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch

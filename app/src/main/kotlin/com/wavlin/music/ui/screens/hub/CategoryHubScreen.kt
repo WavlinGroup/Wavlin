@@ -15,11 +15,10 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.wavlin.music.R
-import com.wavlin.music.viewmodels.CategoryHubViewModel
-import com.wavlin.music.viewmodels.HubKind
-import com.wavlin.music.viewmodels.HubSection
-import com.wavlin.music.viewmodels.NewReleaseViewModel
-
+import com.wavlin.music.ui.state.CategoryHubViewModel
+import com.wavlin.music.ui.state.HubKind
+import com.wavlin.music.ui.state.HubSection
+import com.wavlin.music.ui.state.NewReleaseViewModel
 /** New releases, charts and podcasts all share this page; [kind] picks what it loads. */
 @Composable
 fun CategoryHubScreen(

@@ -102,8 +102,7 @@ import com.wavlin.music.ui.menu.SongMenu
 import com.wavlin.music.ui.menu.TopPlaylistMenu
 import com.wavlin.music.ui.utils.backToMain
 import com.wavlin.music.core.util.makeTimeString
-import com.wavlin.music.viewmodels.TopPlaylistViewModel
-
+import com.wavlin.music.ui.state.TopPlaylistViewModel
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun TopPlaylistScreen(

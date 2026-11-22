@@ -59,8 +59,7 @@ import com.wavlin.music.ui.component.LibraryAlbumGridItem
 import com.wavlin.music.ui.component.LocalMenuState
 import com.wavlin.music.ui.utils.backToMain
 import com.wavlin.music.core.util.rememberEnumPreference
-import com.wavlin.music.viewmodels.ArtistAlbumsViewModel
-
+import com.wavlin.music.ui.state.ArtistAlbumsViewModel
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ArtistAlbumsScreen(

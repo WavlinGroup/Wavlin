@@ -5,7 +5,7 @@
 
 package com.wavlin.music.ui.screens
 
-import com.wavlin.music.viewmodels.MoodAndGenresViewModel
+import com.wavlin.music.ui.state.MoodAndGenresViewModel
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -167,8 +167,8 @@ import com.wavlin.music.core.util.joinToArtistString
 import com.wavlin.music.core.util.makeTimeString
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.core.util.rememberPreference
-import com.wavlin.music.viewmodels.CommunityPlaylistItem
-import com.wavlin.music.viewmodels.HomeViewModel
+import com.wavlin.music.ui.state.CommunityPlaylistItem
+import com.wavlin.music.ui.state.HomeViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -499,7 +499,7 @@ fun CommunityPlaylistCard(
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun DailyDiscoverCard(
-    dailyDiscover: com.wavlin.music.viewmodels.DailyDiscoverItem,
+    dailyDiscover: com.wavlin.music.ui.state.DailyDiscoverItem,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {

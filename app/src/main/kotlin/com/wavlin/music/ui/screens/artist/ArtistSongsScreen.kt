@@ -57,8 +57,7 @@ import com.wavlin.music.ui.menu.SongMenu
 import com.wavlin.music.ui.utils.backToMain
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.core.util.rememberPreference
-import com.wavlin.music.viewmodels.ArtistSongsViewModel
-
+import com.wavlin.music.ui.state.ArtistSongsViewModel
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ArtistSongsScreen(

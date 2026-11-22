@@ -78,9 +78,8 @@ import com.wavlin.music.ui.component.shimmer.TextPlaceholder
 import com.wavlin.music.ui.menu.YouTubeAlbumMenu
 import com.wavlin.music.ui.menu.YouTubeSongMenu
 import com.wavlin.music.ui.utils.SnapLayoutInfoProvider
-import com.wavlin.music.viewmodels.ChartsViewModel
-import com.wavlin.music.viewmodels.ExploreViewModel
-
+import com.wavlin.music.ui.state.ChartsViewModel
+import com.wavlin.music.ui.state.ExploreViewModel
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ExploreScreen(

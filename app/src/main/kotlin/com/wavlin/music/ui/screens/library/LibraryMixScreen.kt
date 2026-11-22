@@ -106,7 +106,7 @@ import com.wavlin.music.ui.menu.PlaylistMenu
 import com.wavlin.music.ui.menu.SongMenu
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.core.util.rememberPreference
-import com.wavlin.music.viewmodels.LibraryMixViewModel
+import com.wavlin.music.ui.state.LibraryMixViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.text.Collator

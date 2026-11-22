@@ -96,8 +96,7 @@ import com.wavlin.music.ui.utils.backToMain
 import com.wavlin.music.ui.utils.resize
 import com.wavlin.music.core.util.makeTimeString
 import com.wavlin.music.core.util.rememberPreference
-import com.wavlin.music.viewmodels.AlbumViewModel
-
+import com.wavlin.music.ui.state.AlbumViewModel
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AlbumScreen(

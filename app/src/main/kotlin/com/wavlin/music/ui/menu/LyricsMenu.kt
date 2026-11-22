@@ -73,7 +73,7 @@ import com.wavlin.music.ui.component.DefaultDialog
 import com.wavlin.music.ui.component.ListDialog
 import com.wavlin.music.ui.component.Material3MenuItemData
 import com.wavlin.music.ui.component.TextFieldDialog
-import com.wavlin.music.viewmodels.LyricsMenuViewModel
+import com.wavlin.music.ui.state.LyricsMenuViewModel
 import com.wavlin.music.core.config.OpenRouterApiKey
 import com.wavlin.music.core.config.DeeplApiKey
 import com.wavlin.music.core.config.AiProviderKey

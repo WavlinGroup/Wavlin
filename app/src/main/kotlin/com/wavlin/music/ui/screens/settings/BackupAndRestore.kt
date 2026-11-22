@@ -63,10 +63,10 @@ import com.wavlin.music.ui.menu.CsvColumnMappingDialog
 import com.wavlin.music.ui.menu.CsvImportProgressDialog
 import com.wavlin.music.ui.menu.LoadingScreen
 import com.wavlin.music.ui.utils.backToMain
-import com.wavlin.music.viewmodels.BackupPreviewInfo
-import com.wavlin.music.viewmodels.BackupRestoreViewModel
-import com.wavlin.music.viewmodels.ConvertedSongLog
-import com.wavlin.music.viewmodels.CsvImportState
+import com.wavlin.music.ui.state.BackupPreviewInfo
+import com.wavlin.music.ui.state.BackupRestoreViewModel
+import com.wavlin.music.ui.state.ConvertedSongLog
+import com.wavlin.music.ui.state.CsvImportState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime

@@ -34,8 +34,7 @@ import com.wavlin.music.integration.spotify.account.SpotifyAuthState
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.pinkTopBarColors
 import com.wavlin.music.ui.utils.backToMain
-import com.wavlin.music.viewmodels.SpotifyViewModel
-
+import com.wavlin.music.ui.state.SpotifyViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SpotifySettings(

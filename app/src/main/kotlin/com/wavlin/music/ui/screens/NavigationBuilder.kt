@@ -40,7 +40,7 @@ import com.wavlin.music.ui.screens.playlist.OnlinePlaylistScreen
 import com.wavlin.music.ui.screens.playlist.TopPlaylistScreen
 import com.wavlin.music.ui.screens.hub.CategoryHubScreen
 import com.wavlin.music.ui.screens.podcast.OnlinePodcastScreen
-import com.wavlin.music.viewmodels.HubKind
+import com.wavlin.music.ui.state.HubKind
 import com.wavlin.music.ui.screens.recognition.RecognitionHistoryScreen
 import com.wavlin.music.ui.screens.recognition.RecognitionScreen
 import com.wavlin.music.ui.screens.search.OnlineSearchResult

@@ -113,7 +113,7 @@ import com.wavlin.music.ui.menu.YouTubePlaylistMenu
 import com.wavlin.music.ui.menu.YouTubeSongMenu
 import com.wavlin.music.core.util.SearchRoutes
 import com.wavlin.music.core.util.rememberPreference
-import com.wavlin.music.viewmodels.OnlineSearchViewModel
+import com.wavlin.music.ui.state.OnlineSearchViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

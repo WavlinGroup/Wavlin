@@ -95,7 +95,7 @@ import com.wavlin.music.ui.menu.YouTubeArtistMenu
 import com.wavlin.music.ui.menu.YouTubePlaylistMenu
 import com.wavlin.music.ui.menu.YouTubeSongMenu
 import com.wavlin.music.ui.utils.backToMain
-import com.wavlin.music.viewmodels.HubSection
+import com.wavlin.music.ui.state.HubSection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

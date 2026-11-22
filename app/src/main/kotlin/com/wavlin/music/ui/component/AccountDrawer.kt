@@ -70,9 +70,8 @@ import com.wavlin.music.integration.spotify.account.SpotifyAuthState
 import com.wavlin.music.ui.screens.settings.AccountTokenEntry
 import com.wavlin.music.core.util.Updater
 import com.wavlin.music.core.util.rememberPreference
-import com.wavlin.music.viewmodels.HomeViewModel
-import com.wavlin.music.viewmodels.SpotifyViewModel
-
+import com.wavlin.music.ui.state.HomeViewModel
+import com.wavlin.music.ui.state.SpotifyViewModel
 private val DrawerEasing = CubicBezierEasing(0.2f, 0f, 0f, 1f)
 private const val DRAWER_WIDTH_FRACTION = 0.88f
 private const val OPEN_DURATION_MS = 380

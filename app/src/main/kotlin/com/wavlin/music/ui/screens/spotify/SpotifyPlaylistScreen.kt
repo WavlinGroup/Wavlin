@@ -96,8 +96,8 @@ import com.wavlin.music.integration.spotify.account.toImportTrack
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.pinkTopBarColors
 import com.wavlin.music.ui.utils.backToMain
-import com.wavlin.music.viewmodels.SpotifyPlaylistState
-import com.wavlin.music.viewmodels.SpotifyPlaylistViewModel
+import com.wavlin.music.ui.state.SpotifyPlaylistState
+import com.wavlin.music.ui.state.SpotifyPlaylistViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

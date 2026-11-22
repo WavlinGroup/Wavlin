@@ -182,7 +182,7 @@ import com.wavlin.music.core.util.makeTimeString
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.core.util.rememberPreference
 import com.wavlin.music.core.util.reportException
-import com.wavlin.music.viewmodels.LocalPlaylistViewModel
+import com.wavlin.music.ui.state.LocalPlaylistViewModel
 import com.yalantis.ucrop.UCrop
 import io.ktor.client.plugins.ClientRequestException
 import kotlinx.coroutines.Dispatchers

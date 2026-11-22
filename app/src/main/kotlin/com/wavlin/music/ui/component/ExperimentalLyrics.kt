@@ -121,7 +121,7 @@ import com.wavlin.music.ui.utils.fadingEdge
 import com.wavlin.music.core.util.ComposeToImage
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.core.util.rememberPreference
-import com.wavlin.music.viewmodels.LyricsViewModel
+import com.wavlin.music.ui.state.LyricsViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest

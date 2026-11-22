@@ -44,9 +44,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.wavlin.music.R
-import com.wavlin.music.viewmodels.ConvertedSongLog
-import com.wavlin.music.viewmodels.CsvImportState
-
+import com.wavlin.music.ui.state.ConvertedSongLog
+import com.wavlin.music.ui.state.CsvImportState
 @Composable
 fun CsvColumnMappingDialog(
     isVisible: Boolean,

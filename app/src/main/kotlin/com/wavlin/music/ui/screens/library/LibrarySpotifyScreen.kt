@@ -64,7 +64,7 @@ import com.wavlin.music.ui.screens.spotify.SpotifyCenteredMessage
 import com.wavlin.music.ui.screens.spotify.SpotifyConnectCard
 import com.wavlin.music.ui.screens.spotify.SpotifyTrackItem
 import com.wavlin.music.ui.screens.spotify.playSpotifyTracks
-import com.wavlin.music.viewmodels.SpotifyViewModel
+import com.wavlin.music.ui.state.SpotifyViewModel
 import kotlinx.coroutines.launch
 
 /** The Spotify tab of the Library: playlists and liked songs of the connected account. */

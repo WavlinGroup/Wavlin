@@ -98,9 +98,9 @@ import com.wavlin.music.ui.component.LocalInterfaceAppleMusic
 import com.wavlin.music.ui.component.pinkTopBarColors
 import com.wavlin.music.ui.utils.backToMain
 import com.wavlin.music.core.util.rememberPreference
-import com.wavlin.music.viewmodels.AccountSettingsViewModel
-import com.wavlin.music.viewmodels.HomeViewModel
-import com.wavlin.music.viewmodels.SpotifyViewModel
+import com.wavlin.music.ui.state.AccountSettingsViewModel
+import com.wavlin.music.ui.state.HomeViewModel
+import com.wavlin.music.ui.state.SpotifyViewModel
 import kotlinx.coroutines.launch
 
 private val SpotifyGreen = Color(0xFF1DB954)

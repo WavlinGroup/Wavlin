@@ -81,7 +81,7 @@ import com.wavlin.music.db.entities.Song
 import com.wavlin.music.playback.ExoDownloadService
 import com.wavlin.music.ui.component.CreatePlaylistDialog
 import com.wavlin.music.ui.component.PlaylistListItem
-import com.wavlin.music.viewmodels.PlaylistsViewModel
+import com.wavlin.music.ui.state.PlaylistsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

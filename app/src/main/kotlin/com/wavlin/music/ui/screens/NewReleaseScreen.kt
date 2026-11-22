@@ -42,8 +42,7 @@ import com.wavlin.music.ui.component.shimmer.ShimmerHost
 import com.wavlin.music.ui.menu.YouTubeAlbumMenu
 import com.wavlin.music.ui.utils.backToMain
 import com.wavlin.music.core.util.rememberEnumPreference
-import com.wavlin.music.viewmodels.NewReleaseViewModel
-
+import com.wavlin.music.ui.state.NewReleaseViewModel
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun NewReleaseScreen(

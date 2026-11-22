@@ -85,8 +85,7 @@ import com.wavlin.music.ui.component.LocalMenuState
 import com.wavlin.music.ui.component.YouTubeListItem
 import com.wavlin.music.ui.menu.YouTubeSongMenu
 import com.wavlin.music.ui.utils.backToMain
-import com.wavlin.music.viewmodels.OnlinePodcastViewModel
-
+import com.wavlin.music.ui.state.OnlinePodcastViewModel
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun OnlinePodcastScreen(

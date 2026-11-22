@@ -13,9 +13,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.wavlin.music.ui.screens.hub.HubScaffold
-import com.wavlin.music.viewmodels.HubSection
-import com.wavlin.music.viewmodels.YouTubeBrowseViewModel
-
+import com.wavlin.music.ui.state.HubSection
+import com.wavlin.music.ui.state.YouTubeBrowseViewModel
 /** A single mood (Chill, Workout, ...) rendered on the shared hub page. */
 @Composable
 fun MoodDetailScreen(
