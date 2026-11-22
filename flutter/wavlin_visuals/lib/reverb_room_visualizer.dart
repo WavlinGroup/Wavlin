@@ -3,6 +3,10 @@
 // Every preset shows one impulse and what the space does to it: a short ping-pong, a long
 // swelling tail, far-away echoes, a vibrating metal sheet and a travelling coil wave.
 
+// Theme.of needs package:flutter/material.dart, which newer Flutter deprecates in favor of a
+// separate package this module does not depend on yet.
+// ignore_for_file: deprecated_member_use
+
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 

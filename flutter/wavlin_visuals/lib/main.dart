@@ -1,7 +1,7 @@
 // Entrypoint of the embedded Flutter module. The Android app creates one FlutterEngine,
 // runs this main(), and drives the visualizer through the channel below.
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 
 import 'eq_graph_params.dart';

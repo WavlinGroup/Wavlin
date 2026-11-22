@@ -97,8 +97,8 @@ class EqGraphParams {
     );
   }
 
-  /// Flat [frequency, db, frequency, db, ...] list. Frequencies must be positive and every value
-  /// finite; a Float64List from the platform channel is a List<double> and passes.
+  /// Flat `[frequency, db, frequency, db, ...]` list. Frequencies must be positive and every value
+  /// finite; a `Float64List` from the platform channel is a `List<double>` and passes.
   static List<Offset>? _pairs(Object? raw, int maxPairs) {
     if (raw is! List || raw.length.isOdd || raw.length ~/ 2 > maxPairs) return null;
     final out = <Offset>[];
