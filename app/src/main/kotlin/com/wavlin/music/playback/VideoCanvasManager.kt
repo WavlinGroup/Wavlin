@@ -6,9 +6,9 @@
 package com.wavlin.music.playback
 
 import android.content.Context
-import com.wavlin.music.spotify.SpotifyCanvasClient
-import com.wavlin.music.spotify.account.SpotifyAuthState
-import com.wavlin.music.spotify.account.SpotifySession
+import com.wavlin.music.integration.spotify.SpotifyCanvasClient
+import com.wavlin.music.integration.spotify.account.SpotifyAuthState
+import com.wavlin.music.integration.spotify.account.SpotifySession
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers

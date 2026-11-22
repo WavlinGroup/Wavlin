@@ -6,7 +6,7 @@
  * Copyright (c) 2026 Shubham Karande, permissively licensed (MIT per its README, Apache-2.0 per its LICENSE file).
  */
 
-package com.wavlin.music.spotify.account
+package com.wavlin.music.integration.spotify.account
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO

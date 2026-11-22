@@ -1,4 +1,4 @@
-package com.wavlin.music.spotify
+package com.wavlin.music.integration.spotify
 
 import android.content.Context
 import android.os.Handler

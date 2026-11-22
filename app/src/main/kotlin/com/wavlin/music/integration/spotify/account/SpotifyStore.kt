@@ -3,7 +3,7 @@
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
-package com.wavlin.music.spotify.account
+package com.wavlin.music.integration.spotify.account
 
 import android.content.Context
 import android.security.keystore.KeyGenParameterSpec

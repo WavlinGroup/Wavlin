@@ -1,4 +1,4 @@
-package com.wavlin.music.spotify
+package com.wavlin.music.integration.spotify
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO

@@ -62,7 +62,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import android.widget.Toast
-import com.wavlin.music.spotify.account.SpotifyPlayback
+import com.wavlin.music.integration.spotify.account.SpotifyPlayback
 import androidx.core.net.toUri
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
@@ -90,9 +90,9 @@ import com.wavlin.music.LocalDatabase
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
-import com.wavlin.music.spotify.SpotifyImporter
-import com.wavlin.music.spotify.account.thumbnailUrl
-import com.wavlin.music.spotify.account.toImportTrack
+import com.wavlin.music.integration.spotify.SpotifyImporter
+import com.wavlin.music.integration.spotify.account.thumbnailUrl
+import com.wavlin.music.integration.spotify.account.toImportTrack
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.pinkTopBarColors
 import com.wavlin.music.ui.utils.backToMain
@@ -120,10 +120,10 @@ fun SpotifyPlaylistScreen(
 
     val downloadUtil = com.wavlin.music.LocalDownloadUtil.current
     val downloads by downloadUtil.downloads.collectAsStateWithLifecycle()
-    val trackToSong by com.wavlin.music.spotify.SpotifyDownloadStore.trackToSong.collectAsStateWithLifecycle()
+    val trackToSong by com.wavlin.music.integration.spotify.SpotifyDownloadStore.trackToSong.collectAsStateWithLifecycle()
 
     // Finds the YouTube Music match for each picked song, saves it and starts its download
-    fun startDownload(picked: List<com.wavlin.music.spotify.account.SpotifyWebTrack>, format: SpotifyDownloadFormat = SpotifyDownloadFormat.OPUS) {
+    fun startDownload(picked: List<com.wavlin.music.integration.spotify.account.SpotifyWebTrack>, format: SpotifyDownloadFormat = SpotifyDownloadFormat.OPUS) {
         if (picked.isEmpty()) return
         Toast.makeText(context, context.getString(R.string.spotify_download_preparing), Toast.LENGTH_SHORT).show()
         scope.launch {
@@ -134,7 +134,7 @@ fun SpotifyPlaylistScreen(
                     if (metadata == null) return@forEach
                     withContext(Dispatchers.IO) { database.query { insert(metadata) } }
                     // Stays with this Spotify playlist: kept out of the Downloaded library, shown with a check here
-                    com.wavlin.music.spotify.SpotifyDownloadStore.record(context, spotifyTrack.id, metadata.id)
+                    com.wavlin.music.integration.spotify.SpotifyDownloadStore.record(context, spotifyTrack.id, metadata.id)
                     // Encode "<title>|<format>" so ExoDownloadService can honour the
                     // chosen container format when transcoding support is added later.
                     val requestData = "${metadata.title}|${format.name}".toByteArray()
@@ -159,7 +159,7 @@ fun SpotifyPlaylistScreen(
     }
 
     fun play(
-        tracks: List<com.wavlin.music.spotify.account.SpotifyWebTrack>,
+        tracks: List<com.wavlin.music.integration.spotify.account.SpotifyWebTrack>,
         startIndex: Int = 0,
         shuffle: Boolean = false,
     ) {

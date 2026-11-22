@@ -6,10 +6,10 @@
  * Copyright (c) 2026 Shubham Karande, permissively licensed (MIT per its README, Apache-2.0 per its LICENSE file).
  */
 
-package com.wavlin.music.spotify.account
+package com.wavlin.music.integration.spotify.account
 
 import androidx.compose.runtime.Immutable
-import com.wavlin.music.spotify.SpotifyTrack
+import com.wavlin.music.integration.spotify.SpotifyTrack
 import kotlinx.serialization.Serializable
 
 @Serializable

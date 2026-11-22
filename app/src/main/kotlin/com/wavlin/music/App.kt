@@ -69,7 +69,7 @@ class App :
 
         // Install crash handler first
         CrashHandler.install(this)
-        com.wavlin.music.spotify.SpotifyDownloadStore.ensureLoaded(this)
+        com.wavlin.music.integration.spotify.SpotifyDownloadStore.ensureLoaded(this)
 
         // preferencesDataStore uses filesDir/datastore; proactive mkdir reduces failures on odd ROM states
         try {

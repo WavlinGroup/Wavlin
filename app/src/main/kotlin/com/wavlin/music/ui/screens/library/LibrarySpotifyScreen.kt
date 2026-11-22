@@ -56,9 +56,9 @@ import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
 import com.wavlin.music.core.config.CONTENT_TYPE_HEADER
 import com.wavlin.music.core.config.GridThumbnailHeight
-import com.wavlin.music.spotify.account.SpotifyAuthState
-import com.wavlin.music.spotify.account.SpotifyPlaylist
-import com.wavlin.music.spotify.account.thumbnailUrl
+import com.wavlin.music.integration.spotify.account.SpotifyAuthState
+import com.wavlin.music.integration.spotify.account.SpotifyPlaylist
+import com.wavlin.music.integration.spotify.account.thumbnailUrl
 import com.wavlin.music.ui.component.GridItem
 import com.wavlin.music.ui.screens.spotify.SpotifyCenteredMessage
 import com.wavlin.music.ui.screens.spotify.SpotifyConnectCard

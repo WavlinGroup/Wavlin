@@ -35,12 +35,12 @@ import com.wavlin.music.core.config.ListThumbnailSize
 import com.wavlin.music.core.config.ThumbnailCornerRadius
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.playback.PlayerConnection
-import com.wavlin.music.spotify.SpotifyDirectDownloader
-import com.wavlin.music.spotify.account.SpotifyPlayback
-import com.wavlin.music.spotify.account.SpotifyWebTrack
-import com.wavlin.music.spotify.account.artistNames
-import com.wavlin.music.spotify.account.thumbnailUrl
-import com.wavlin.music.spotify.account.toImportTrack
+import com.wavlin.music.integration.spotify.SpotifyDirectDownloader
+import com.wavlin.music.integration.spotify.account.SpotifyPlayback
+import com.wavlin.music.integration.spotify.account.SpotifyWebTrack
+import com.wavlin.music.integration.spotify.account.artistNames
+import com.wavlin.music.integration.spotify.account.thumbnailUrl
+import com.wavlin.music.integration.spotify.account.toImportTrack
 import com.wavlin.music.ui.component.ListItem
 
 /**

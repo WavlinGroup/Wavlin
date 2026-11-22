@@ -78,8 +78,8 @@ import com.wavlin.music.db.entities.SearchHistory
 import com.wavlin.music.playback.queues.YouTubeQueue
 import com.wavlin.music.ui.component.HideOnScrollFAB
 import com.wavlin.music.core.ext.toMediaItem
-import com.wavlin.music.spotify.SpotifyImporter
-import com.wavlin.music.spotify.SpotifyMatcher
+import com.wavlin.music.integration.spotify.SpotifyImporter
+import com.wavlin.music.integration.spotify.SpotifyMatcher
 import com.wavlin.music.data.local.LocalSongs
 import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.playback.queues.ListQueue
@@ -101,9 +101,9 @@ import kotlinx.serialization.json.contentOrNull
 import java.io.File
 import android.net.Uri
 import com.wavlin.innertube.models.SongItem
-import com.wavlin.music.spotify.SpotifyTrack
-import com.wavlin.music.spotify.SpotifyProvider
-import com.wavlin.music.spotify.SpotifyResult
+import com.wavlin.music.integration.spotify.SpotifyTrack
+import com.wavlin.music.integration.spotify.SpotifyProvider
+import com.wavlin.music.integration.spotify.SpotifyResult
 import com.wavlin.music.core.util.SearchRoutes
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.core.util.rememberPreference

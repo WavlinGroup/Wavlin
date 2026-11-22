@@ -65,8 +65,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.R
-import com.wavlin.music.spotify.account.SpotifyAuth
-import com.wavlin.music.spotify.account.SpotifyAuthState
+import com.wavlin.music.integration.spotify.account.SpotifyAuth
+import com.wavlin.music.integration.spotify.account.SpotifyAuthState
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.pinkTopBarColors
 import com.wavlin.music.ui.utils.backToMain

@@ -1,4 +1,4 @@
-package com.wavlin.music.spotify
+package com.wavlin.music.integration.spotify
 
 import com.wavlin.innertube.YouTube
 import com.wavlin.innertube.models.SongItem

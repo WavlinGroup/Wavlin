@@ -8,9 +8,9 @@ package com.wavlin.music.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wavlin.music.spotify.account.SpotifyPlaylist
-import com.wavlin.music.spotify.account.SpotifySession
-import com.wavlin.music.spotify.account.SpotifyWebTrack
+import com.wavlin.music.integration.spotify.account.SpotifyPlaylist
+import com.wavlin.music.integration.spotify.account.SpotifySession
+import com.wavlin.music.integration.spotify.account.SpotifyWebTrack
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

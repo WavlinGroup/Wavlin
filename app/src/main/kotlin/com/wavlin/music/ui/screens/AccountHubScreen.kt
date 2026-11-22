@@ -91,7 +91,7 @@ import com.wavlin.music.R
 import com.wavlin.music.core.config.InnerTubeCookieKey
 import com.wavlin.music.core.config.UseLoginForBrowse
 import com.wavlin.music.core.config.YtmSyncKey
-import com.wavlin.music.spotify.account.SpotifyAuthState
+import com.wavlin.music.integration.spotify.account.SpotifyAuthState
 import com.wavlin.music.ui.component.DefaultDialog
 import com.wavlin.music.ui.component.IconButton
 import com.wavlin.music.ui.component.LocalInterfaceAppleMusic

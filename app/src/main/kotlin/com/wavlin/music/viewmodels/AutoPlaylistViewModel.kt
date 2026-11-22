@@ -69,7 +69,7 @@ constructor(
                         .map { it.filterExplicit(hideExplicit).filterVideoSongs(hideVideoSongs) }
 
                     "downloaded" -> database.downloadedSongs(sortType, descending)
-                        .combine(com.wavlin.music.spotify.SpotifyDownloadStore.hiddenSongIds) { songs, hidden ->
+                        .combine(com.wavlin.music.integration.spotify.SpotifyDownloadStore.hiddenSongIds) { songs, hidden ->
                             songs.filter { it.id !in hidden }
                         }
                         .map { it.filterExplicit(hideExplicit).filterVideoSongs(hideVideoSongs) }

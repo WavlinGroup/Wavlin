@@ -84,7 +84,7 @@ fun DownloadedSongsScreen(navController: NavController) {
                 .filter { !it.song.isEpisode }
     }
     // Songs downloaded from a Spotify playlist stay with that playlist instead of listing here
-    val spotifyOnly by com.wavlin.music.spotify.SpotifyDownloadStore.hiddenSongIds.collectAsState()
+    val spotifyOnly by com.wavlin.music.integration.spotify.SpotifyDownloadStore.hiddenSongIds.collectAsState()
     val songs =
         remember(downloadedSongs, extraSongs, spotifyOnly) {
             (downloadedSongs.asReversed() + extraSongs).filter { it.id !in spotifyOnly }

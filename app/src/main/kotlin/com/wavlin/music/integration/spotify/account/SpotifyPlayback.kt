@@ -6,7 +6,7 @@
  * Copyright (c) 2026 Shubham Karande, permissively licensed (MIT per its README, Apache-2.0 per its LICENSE file).
  */
 
-package com.wavlin.music.spotify.account
+package com.wavlin.music.integration.spotify.account
 
 import com.wavlin.innertube.YouTube
 import com.wavlin.music.core.ext.toMediaItem
@@ -14,7 +14,7 @@ import com.wavlin.music.models.MediaMetadata
 import com.wavlin.music.models.toMediaMetadata
 import com.wavlin.music.playback.PlayerConnection
 import com.wavlin.music.playback.queues.ListQueue
-import com.wavlin.music.spotify.SpotifyMatcher
+import com.wavlin.music.integration.spotify.SpotifyMatcher
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -58,11 +58,11 @@ import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
 import com.wavlin.music.playback.queues.YouTubeQueue
-import com.wavlin.music.spotify.SpotifyImporter
-import com.wavlin.music.spotify.SpotifyMatcher
-import com.wavlin.music.spotify.SpotifyProvider
-import com.wavlin.music.spotify.SpotifyResult
-import com.wavlin.music.spotify.SpotifyTrack
+import com.wavlin.music.integration.spotify.SpotifyImporter
+import com.wavlin.music.integration.spotify.SpotifyMatcher
+import com.wavlin.music.integration.spotify.SpotifyProvider
+import com.wavlin.music.integration.spotify.SpotifyResult
+import com.wavlin.music.integration.spotify.SpotifyTrack
 import com.wavlin.music.ui.component.GlassDialog
 import com.wavlin.music.ui.component.GlassIconButton
 import com.wavlin.music.ui.screens.search.SpotifyPlaylistPreviewDialog
