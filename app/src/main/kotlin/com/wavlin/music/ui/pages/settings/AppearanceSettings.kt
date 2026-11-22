@@ -605,7 +605,6 @@ fun AppearanceSettings(
             valueText = {
                 when (it) {
                     MiniPlayerBackgroundStyle.DEFAULT -> stringResource(R.string.follow_theme)
-                    MiniPlayerBackgroundStyle.TRANSPARENT -> stringResource(R.string.transparent)
                     MiniPlayerBackgroundStyle.BLUR -> stringResource(R.string.player_background_blur)
                     MiniPlayerBackgroundStyle.GRADIENT -> stringResource(R.string.gradient)
                     MiniPlayerBackgroundStyle.PURE_BLACK -> stringResource(R.string.pure_black)
@@ -1103,7 +1102,6 @@ fun AppearanceSettings(
                                 Text(
                                     when (miniPlayerBackground) {
                                         MiniPlayerBackgroundStyle.DEFAULT -> stringResource(R.string.follow_theme)
-                                        MiniPlayerBackgroundStyle.TRANSPARENT -> stringResource(R.string.transparent)
                                         MiniPlayerBackgroundStyle.BLUR -> stringResource(R.string.player_background_blur)
                                         MiniPlayerBackgroundStyle.GRADIENT -> stringResource(R.string.gradient)
                                         MiniPlayerBackgroundStyle.PURE_BLACK -> stringResource(R.string.pure_black)

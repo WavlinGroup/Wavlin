@@ -205,7 +205,15 @@ fun GlassIconButton(
         modifier = modifier
             .size(size)
             .let { base ->
-                if (pinkLily) {
+                if (pinkLily && !appleGlassStyle) {
+                    // These bubbles sit inside the screen that Haze records as its source, where the Haze pass draws
+                    // nothing. The flat fill matches the mini player's pink glass so the bubble keeps a background.
+                    base
+                        .clip(androidx.compose.foundation.shape.CircleShape)
+                        .background(Color(0xFFFFF1F6).copy(alpha = 0.82f))
+                        .background(Color(0xFFFFD0E0).copy(alpha = 0.40f))
+                        .pinkGlass(androidx.compose.foundation.shape.CircleShape)
+                } else if (pinkLily) {
                     base.pinkGlass(androidx.compose.foundation.shape.CircleShape)
                 } else if (appleGlassStyle) {
                     base.appleGlass(androidx.compose.foundation.shape.CircleShape)

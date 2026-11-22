@@ -28,7 +28,6 @@ val MiniPlayerBackgroundStyleKey = stringPreferencesKey("miniPlayerBackgroundSty
 
 enum class MiniPlayerBackgroundStyle {
     DEFAULT,
-    TRANSPARENT,
     BLUR,
     GRADIENT,
     PURE_BLACK,

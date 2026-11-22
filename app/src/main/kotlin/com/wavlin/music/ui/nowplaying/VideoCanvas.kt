@@ -45,6 +45,8 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.wavlin.music.models.MediaMetadata
+import com.wavlin.music.ui.kit.LocalMenuState
+import com.wavlin.music.ui.kit.LocalPlayerGlassBackdrop
 import kotlinx.coroutines.delay
 
 /** Inactivity before the player controls fade out and the canvas is shown on its own. */
@@ -63,8 +65,10 @@ private const val CANVAS_RESUME_DELAY_MS = 350L
 fun VideoCanvasPlayer(
     videoUrl: String,
     modifier: Modifier = Modifier,
-    paused: Boolean = false,
 ) {
+    val menuState = LocalMenuState.current
+    val paused =
+        menuState.isVisible && menuState.heightFraction < 1f && LocalPlayerGlassBackdrop.current != null
     // A fresh player, surface and fade-in per video: reusing one across songs left the next canvas invisible
     androidx.compose.runtime.key(videoUrl) {
         VideoCanvasPlayerContent(videoUrl = videoUrl, modifier = modifier, paused = paused)

@@ -302,7 +302,6 @@ private fun NewMiniPlayer(
     // Memoize colors
     val backgroundColor = when (miniPlayerBackground) {
         MiniPlayerBackgroundStyle.DEFAULT    -> MaterialTheme.colorScheme.surfaceContainer
-        MiniPlayerBackgroundStyle.TRANSPARENT -> Color.Black.copy(alpha = 0.25f)
         MiniPlayerBackgroundStyle.BLUR       -> MaterialTheme.colorScheme.surfaceContainer
         MiniPlayerBackgroundStyle.GRADIENT   -> MaterialTheme.colorScheme.surfaceContainer
         MiniPlayerBackgroundStyle.PURE_BLACK -> Color.Black
@@ -390,7 +389,7 @@ private fun NewMiniPlayer(
         val hazeState = LocalHazeState.current
         val pinkLily = LocalPinkLilyTheme.current
         // DEFAULT gets a real backdrop blur (samples the screen content behind it, like iOS).
-        // Other styles (pure black, thumbnail blur, gradient, transparent) are explicit user
+        // Other styles (pure black, thumbnail blur, gradient) are explicit user
         // choices already, so they keep their own flat/artwork background untouched.
         val useGlassBackdrop = miniPlayerBackground == MiniPlayerBackgroundStyle.DEFAULT
         Box(
