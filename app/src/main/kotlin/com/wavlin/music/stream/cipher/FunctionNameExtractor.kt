@@ -100,7 +100,7 @@ object FunctionNameExtractor {
      * Detect if player.js uses Q-array obfuscation
      */
     fun hasQArrayObfuscation(playerJs: String): Boolean {
-        val hasQArray = Q_ARRAY_PATTERN.containsMatchIn(playerJs)
+        val hasQArray = NativeCipher.hasQArray(playerJs) ?: Q_ARRAY_PATTERN.containsMatchIn(playerJs)
         Timber.tag(TAG).d("Q-array obfuscation check: hasQArray=$hasQArray")
 
         if (hasQArray) {
@@ -125,14 +125,12 @@ object FunctionNameExtractor {
     fun extractPlayerHash(playerJs: String): String? {
         Timber.tag(TAG).d("Extracting player hash from playerJs (${playerJs.length} chars)")
 
-        // Try to extract from embedded URLs first
-        for ((index, pattern) in PLAYER_HASH_PATTERNS.withIndex()) {
-            val match = pattern.find(playerJs)
-            if (match != null) {
-                val hash = match.groupValues[1]
-                Timber.tag(TAG).d("Player hash found via pattern $index: $hash")
-                return hash
-            }
+        // Try to extract from embedded URLs first (Rust scanner, Kotlin regex as fallback)
+        val nativeHash = NativeCipher.findPlayerHash(playerJs)
+        val embedded = if (nativeHash != null) nativeHash.value else findPlayerHashKotlin(playerJs)
+        if (embedded != null) {
+            Timber.tag(TAG).d("Player hash found in embedded URL: $embedded")
+            return embedded
         }
 
         // Fallback: compute hash from first 10KB of content
@@ -142,6 +140,14 @@ object FunctionNameExtractor {
         val computedHash = digest.take(4).joinToString("") { "%02x".format(it) }
         Timber.tag(TAG).d("Player hash computed from content: $computedHash")
         return computedHash
+    }
+
+    private fun findPlayerHashKotlin(playerJs: String): String? {
+        for (pattern in PLAYER_HASH_PATTERNS) {
+            val match = pattern.find(playerJs)
+            if (match != null) return match.groupValues[1]
+        }
+        return null
     }
 
     /**
@@ -205,6 +211,18 @@ object FunctionNameExtractor {
 
         Timber.tag(TAG).w("No config for hash $hashToUse, trying legacy sig patterns...")
 
+        val nativeSig = NativeCipher.findSigFunction(playerJs)
+        if (nativeSig != null) {
+            val info = nativeSig.value
+            if (info != null) {
+                Timber.tag(TAG).d("SIG FUNCTION FOUND (native): name=${info.name}, constantArg=${info.constantArg}")
+                return info
+            }
+            Timber.tag(TAG).e("========== SIG FUNCTION EXTRACTION FAILED ==========")
+            Timber.tag(TAG).e("Could not find signature deobfuscation function name")
+            return null
+        }
+
         for ((index, pattern) in SIG_FUNCTION_PATTERNS.withIndex()) {
             Timber.tag(TAG).v("Trying sig pattern $index: ${pattern.pattern.take(60)}...")
             val match = pattern.find(playerJs)
@@ -252,6 +270,18 @@ object FunctionNameExtractor {
         }
 
         Timber.tag(TAG).w("No config for hash $hashToUse, trying legacy n-func patterns...")
+
+        val nativeN = NativeCipher.findNFunction(playerJs)
+        if (nativeN != null) {
+            val info = nativeN.value
+            if (info != null) {
+                Timber.tag(TAG).d("N-FUNCTION FOUND (native): name=${info.name}, arrayIndex=${info.arrayIndex}")
+                return info
+            }
+            Timber.tag(TAG).e("========== N-FUNCTION EXTRACTION FAILED ==========")
+            Timber.tag(TAG).e("Could not find n-transform function name")
+            return null
+        }
 
         for ((index, pattern) in N_FUNCTION_PATTERNS.withIndex()) {
             Timber.tag(TAG).v("Trying n-func pattern $index: ${pattern.pattern.take(60)}...")
@@ -306,7 +336,12 @@ object FunctionNameExtractor {
         // pushes (configs' sts is NOT CDN-validated, unlike sig/n); (2) the config, for
         // players lacking the literal; (3) the loose `sts` pattern, which can false-match
         // anywhere in ~2 MB of JS and must never shadow the other two.
-        val anchored = ANCHORED_STS_PATTERN.find(playerJs)?.groupValues?.get(1)?.toIntOrNull()
+        val nativeAnchored = NativeCipher.findSignatureTimestamp(playerJs, anchored = true)
+        val anchored = if (nativeAnchored != null) {
+            nativeAnchored.value
+        } else {
+            ANCHORED_STS_PATTERN.find(playerJs)?.groupValues?.get(1)?.toIntOrNull()
+        }
         if (anchored != null) {
             Timber.tag(TAG).d("signatureTimestamp from player JS literal: $anchored")
             return anchored
@@ -321,7 +356,12 @@ object FunctionNameExtractor {
             }
         }
 
-        val loose = LOOSE_STS_PATTERN.find(playerJs)?.groupValues?.get(1)?.toIntOrNull()
+        val nativeLoose = NativeCipher.findSignatureTimestamp(playerJs, anchored = false)
+        val loose = if (nativeLoose != null) {
+            nativeLoose.value
+        } else {
+            LOOSE_STS_PATTERN.find(playerJs)?.groupValues?.get(1)?.toIntOrNull()
+        }
         if (loose != null) {
             Timber.tag(TAG).d("signatureTimestamp via loose sts pattern: $loose")
             return loose
