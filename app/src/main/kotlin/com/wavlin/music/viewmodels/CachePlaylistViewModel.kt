@@ -13,8 +13,8 @@ import com.wavlin.music.core.config.HideExplicitKey
 import com.wavlin.music.core.config.HideVideoSongsKey
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.db.entities.Song
-import com.wavlin.music.di.DownloadCache
-import com.wavlin.music.di.PlayerCache
+import com.wavlin.music.core.inject.DownloadCache
+import com.wavlin.music.core.inject.PlayerCache
 import com.wavlin.music.core.ext.filterExplicit
 import com.wavlin.music.core.ext.filterVideoSongs
 import com.wavlin.music.utils.dataStore

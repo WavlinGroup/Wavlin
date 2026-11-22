@@ -180,8 +180,8 @@ import com.wavlin.music.db.entities.LyricsEntity
 import com.wavlin.music.db.entities.PlaylistEntity
 import com.wavlin.music.db.entities.RelatedSongMap
 import com.wavlin.music.db.entities.Song
-import com.wavlin.music.di.DownloadCache
-import com.wavlin.music.di.PlayerCache
+import com.wavlin.music.core.inject.DownloadCache
+import com.wavlin.music.core.inject.PlayerCache
 import com.wavlin.music.eq.EqualizerService
 import com.wavlin.music.eq.audio.CustomEqualizerAudioProcessor
 import com.wavlin.music.eq.data.EQProfileRepository

@@ -24,8 +24,8 @@ import com.wavlin.music.core.config.AudioQualityKey
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.db.entities.FormatEntity
 import com.wavlin.music.db.entities.SongEntity
-import com.wavlin.music.di.DownloadCache
-import com.wavlin.music.di.PlayerCache
+import com.wavlin.music.core.inject.DownloadCache
+import com.wavlin.music.core.inject.PlayerCache
 import com.wavlin.music.utils.YTPlayerUtils
 import com.wavlin.music.utils.enumPreference
 import dagger.hilt.android.qualifiers.ApplicationContext

@@ -27,7 +27,7 @@ import com.wavlin.kugou.KuGou
 import com.wavlin.lastfm.LastFM
 import com.wavlin.music.BuildConfig
 import com.wavlin.music.core.config.*
-import com.wavlin.music.di.ApplicationScope
+import com.wavlin.music.core.inject.ApplicationScope
 import com.wavlin.music.core.ext.toEnum
 import com.wavlin.music.core.ext.toInetSocketAddress
 import com.wavlin.music.utils.CrashHandler

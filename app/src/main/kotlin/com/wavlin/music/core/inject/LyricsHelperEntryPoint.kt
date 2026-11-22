@@ -3,7 +3,7 @@
  * Licensed under GPL-3.0 | See git history for contributors
  */
 
-package com.wavlin.music.di
+package com.wavlin.music.core.inject
 
 import com.wavlin.music.lyrics.LyricsHelper
 import dagger.hilt.EntryPoint

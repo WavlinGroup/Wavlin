@@ -1,4 +1,4 @@
-package com.wavlin.music.di
+package com.wavlin.music.core.inject
 
 import android.content.Context
 import com.wavlin.music.db.DatabaseDao

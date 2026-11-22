@@ -169,7 +169,7 @@ import com.wavlin.music.core.config.PlayerButtonsStyle
 import com.wavlin.music.core.config.PlayerButtonsStyleKey
 import com.wavlin.music.core.config.PlayerHorizontalPadding
 import com.wavlin.music.core.config.VideoCanvasEnabledKey
-import com.wavlin.music.di.VideoCanvasEntryPoint
+import com.wavlin.music.core.inject.VideoCanvasEntryPoint
 import com.wavlin.music.core.config.QueuePeekHeight
 import com.wavlin.music.core.config.SleepTimerDefaultKey
 import com.wavlin.music.core.config.SleepTimerFadeOutKey
@@ -2262,7 +2262,7 @@ fun InlineLyricsView(
                     val entryPoint =
                         EntryPointAccessors.fromApplication(
                             context.applicationContext,
-                            com.wavlin.music.di.LyricsHelperEntryPoint::class.java,
+                            com.wavlin.music.core.inject.LyricsHelperEntryPoint::class.java,
                         )
                     val lyricsHelper = entryPoint.lyricsHelper()
                     val fetchedLyricsWithProvider = lyricsHelper.getLyrics(mediaMetadata)
@@ -2302,7 +2302,7 @@ fun InlineLyricsView(
                 val entryPoint =
                     EntryPointAccessors.fromApplication(
                         context.applicationContext,
-                        com.wavlin.music.di.LyricsHelperEntryPoint::class.java,
+                        com.wavlin.music.core.inject.LyricsHelperEntryPoint::class.java,
                     )
                 val lyricsHelper = entryPoint.lyricsHelper()
                 val fetched = lyricsHelper.getLyrics(nextMetadata)
