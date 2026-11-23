@@ -182,7 +182,14 @@ android {
         buildConfigField("String", "SPOTIFY_CLIENT_ID", "\"$spotifyClientId\"")
         buildConfigField("String", "SPOTIFY_CLIENT_SECRET", "\"$spotifyClientSecret\"")
         buildConfigField("String", "ARCHITECTURE", "\"universal\"")
-        buildConfigField("Long", "DISCORD_APP_ID", "1447278780795064401L")
+        // Discord application ID. Override with DISCORD_APP_ID (local.properties or env/CI secret) to use
+        // your own Discord application. The fallback is the ID inherited from the Metrolist rebrand,
+        // whose OAuth2 redirects you cannot edit unless you own that application.
+        val discordAppId = (localProperties.getProperty("DISCORD_APP_ID") ?: System.getenv("DISCORD_APP_ID"))
+            ?.trim()?.takeIf { it.isNotEmpty() }
+            ?: "1447278780795064401"
+        require(discordAppId.all { it.isDigit() }) { "DISCORD_APP_ID must be numeric, got '$discordAppId'" }
+        buildConfigField("Long", "DISCORD_APP_ID", "${discordAppId}L")
 
         // Single source for the Discord OAuth2 redirect. The exact string must be registered under
         // OAuth2 > Redirects in the Discord Developer Portal for DISCORD_APP_ID, or Discord shows
