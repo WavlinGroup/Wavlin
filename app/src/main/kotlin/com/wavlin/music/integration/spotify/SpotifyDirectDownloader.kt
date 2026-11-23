@@ -127,29 +127,38 @@ object SpotifyDirectDownloader {
         artist: String = "",
         spotifyAccessToken: String? = null,
     ): String? =
-        (if (!spotifyAccessToken.isNullOrBlank()) tryDeezerViaIsrc(client, trackId, spotifyAccessToken) else null)
+        tryDeezerViaIsrc(client, trackId, spotifyAccessToken)
             ?: tryApiSpotifydown(client, trackId)
             ?: tryLegacySpotifydown(client, trackId)
             ?: (if (title.isNotBlank() || artist.isNotBlank()) tryAudioFromSoundCloud(client, title, artist) else null)
             ?: trySpotifyPreview(client, trackId)
 
     // ── Provider 1: Deezer full track via ISRC ───────────────────────────────
-    // A) api.spotify.com/v1/tracks/{id} → external_ids.isrc
-    // B) api.deezer.com/track/isrc:{isrc} → Deezer track id
-    // C) dz.loaderapp.info → full unencrypted MP3 (128 kbps)
+    // ISRC sources (tried in order):
+    //   A1) open.spotify.com/embed/track/{id} __NEXT_DATA__ JSON — no token needed
+    //   A2) api.spotify.com/v1/tracks/{id}    — OAuth fallback when token supplied
+    // Then:
+    //   B) api.deezer.com/track/isrc:{isrc} → Deezer track id
+    //   C) dz.loaderapp.info → full unencrypted MP3 (128 kbps)
     private suspend fun tryDeezerViaIsrc(
         client: HttpClient,
         trackId: String,
-        accessToken: String,
+        accessToken: String? = null,
     ): String? = runCatching {
-        // A — ISRC from Spotify Web API
-        val trackResp = client.get("https://api.spotify.com/v1/tracks/$trackId") {
-            header("Authorization", "Bearer $accessToken")
-            header("User-Agent", USER_AGENT)
-        }
-        if (trackResp.status.value !in 200..299) return@runCatching null
-        val isrc = json.parseToJsonElement(trackResp.bodyAsText()).jsonObject
-            ["external_ids"]?.jsonObject?.get("isrc")?.jsonPrimitive?.contentOrNull
+        // A1 — ISRC from embed page (no token required)
+        val isrc = findIsrc(client, trackId)
+            // A2 — ISRC from Web API OAuth fallback
+            ?: accessToken?.takeIf { it.isNotBlank() }?.let { token ->
+                runCatching {
+                    val resp = client.get("https://api.spotify.com/v1/tracks/$trackId") {
+                        header("Authorization", "Bearer $token")
+                        header("User-Agent", USER_AGENT)
+                    }
+                    if (resp.status.value !in 200..299) return@runCatching null
+                    val root = json.parseToJsonElement(resp.bodyAsText()).jsonObject
+                    root["external_ids"]?.jsonObject?.get("isrc")?.jsonPrimitive?.contentOrNull
+                }.getOrNull()
+            }
             ?: return@runCatching null
 
         // B — Deezer track ID via ISRC
@@ -281,6 +290,32 @@ object SpotifyDirectDownloader {
             id
         }.getOrNull()
     }
+
+    // ── ISRC from embed page (no token required) ─────────────────────────────
+    // Hits open.spotify.com/embed/track/{id}, parses __NEXT_DATA__ JSON and
+    // walks the tree for the "isrc" string — same page used by trySpotifyPreview.
+    private suspend fun findIsrc(client: HttpClient, trackId: String): String? =
+        runCatching {
+            val html = client.get("https://open.spotify.com/embed/track/$trackId") {
+                header("User-Agent", USER_AGENT)
+                header("Accept-Language", "en")
+            }.bodyAsText()
+            val nextData = Regex(
+                "<script id=\"__NEXT_DATA__\"[^>]*>(.*?)</script>",
+                RegexOption.DOT_MATCHES_ALL,
+            ).find(html)?.groupValues?.get(1) ?: return@runCatching null
+            findIsrcInElement(json.parseToJsonElement(nextData))
+        }.getOrNull()
+
+    private fun findIsrcInElement(element: JsonElement): String? =
+        when (element) {
+            is JsonObject -> {
+                element["isrc"]?.jsonPrimitive?.contentOrNull
+                    ?: element.values.firstNotNullOfOrNull { findIsrcInElement(it) }
+            }
+            is JsonArray -> element.firstNotNullOfOrNull { findIsrcInElement(it) }
+            else -> null
+        }
 
     // ── Provider 5: Spotify 30s preview (last resort) ───────────────────────
     private suspend fun trySpotifyPreview(client: HttpClient, trackId: String): String? =
