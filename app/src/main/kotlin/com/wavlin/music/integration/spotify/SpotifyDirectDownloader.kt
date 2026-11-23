@@ -134,9 +134,10 @@ object SpotifyDirectDownloader {
             ?: trySpotifyPreview(client, trackId)
 
     // ── Provider 1: Deezer full track via ISRC ───────────────────────────────
-    // ISRC sources (tried in order):
-    //   A1) open.spotify.com/embed/track/{id} __NEXT_DATA__ JSON — no token needed
-    //   A2) api.spotify.com/v1/tracks/{id}    — OAuth fallback when token supplied
+    // ISRC sources (tried in order, stops at first hit):
+    //   A1) api.spotifydown.com/metadata/{id}    — no token, returns isrc directly
+    //   A2) open.spotify.com/track/{id}           — canonical page __NEXT_DATA__, no token
+    //   A3) api.spotify.com/v1/tracks/{id}        — OAuth fallback when token supplied
     // Then:
     //   B) api.deezer.com/track/isrc:{isrc} → Deezer track id
     //   C) dz.loaderapp.info → full unencrypted MP3 (128 kbps)
@@ -145,9 +146,11 @@ object SpotifyDirectDownloader {
         trackId: String,
         accessToken: String? = null,
     ): String? = runCatching {
-        // A1 — ISRC from embed page (no token required)
-        val isrc = findIsrc(client, trackId)
-            // A2 — ISRC from Web API OAuth fallback
+        // A1 — ISRC from spotifydown metadata (no token required)
+        val isrc = findIsrcViaSpotifydown(client, trackId)
+            // A2 — ISRC from canonical open.spotify.com page __NEXT_DATA__
+            ?: findIsrcViaOpenPage(client, trackId)
+            // A3 — ISRC from Web API OAuth fallback
             ?: accessToken?.takeIf { it.isNotBlank() }?.let { token ->
                 runCatching {
                     val resp = client.get("https://api.spotify.com/v1/tracks/$trackId") {
@@ -291,14 +294,33 @@ object SpotifyDirectDownloader {
         }.getOrNull()
     }
 
-    // ── ISRC from embed page (no token required) ─────────────────────────────
-    // Hits open.spotify.com/embed/track/{id}, parses __NEXT_DATA__ JSON and
-    // walks the tree for the "isrc" string — same page used by trySpotifyPreview.
-    private suspend fun findIsrc(client: HttpClient, trackId: String): String? =
+    // ── A1: ISRC from api.spotifydown.com/metadata (no token required) ──────
+    // Same origin we already hit for /download — returns {"isrc":"…"} directly.
+    private suspend fun findIsrcViaSpotifydown(client: HttpClient, trackId: String): String? =
         runCatching {
-            val html = client.get("https://open.spotify.com/embed/track/$trackId") {
+            val body = client.get("https://api.spotifydown.com/metadata/$trackId") {
+                header("User-Agent", USER_AGENT)
+                header("Origin", "https://spotifydown.com")
+                header("Referer", "https://spotifydown.com/")
+                header("Accept", "application/json, text/plain, */*")
+                header("Accept-Language", "en-US,en;q=0.9")
+                header("sec-fetch-site", "same-site")
+                header("sec-fetch-mode", "cors")
+                header("sec-fetch-dest", "empty")
+            }.bodyAsText()
+            val root = json.parseToJsonElement(body).jsonObject
+            root["isrc"]?.jsonPrimitive?.contentOrNull
+        }.getOrNull()
+
+    // ── A2: ISRC from open.spotify.com/track/{id} __NEXT_DATA__ (no token) ─
+    // The canonical open page (not embed) hydrates full track metadata
+    // including external_ids.isrc in its __NEXT_DATA__ script block.
+    private suspend fun findIsrcViaOpenPage(client: HttpClient, trackId: String): String? =
+        runCatching {
+            val html = client.get("https://open.spotify.com/track/$trackId") {
                 header("User-Agent", USER_AGENT)
                 header("Accept-Language", "en")
+                header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
             }.bodyAsText()
             val nextData = Regex(
                 "<script id=\"__NEXT_DATA__\"[^>]*>(.*?)</script>",
@@ -310,7 +332,9 @@ object SpotifyDirectDownloader {
     private fun findIsrcInElement(element: JsonElement): String? =
         when (element) {
             is JsonObject -> {
+                // Look for isrc directly or nested under external_ids
                 element["isrc"]?.jsonPrimitive?.contentOrNull
+                    ?: element["external_ids"]?.jsonObject?.get("isrc")?.jsonPrimitive?.contentOrNull
                     ?: element.values.firstNotNullOfOrNull { findIsrcInElement(it) }
             }
             is JsonArray -> element.firstNotNullOfOrNull { findIsrcInElement(it) }
