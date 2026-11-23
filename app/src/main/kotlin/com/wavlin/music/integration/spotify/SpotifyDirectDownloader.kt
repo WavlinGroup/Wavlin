@@ -41,8 +41,7 @@ import java.io.File
  *                              so they fail for tracks that YouTube doesn't have.
  *   3. SoundCloud search     — searches SoundCloud by artist+title; full-length stream.
  *                              Covers many indie/niche tracks absent from YouTube.
- *   4. Spotify 30s preview   — DRM-free MP3 preview from p.scdn.co; capped at 30 s.
- *                              Last resort when no full-length source is available.
+ *   Returns null (download fails) if no full-length source is found.
  */
 object SpotifyDirectDownloader {
     private const val USER_AGENT =
@@ -68,11 +67,10 @@ object SpotifyDirectDownloader {
                 expectSuccess = false
             }
             try {
-                // Provider chain: spotifydown APIs → SoundCloud → 30s Spotify preview
+                // Provider chain: spotifydown APIs → SoundCloud
                 val audioUrl = tryApiSpotifydown(client, trackId)
                     ?: tryLegacySpotifydown(client, trackId)
                     ?: tryAudioFromSoundCloud(client, track.title, track.artist)
-                    ?: trySpotifyPreview(client, trackId)
                     ?: return@withContext null
                 // Pick extension from URL so ExoPlayer selects the right demuxer
                 val ext = when {
@@ -124,7 +122,6 @@ object SpotifyDirectDownloader {
     suspend fun resolveAudioUrl(client: HttpClient, trackId: String): String? =
         tryApiSpotifydown(client, trackId)
             ?: tryLegacySpotifydown(client, trackId)
-            ?: trySpotifyPreview(client, trackId)
 
     // ── SoundCloud helpers (used by callers that have track metadata) ─────────
 
@@ -137,24 +134,29 @@ object SpotifyDirectDownloader {
         runCatching {
             val clientId = fetchSoundCloudClientId(client) ?: return@runCatching null
             val query = "${artist.trim()} ${title.trim()}"
-            val searchUrl = "https://api-v2.soundcloud.com/search/tracks?q=${java.net.URLEncoder.encode(query, "UTF-8")}&limit=5&client_id=$clientId"
+            val searchUrl = "https://api-v2.soundcloud.com/search/tracks?q=${java.net.URLEncoder.encode(query, "UTF-8")}&limit=10&client_id=$clientId"
             val searchBody = client.get(searchUrl) {
                 header("User-Agent", USER_AGENT)
                 header("Accept", "application/json")
             }.bodyAsText()
             val searchRoot = json.parseToJsonElement(searchBody).jsonObject
             val collection = searchRoot["collection"]?.jsonArray ?: return@runCatching null
-            // Pick first track whose title+user roughly match to avoid wrong songs
-            val trackObj = collection.firstNotNullOfOrNull { item ->
+            if (collection.isEmpty()) return@runCatching null
+            val matchTitle = title.lowercase().trim()
+            val matchArtist = artist.lowercase().split(",", "&", " feat", " ft").first().trim()
+            // Score each result: prefer title+artist match, then title-only, then fall back to top result
+            val trackObj = collection.maxByOrNull { item ->
                 val obj = item.jsonObject
-                val t = obj["title"]?.jsonPrimitive?.contentOrNull?.lowercase() ?: return@firstNotNullOfOrNull null
+                val t = obj["title"]?.jsonPrimitive?.contentOrNull?.lowercase() ?: ""
                 val u = obj["user"]?.jsonObject?.get("username")?.jsonPrimitive?.contentOrNull?.lowercase() ?: ""
-                val matchTitle = title.lowercase()
-                val matchArtist = artist.lowercase().split(",", "&", " feat", " ft").first().trim()
-                if (t.contains(matchTitle) || matchTitle.contains(t.take(15))) {
-                    if (u.contains(matchArtist) || matchArtist.contains(u.take(10))) obj else null
-                } else null
-            } ?: collection.firstOrNull()?.jsonObject ?: return@runCatching null
+                val titleMatch = t.contains(matchTitle) || matchTitle.contains(t.take(matchTitle.length.coerceAtLeast(1)))
+                val artistMatch = u.contains(matchArtist) || matchArtist.contains(u.take(matchArtist.length.coerceAtLeast(1)))
+                when {
+                    titleMatch && artistMatch -> 2
+                    titleMatch -> 1
+                    else -> 0
+                }
+            }?.jsonObject ?: return@runCatching null
             val permalink = trackObj["permalink_url"]?.jsonPrimitive?.contentOrNull ?: return@runCatching null
             val trackApiUrl = "https://api-v2.soundcloud.com/resolve?url=${java.net.URLEncoder.encode(permalink, "UTF-8")}&client_id=$clientId"
             val trackBody = client.get(trackApiUrl) { header("User-Agent", USER_AGENT) }.bodyAsText()
