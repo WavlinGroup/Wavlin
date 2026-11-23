@@ -16,9 +16,14 @@ import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
 import io.ktor.client.statement.readBytes
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
@@ -35,12 +40,13 @@ import java.io.File
  * Downloads a Spotify track as a local audio file and adds it to the library.
  *
  * Provider chain (tried in order, stops at first success):
- *   1. Deezer via ISRC   — Spotify Web API → ISRC → Deezer ID → loaderapp full MP3.
- *                          Exact track, full length, no DRM. Requires Spotify login.
- *   2. api.spotifydown.com — third-party proxy MP3.
- *   3. spotifydown.com   — legacy API fallback.
- *   4. SoundCloud search — full-length stream; covers indie/niche tracks.
- *   5. Spotify 30s preview — last resort, capped at 30 seconds.
+ *   1. lucida.to         — multi-service proxy; serves full MP3/FLAC from Deezer/Tidal.
+ *                          No token required. Best coverage including slowed/reverb edits.
+ *   2. Deezer via ISRC   — ISRC lookup → Deezer ID → loaderapp proxy full MP3.
+ *   3. api.spotifydown.com — third-party proxy (sources from YouTube).
+ *   4. spotifydown.com   — legacy API fallback (sources from YouTube).
+ *   5. SoundCloud search — full-length stream; covers indie/niche tracks.
+ *   Returns null (download fails) if no full-length source is found.
  */
 object SpotifyDirectDownloader {
     private const val USER_AGENT =
@@ -73,7 +79,8 @@ object SpotifyDirectDownloader {
                 val ext = when {
                     audioUrl.contains(".mp3", ignoreCase = true)
                         || audioUrl.contains("mp3-preview")
-                        || audioUrl.contains("sndcdn.com") -> "mp3"
+                        || audioUrl.contains("sndcdn.com")
+                        || audioUrl.contains("lucida.to") -> "mp3"
                     audioUrl.contains(".ogg", ignoreCase = true) -> "ogg"
                     audioUrl.contains(".m4a", ignoreCase = true) -> "m4a"
                     else -> "mp3"
@@ -127,13 +134,56 @@ object SpotifyDirectDownloader {
         artist: String = "",
         spotifyAccessToken: String? = null,
     ): String? =
-        tryDeezerViaIsrc(client, trackId, spotifyAccessToken)
+        tryLucida(client, trackId)
+            ?: tryDeezerViaIsrc(client, trackId, spotifyAccessToken)
             ?: tryApiSpotifydown(client, trackId)
             ?: tryLegacySpotifydown(client, trackId)
             ?: (if (title.isNotBlank() || artist.isNotBlank()) tryAudioFromSoundCloud(client, title, artist) else null)
-            ?: trySpotifyPreview(client, trackId)
 
-    // ── Provider 1: Deezer full track via ISRC ───────────────────────────────
+    // ── Provider 1: lucida.to (multi-service proxy, full track, no token) ───
+    // POST lucida.to/api/load → poll server for "completed" → download binary URL.
+    // Lucida routes Spotify URLs to Deezer/Tidal/SoundCloud internally, so it
+    // covers slowed+reverb edits and niche tracks that YouTube proxies miss.
+    private suspend fun tryLucida(client: HttpClient, trackId: String): String? = runCatching {
+        val spotifyUrl = "https://open.spotify.com/track/$trackId"
+        val payload = buildString {
+            append("""{"account":{"id":"US","type":"country"},""")
+            append(""""downscale":"mp3-320","handoff":true,"metadata":false,"private":true,""")
+            append(""""token":{"expiry":1727419066,"primary":"XLj8xzbZJSfloOrw-XUmNGAmG6k"},""")
+            append(""""upload":{"enabled":false,"service":"pixeldrain"},""")
+            append(""""url":"$spotifyUrl"}""")
+        }
+        // Step 1 — submit job
+        val initText = client.post("https://lucida.to/api/load?url=/api/fetch/stream/v2") {
+            header("User-Agent", USER_AGENT)
+            header("Origin", "https://lucida.to")
+            header("Referer", "https://lucida.to/")
+            contentType(ContentType.Application.Json)
+            setBody(payload)
+        }.bodyAsText()
+        val initRoot = json.parseToJsonElement(initText).jsonObject
+        if (initRoot["success"]?.jsonPrimitive?.contentOrNull?.toBooleanStrictOrNull() != true) return@runCatching null
+        val handoff = initRoot["handoff"]?.jsonPrimitive?.contentOrNull ?: return@runCatching null
+        val server = initRoot["server"]?.jsonPrimitive?.contentOrNull ?: return@runCatching null
+        // Step 2 — poll until "completed" (max 60 s)
+        val pollBase = "https://$server.lucida.to/api/fetch/request/$handoff"
+        var result: String? = null
+        for (i in 0 until 60) {
+            delay(1_000)
+            val pollRoot = runCatching {
+                json.parseToJsonElement(
+                    client.get(pollBase) { header("User-Agent", USER_AGENT) }.bodyAsText()
+                ).jsonObject
+            }.getOrNull() ?: continue
+            when (pollRoot["status"]?.jsonPrimitive?.contentOrNull) {
+                "completed" -> { result = "$pollBase/download"; break }
+                "error" -> break
+            }
+        }
+        result
+    }.getOrNull()
+
+    // ── Provider 2: Deezer full track via ISRC ──────────────────────────────
     // ISRC sources (tried in order, stops at first hit):
     //   A1) api.spotifydown.com/metadata/{id}    — no token, returns isrc directly
     //   A2) open.spotify.com/track/{id}           — canonical page __NEXT_DATA__, no token
@@ -341,33 +391,4 @@ object SpotifyDirectDownloader {
             else -> null
         }
 
-    // ── Provider 5: Spotify 30s preview (last resort) ───────────────────────
-    private suspend fun trySpotifyPreview(client: HttpClient, trackId: String): String? =
-        runCatching {
-            val html = client.get("https://open.spotify.com/embed/track/$trackId") {
-                header("User-Agent", USER_AGENT)
-                header("Accept-Language", "en")
-            }.bodyAsText()
-            val nextData = Regex(
-                "<script id=\"__NEXT_DATA__\"[^>]*>(.*?)</script>",
-                RegexOption.DOT_MATCHES_ALL,
-            ).find(html)?.groupValues?.get(1) ?: return@runCatching null
-            findPreviewUrl(json.parseToJsonElement(nextData))
-        }.getOrNull()
-
-    private fun findPreviewUrl(element: JsonElement): String? =
-        when (element) {
-            is JsonObject -> {
-                val direct = listOf("audioPreview", "previewUrl", "preview_url")
-                    .firstNotNullOfOrNull { key ->
-                        (element[key] as? JsonObject)?.let {
-                            it["url"]?.jsonPrimitive?.contentOrNull?.takeIf { u -> "scdn.co" in u }
-                                ?: it["src"]?.jsonPrimitive?.contentOrNull?.takeIf { u -> "scdn.co" in u }
-                        } ?: element[key]?.jsonPrimitive?.contentOrNull?.takeIf { u -> "scdn.co" in u }
-                    }
-                direct ?: element.values.firstNotNullOfOrNull { findPreviewUrl(it) }
-            }
-            is JsonArray -> element.firstNotNullOfOrNull { findPreviewUrl(it) }
-            else -> null
-        }
 }
