@@ -147,34 +147,117 @@ object SpotifyDirectDownloader {
             ?: trySpotifyPreview(client, trackId)
 
     // ── Provider 1: Spotify spclient (authenticated, full track) ─────────────
-    // Uses the web-player access token to:
-    //   a) Fetch the track's internal metadata (GID + audio file IDs) from spclient.
-    //   b) Resolve a time-limited CDN URL from storage-resolve.
-    //   c) Download directly from Spotify's CDN.
-    // This returns the exact, full-length track — no YouTube, no 30-second clip.
+    // spclient.wg.spotify.com/metadata/4/track/{hexGid} returns PROTOBUF binary, not JSON.
+    // We parse just the fields we need with a minimal hand-rolled protobuf reader:
+    //   Track.file[]  → field 3, repeated message
+    //     AudioFile.file_id → field 1, bytes (16 bytes → 32-char hex fileId)
+    //     AudioFile.format  → field 2, varint enum
+    //       OGG_VORBIS_96=5, OGG_VORBIS_160=6, OGG_VORBIS_320=7, MP3_320=13, MP3_256=15
+    // Then: storage-resolve/{fileId} returns JSON with cdnurl[].
     private suspend fun trySpotifyClientCdn(client: HttpClient, trackId: String, accessToken: String): String? =
         runCatching {
             val hexGid = trackIdToHexGid(trackId) ?: return@runCatching null
 
-            // Step 1 — Fetch track metadata to find the best audio file ID
-            val metaResponse = client.get("https://spclient.wg.spotify.com/metadata/4/track/$hexGid") {
+            // Step 1 — fetch protobuf metadata
+            val metaBytes = client.get("https://spclient.wg.spotify.com/metadata/4/track/$hexGid") {
                 header("Authorization", "Bearer $accessToken")
-                header("Accept", "application/json")
                 header("User-Agent", USER_AGENT)
                 header("app-platform", "WebPlayer")
                 header("Origin", "https://open.spotify.com")
                 header("Referer", "https://open.spotify.com/")
+                // no Accept: application/json — we want the real protobuf
+            }.readBytes()
+            if (metaBytes.isEmpty()) return@runCatching null
+
+            // Step 2 — parse protobuf to get the best file ID
+            val fileId = bestFileIdFromProto(metaBytes) ?: return@runCatching null
+
+            // Step 3 — resolve CDN URL
+            // Try gew1 first (EU), fall back to apresolve (US)
+            val cdnUrl = resolveStorageUrl(client, fileId, accessToken, "gew1")
+                ?: resolveStorageUrl(client, fileId, accessToken, "gue1")
+                ?: return@runCatching null
+
+            cdnUrl
+        }.getOrNull()
+
+    /** Minimal protobuf varint + length-delimited reader that extracts Track.file[] entries. */
+    private fun bestFileIdFromProto(bytes: ByteArray): String? {
+        // Format priority: OGG_VORBIS_320=7 > OGG_VORBIS_160=6 > MP3_320=13 > MP3_256=15 > OGG_VORBIS_96=5 > anything
+        val formatPriority = mapOf(7 to 0, 6 to 1, 13 to 2, 15 to 3, 5 to 4)
+        data class AudioFile(val fileIdHex: String, val format: Int)
+
+        val files = mutableListOf<AudioFile>()
+        var pos = 0
+
+        fun readVarint(): Long {
+            var result = 0L; var shift = 0
+            while (pos < bytes.size) {
+                val b = bytes[pos++].toInt() and 0xFF
+                result = result or ((b and 0x7F).toLong() shl shift)
+                if (b and 0x80 == 0) break
+                shift += 7
             }
-            if (metaResponse.status.value !in 200..299) return@runCatching null
-            val meta = json.parseToJsonElement(metaResponse.bodyAsText()).jsonObject
+            return result
+        }
 
-            // Pick the best file: prefer OGG_VORBIS_320 → OGG_VORBIS_160 → anything OGG → first file
-            val file = selectBestFile(meta) ?: return@runCatching null
-            val fileId = file["file_id"]?.jsonPrimitive?.contentOrNull ?: return@runCatching null
+        fun skipField(wireType: Int) {
+            when (wireType) {
+                0 -> readVarint()
+                1 -> { pos += 8 }
+                2 -> { val len = readVarint().toInt(); pos += len }
+                5 -> { pos += 4 }
+                else -> pos = bytes.size // bail on unknown wire type
+            }
+        }
 
-            // Step 2 — Resolve a CDN URL for that file ID
-            val resolveResponse = client.get(
-                "https://gew1-spclient.spotify.com/storage-resolve/files/audio/interactive_prefetch/$fileId" +
+        // Parse top-level Track message; field 3 = file (repeated AudioFile message)
+        while (pos < bytes.size) {
+            val tag = readVarint()
+            val fieldNum = (tag shr 3).toInt()
+            val wireType = (tag and 0x7L).toInt()
+            if (wireType == 2 && fieldNum == 3) {
+                // Length-delimited AudioFile submessage
+                val msgLen = readVarint().toInt()
+                val end = pos + msgLen
+                var fileIdBytes: ByteArray? = null
+                var format = -1
+                while (pos < end) {
+                    val innerTag = readVarint()
+                    val innerField = (innerTag shr 3).toInt()
+                    val innerWire = (innerTag and 0x7L).toInt()
+                    when {
+                        innerField == 1 && innerWire == 2 -> {
+                            // file_id: bytes (16 bytes)
+                            val len = readVarint().toInt()
+                            fileIdBytes = bytes.copyOfRange(pos, pos + len)
+                            pos += len
+                        }
+                        innerField == 2 && innerWire == 0 -> {
+                            // format: varint enum
+                            format = readVarint().toInt()
+                        }
+                        else -> skipField(innerWire)
+                    }
+                }
+                pos = end
+                if (fileIdBytes != null && fileIdBytes.size == 16) {
+                    val hex = fileIdBytes.joinToString("") { "%02x".format(it) }
+                    files += AudioFile(hex, format)
+                }
+            } else {
+                skipField(wireType)
+            }
+        }
+
+        if (files.isEmpty()) return null
+        return files.minByOrNull { formatPriority[it.format] ?: 99 }?.fileIdHex
+    }
+
+    private suspend fun resolveStorageUrl(client: HttpClient, fileId: String, accessToken: String, region: String): String? =
+        runCatching {
+            val resp = client.get(
+                "https://$region-spclient.spotify.com/storage-resolve/files/audio/interactive_prefetch/$fileId" +
                     "?version=10000000&product=9&platform=39&alt=json"
             ) {
                 header("Authorization", "Bearer $accessToken")
@@ -184,26 +267,10 @@ object SpotifyDirectDownloader {
                 header("Origin", "https://open.spotify.com")
                 header("Referer", "https://open.spotify.com/")
             }
-            if (resolveResponse.status.value !in 200..299) return@runCatching null
-            val resolveJson = json.parseToJsonElement(resolveResponse.bodyAsText()).jsonObject
-
-            // The response contains a list of CDN URLs under "cdnurl"; pick the first one
-            resolveJson["cdnurl"]?.jsonArray?.firstOrNull()?.jsonPrimitive?.contentOrNull
+            if (resp.status.value !in 200..299) return@runCatching null
+            val root = json.parseToJsonElement(resp.bodyAsText()).jsonObject
+            root["cdnurl"]?.jsonArray?.firstOrNull()?.jsonPrimitive?.contentOrNull
         }.getOrNull()
-
-    /** Picks the best audio file from the spclient metadata JSON. Priority: OGG 320 > OGG 160 > any OGG > first. */
-    private fun selectBestFile(meta: JsonObject): JsonObject? {
-        val files = meta["file"]?.jsonArray ?: return null
-        val formats = listOf("OGG_VORBIS_320", "OGG_VORBIS_160", "OGG_VORBIS_96")
-        for (fmt in formats) {
-            val match = files.firstOrNull { f ->
-                f.jsonObject["format"]?.jsonPrimitive?.contentOrNull == fmt
-            }?.jsonObject
-            if (match != null) return match
-        }
-        // Fall back to first file that has a file_id
-        return files.firstOrNull { f -> f.jsonObject["file_id"]?.jsonPrimitive?.contentOrNull != null }?.jsonObject
-    }
 
     // ── Provider 2: api.spotifydown.com ──────────────────────────────────────
     // Uses Spotify's own CDN; the returned link is the exact track.
