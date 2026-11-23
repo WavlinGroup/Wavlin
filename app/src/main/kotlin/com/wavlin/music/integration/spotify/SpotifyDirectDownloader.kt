@@ -32,16 +32,15 @@ import kotlinx.serialization.json.jsonPrimitive
 import java.io.File
 
 /**
- * Downloads a Spotify track as a local audio file and adds it to the library with Spotify's own
- * title, artist and album art. Because the result is a local file it plays offline too.
+ * Downloads a Spotify track as a local audio file and adds it to the library.
  *
  * Provider chain (tried in order, stops at first success):
- *   1. api.spotifydown.com   — third-party proxy; returns a plain MP3.
- *   2. spotifydown.com       — legacy API; also MP3. Both providers source from YouTube,
- *                              so they fail for tracks that YouTube doesn't have.
- *   3. SoundCloud search     — searches SoundCloud by artist+title; full-length stream.
- *                              Covers many indie/niche tracks absent from YouTube.
- *   Returns null (download fails) if no full-length source is found.
+ *   1. Deezer via ISRC   — Spotify Web API → ISRC → Deezer ID → loaderapp full MP3.
+ *                          Exact track, full length, no DRM. Requires Spotify login.
+ *   2. api.spotifydown.com — third-party proxy MP3.
+ *   3. spotifydown.com   — legacy API fallback.
+ *   4. SoundCloud search — full-length stream; covers indie/niche tracks.
+ *   5. Spotify 30s preview — last resort, capped at 30 seconds.
  */
 object SpotifyDirectDownloader {
     private const val USER_AGENT =
@@ -55,10 +54,12 @@ object SpotifyDirectDownloader {
         context: Context,
         database: MusicDatabase,
         track: SpotifyTrack,
-        @Suppress("UNUSED_PARAMETER") spotifyAccessToken: String? = null,
+        spotifyAccessToken: String? = null,
     ): MediaMetadata? =
         withContext(Dispatchers.IO) {
-            val trackId = track.url?.let { TRACK_ID_REGEX.find(it)?.groupValues?.getOrNull(1) } ?: return@withContext null
+            val trackId = track.url
+                ?.let { TRACK_ID_REGEX.find(it)?.groupValues?.getOrNull(1) }
+                ?: return@withContext null
             val musicDir = context.getExternalFilesDir(Environment.DIRECTORY_MUSIC) ?: context.filesDir
             val safeName = "${track.artist} - ${track.title}".replace(UNSAFE_FILE_CHARS, "_")
 
@@ -67,34 +68,34 @@ object SpotifyDirectDownloader {
                 expectSuccess = false
             }
             try {
-                // Provider chain: spotifydown APIs → SoundCloud
-                val audioUrl = tryApiSpotifydown(client, trackId)
-                    ?: tryLegacySpotifydown(client, trackId)
-                    ?: tryAudioFromSoundCloud(client, track.title, track.artist)
+                val audioUrl = resolveAudioUrl(client, trackId, track.title, track.artist, spotifyAccessToken)
                     ?: return@withContext null
-                // Pick extension from URL so ExoPlayer selects the right demuxer
                 val ext = when {
                     audioUrl.contains(".mp3", ignoreCase = true)
                         || audioUrl.contains("mp3-preview")
                         || audioUrl.contains("sndcdn.com") -> "mp3"
                     audioUrl.contains(".ogg", ignoreCase = true) -> "ogg"
                     audioUrl.contains(".m4a", ignoreCase = true) -> "m4a"
-                    else -> "opus"
+                    else -> "mp3"
                 }
                 val audioFile = File(musicDir, "$safeName.$ext")
                 if (!audioFile.exists() || audioFile.length() == 0L) {
                     val bytes = client.get(audioUrl) {
                         header("User-Agent", "Mozilla/5.0 (Linux; Android 10; Mobile)")
+                        header("Accept", "*/*")
                     }.readBytes()
                     if (bytes.isEmpty()) return@withContext null
                     audioFile.writeBytes(bytes)
                 }
-                val song = LocalSongs.add(context, database, Uri.fromFile(audioFile), track.title, track.artist, track.coverUrl)
+                val song = LocalSongs.add(
+                    context, database, Uri.fromFile(audioFile),
+                    track.title, track.artist, track.coverUrl,
+                )
                 com.wavlin.music.core.util.ArtworkStore.save(context, track.coverUrl)
                 song
             } catch (e: CancellationException) {
                 throw e
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 null
             } finally {
                 client.close()
@@ -119,54 +120,150 @@ object SpotifyDirectDownloader {
     }
 
     /** Returns a direct audio URL by trying each provider in order. */
-    suspend fun resolveAudioUrl(client: HttpClient, trackId: String): String? =
-        tryApiSpotifydown(client, trackId)
+    suspend fun resolveAudioUrl(
+        client: HttpClient,
+        trackId: String,
+        title: String = "",
+        artist: String = "",
+        spotifyAccessToken: String? = null,
+    ): String? =
+        (if (!spotifyAccessToken.isNullOrBlank()) tryDeezerViaIsrc(client, trackId, spotifyAccessToken) else null)
+            ?: tryApiSpotifydown(client, trackId)
             ?: tryLegacySpotifydown(client, trackId)
+            ?: (if (title.isNotBlank() || artist.isNotBlank()) tryAudioFromSoundCloud(client, title, artist) else null)
+            ?: trySpotifyPreview(client, trackId)
 
-    // ── SoundCloud helpers (used by callers that have track metadata) ─────────
+    // ── Provider 1: Deezer full track via ISRC ───────────────────────────────
+    // A) api.spotify.com/v1/tracks/{id} → external_ids.isrc
+    // B) api.deezer.com/track/isrc:{isrc} → Deezer track id
+    // C) dz.loaderapp.info → full unencrypted MP3 (128 kbps)
+    private suspend fun tryDeezerViaIsrc(
+        client: HttpClient,
+        trackId: String,
+        accessToken: String,
+    ): String? = runCatching {
+        // A — ISRC from Spotify Web API
+        val trackResp = client.get("https://api.spotify.com/v1/tracks/$trackId") {
+            header("Authorization", "Bearer $accessToken")
+            header("User-Agent", USER_AGENT)
+        }
+        if (trackResp.status.value !in 200..299) return@runCatching null
+        val isrc = json.parseToJsonElement(trackResp.bodyAsText()).jsonObject
+            ["external_ids"]?.jsonObject?.get("isrc")?.jsonPrimitive?.contentOrNull
+            ?: return@runCatching null
 
-    /**
-     * Searches SoundCloud for [artist] – [title] and returns a streamable MP3 URL.
-     * Uses SoundCloud's public API with a dynamically fetched client_id.
-     * Returns null if SoundCloud has no match or the stream is not publicly available.
-     */
+        // B — Deezer track ID via ISRC
+        val deezerResp = client.get("https://api.deezer.com/track/isrc:$isrc") {
+            header("User-Agent", USER_AGENT)
+        }
+        if (deezerResp.status.value !in 200..299) return@runCatching null
+        val deezerJson = json.parseToJsonElement(deezerResp.bodyAsText()).jsonObject
+        if (deezerJson["error"] != null) return@runCatching null
+        val deezerTrackId = deezerJson["id"]?.jsonPrimitive?.contentOrNull
+            ?: return@runCatching null
+
+        // C — full MP3 via loaderapp (open proxy backed by Deezer)
+        val loaderResp = client.get(
+            "https://dz.loaderapp.info/deezer" +
+                "?quality=MP3_128" +
+                "&url=https://www.deezer.com/track/$deezerTrackId"
+        ) {
+            header("User-Agent", USER_AGENT)
+            header("Origin", "https://loader.to")
+            header("Referer", "https://loader.to/")
+        }
+        when (val status = loaderResp.status.value) {
+            in 200..299 -> {
+                val body = loaderResp.bodyAsText()
+                runCatching {
+                    json.parseToJsonElement(body).jsonObject["url"]
+                        ?.jsonPrimitive?.contentOrNull?.takeIf { it.startsWith("http") }
+                }.getOrNull() ?: body.trim().takeIf { it.startsWith("http") }
+            }
+            in 300..399 -> loaderResp.headers["Location"]?.takeIf { it.startsWith("http") }
+            else -> null
+        }
+    }.getOrNull()
+
+    // ── Provider 2: api.spotifydown.com ─────────────────────────────────────
+    private suspend fun tryApiSpotifydown(client: HttpClient, trackId: String): String? =
+        runCatching {
+            val body = client.get("https://api.spotifydown.com/download/$trackId") {
+                header("User-Agent", USER_AGENT)
+                header("Origin", "https://spotifydown.com")
+                header("Referer", "https://spotifydown.com/")
+                header("Accept", "application/json, text/plain, */*")
+                header("Accept-Language", "en-US,en;q=0.9")
+                header("sec-fetch-site", "same-site")
+                header("sec-fetch-mode", "cors")
+                header("sec-fetch-dest", "empty")
+            }.bodyAsText()
+            val root = json.parseToJsonElement(body).jsonObject
+            val ok = root["success"]?.jsonPrimitive?.contentOrNull?.toBooleanStrictOrNull()
+            if (ok == true) root["link"]?.jsonPrimitive?.contentOrNull else null
+        }.getOrNull()
+
+    // ── Provider 3: spotifydown.com legacy ──────────────────────────────────
+    private suspend fun tryLegacySpotifydown(client: HttpClient, trackId: String): String? =
+        runCatching {
+            runCatching { client.get("https://spotifydown.com/") { header("User-Agent", USER_AGENT) } }
+            val body = client.get("https://spotifydown.com/api/download?trackId=$trackId") {
+                header("Origin", "https://spotifydown.com")
+                header("Referer", "https://spotifydown.com/")
+                header("User-Agent", USER_AGENT)
+                header("Accept", "application/json, text/plain, */*")
+            }.bodyAsText()
+            val root = json.parseToJsonElement(body).jsonObject
+            val ok = root["success"]?.jsonPrimitive?.contentOrNull?.toBooleanStrictOrNull()
+            if (ok == true) root["link"]?.jsonPrimitive?.contentOrNull else null
+        }.getOrNull()
+
+    // ── Provider 4: SoundCloud search ───────────────────────────────────────
     suspend fun tryAudioFromSoundCloud(client: HttpClient, title: String, artist: String): String? =
         runCatching {
             val clientId = fetchSoundCloudClientId(client) ?: return@runCatching null
             val query = "${artist.trim()} ${title.trim()}"
-            val searchUrl = "https://api-v2.soundcloud.com/search/tracks?q=${java.net.URLEncoder.encode(query, "UTF-8")}&limit=10&client_id=$clientId"
-            val searchBody = client.get(searchUrl) {
-                header("User-Agent", USER_AGENT)
-                header("Accept", "application/json")
-            }.bodyAsText()
-            val searchRoot = json.parseToJsonElement(searchBody).jsonObject
-            val collection = searchRoot["collection"]?.jsonArray ?: return@runCatching null
+            val searchUrl = "https://api-v2.soundcloud.com/search/tracks" +
+                "?q=${java.net.URLEncoder.encode(query, "UTF-8")}&limit=10&client_id=$clientId"
+            val searchRoot = json.parseToJsonElement(
+                client.get(searchUrl) {
+                    header("User-Agent", USER_AGENT)
+                    header("Accept", "application/json")
+                }.bodyAsText()
+            ).jsonObject
+            val collection = searchRoot["collection"]?.jsonArray
+                ?: return@runCatching null
             if (collection.isEmpty()) return@runCatching null
             val matchTitle = title.lowercase().trim()
             val matchArtist = artist.lowercase().split(",", "&", " feat", " ft").first().trim()
-            // Score each result: prefer title+artist match, then title-only, then fall back to top result
             val trackObj = collection.maxByOrNull { item ->
                 val obj = item.jsonObject
                 val t = obj["title"]?.jsonPrimitive?.contentOrNull?.lowercase() ?: ""
                 val u = obj["user"]?.jsonObject?.get("username")?.jsonPrimitive?.contentOrNull?.lowercase() ?: ""
-                val titleMatch = t.contains(matchTitle) || matchTitle.contains(t.take(matchTitle.length.coerceAtLeast(1)))
-                val artistMatch = u.contains(matchArtist) || matchArtist.contains(u.take(matchArtist.length.coerceAtLeast(1)))
-                when {
-                    titleMatch && artistMatch -> 2
-                    titleMatch -> 1
-                    else -> 0
-                }
+                val titleMatch = t.contains(matchTitle) ||
+                    matchTitle.contains(t.take(matchTitle.length.coerceAtLeast(1)))
+                val artistMatch = u.contains(matchArtist) ||
+                    matchArtist.contains(u.take(matchArtist.length.coerceAtLeast(1)))
+                when { titleMatch && artistMatch -> 2; titleMatch -> 1; else -> 0 }
             }?.jsonObject ?: return@runCatching null
-            val permalink = trackObj["permalink_url"]?.jsonPrimitive?.contentOrNull ?: return@runCatching null
-            val trackApiUrl = "https://api-v2.soundcloud.com/resolve?url=${java.net.URLEncoder.encode(permalink, "UTF-8")}&client_id=$clientId"
-            val trackBody = client.get(trackApiUrl) { header("User-Agent", USER_AGENT) }.bodyAsText()
-            val trackRoot = json.parseToJsonElement(trackBody).jsonObject
+            val permalink = trackObj["permalink_url"]?.jsonPrimitive?.contentOrNull
+                ?: return@runCatching null
+            val trackApiUrl = "https://api-v2.soundcloud.com/resolve" +
+                "?url=${java.net.URLEncoder.encode(permalink, "UTF-8")}&client_id=$clientId"
+            val trackRoot = json.parseToJsonElement(
+                client.get(trackApiUrl) { header("User-Agent", USER_AGENT) }.bodyAsText()
+            ).jsonObject
             val streamsUrl = trackRoot["media"]?.jsonObject
                 ?.get("transcodings")?.jsonArray
-                ?.firstOrNull { it.jsonObject["format"]?.jsonObject?.get("mime_type")?.jsonPrimitive?.contentOrNull == "audio/mpeg" }
-                ?.jsonObject?.get("url")?.jsonPrimitive?.contentOrNull ?: return@runCatching null
-            val streamBody = client.get("$streamsUrl?client_id=$clientId") { header("User-Agent", USER_AGENT) }.bodyAsText()
-            json.parseToJsonElement(streamBody).jsonObject["url"]?.jsonPrimitive?.contentOrNull
+                ?.firstOrNull {
+                    it.jsonObject["format"]?.jsonObject
+                        ?.get("mime_type")?.jsonPrimitive?.contentOrNull == "audio/mpeg"
+                }
+                ?.jsonObject?.get("url")?.jsonPrimitive?.contentOrNull
+                ?: return@runCatching null
+            json.parseToJsonElement(
+                client.get("$streamsUrl?client_id=$clientId") { header("User-Agent", USER_AGENT) }.bodyAsText()
+            ).jsonObject["url"]?.jsonPrimitive?.contentOrNull
         }.getOrNull()
 
     @Volatile private var soundCloudClientId: String? = null
@@ -185,76 +282,30 @@ object SpotifyDirectDownloader {
         }.getOrNull()
     }
 
-    // ── Provider 1: api.spotifydown.com ──────────────────────────────────────
-    // Uses Spotify's own CDN; the returned link is the exact track.
-    private suspend fun tryApiSpotifydown(client: HttpClient, trackId: String): String? =
-        runCatching {
-            val response =
-                client
-                    .get("https://api.spotifydown.com/download/$trackId") {
-                        header("User-Agent", USER_AGENT)
-                        header("Origin", "https://spotifydown.com")
-                        header("Referer", "https://spotifydown.com/")
-                        header("Accept", "application/json, text/plain, */*")
-                        header("Accept-Language", "en-US,en;q=0.9")
-                    }.bodyAsText()
-            val root = json.parseToJsonElement(response).jsonObject
-            val success = root["success"]?.jsonPrimitive?.contentOrNull?.toBooleanStrictOrNull()
-            if (success == true) root["link"]?.jsonPrimitive?.contentOrNull else null
-        }.getOrNull()
-
-    // ── Provider 2: spotifydown.com (legacy) ────────────────────────────────
-    // May return a "similar" YouTube upload rather than the exact track. Last resort only.
-    private suspend fun tryLegacySpotifydown(client: HttpClient, trackId: String): String? =
-        runCatching {
-            // Prime the session so the API endpoint accepts the request
-            runCatching {
-                client.get("https://spotifydown.com/") {
-                    header("User-Agent", USER_AGENT)
-                    header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
-                }
-            }
-            val response =
-                client
-                    .get("https://spotifydown.com/api/download?trackId=$trackId") {
-                        header("Origin", "https://spotifydown.com")
-                        header("Referer", "https://spotifydown.com/")
-                        header("User-Agent", USER_AGENT)
-                        header("Accept", "application/json, text/plain, */*")
-                        header("Accept-Language", "en-US,en;q=0.9")
-                    }.bodyAsText()
-            val root = json.parseToJsonElement(response).jsonObject
-            val success = root["success"]?.jsonPrimitive?.contentOrNull?.toBooleanStrictOrNull()
-            if (success == true) root["link"]?.jsonPrimitive?.contentOrNull else null
-        }.getOrNull()
-
-    // ── Provider 3: Spotify 30-second preview (p.scdn.co, DRM-free) ─────────
-    // Spotify embeds a 30-second MP3 preview URL in the public embed page JSON for most tracks.
-    // It is the actual Spotify CDN audio (not YouTube) so album art and metadata match exactly.
-    // The clip is limited to 30 seconds; it's the best we can do without DRM decryption.
+    // ── Provider 5: Spotify 30s preview (last resort) ───────────────────────
     private suspend fun trySpotifyPreview(client: HttpClient, trackId: String): String? =
         runCatching {
             val html = client.get("https://open.spotify.com/embed/track/$trackId") {
                 header("User-Agent", USER_AGENT)
                 header("Accept-Language", "en")
             }.bodyAsText()
-            val nextData = Regex("<script id=\"__NEXT_DATA__\"[^>]*>(.*?)</script>", RegexOption.DOT_MATCHES_ALL)
-                .find(html)?.groupValues?.get(1) ?: return@runCatching null
-            val root = json.parseToJsonElement(nextData)
-            findPreviewUrl(root)
+            val nextData = Regex(
+                "<script id=\"__NEXT_DATA__\"[^>]*>(.*?)</script>",
+                RegexOption.DOT_MATCHES_ALL,
+            ).find(html)?.groupValues?.get(1) ?: return@runCatching null
+            findPreviewUrl(json.parseToJsonElement(nextData))
         }.getOrNull()
 
-    /** Recursively searches a JSON tree for a Spotify preview URL (p.scdn.co/mp3-preview/…). */
     private fun findPreviewUrl(element: JsonElement): String? =
         when (element) {
             is JsonObject -> {
-                // Direct key hits first
-                val direct = listOf("audioPreview", "previewUrl", "preview_url").firstNotNullOfOrNull { key ->
-                    (element[key] as? JsonObject)?.let {
-                        it["url"]?.jsonPrimitive?.contentOrNull?.takeIf { u -> u.contains("scdn.co") }
-                            ?: it["src"]?.jsonPrimitive?.contentOrNull?.takeIf { u -> u.contains("scdn.co") }
-                    } ?: element[key]?.jsonPrimitive?.contentOrNull?.takeIf { u -> u.contains("scdn.co") }
-                }
+                val direct = listOf("audioPreview", "previewUrl", "preview_url")
+                    .firstNotNullOfOrNull { key ->
+                        (element[key] as? JsonObject)?.let {
+                            it["url"]?.jsonPrimitive?.contentOrNull?.takeIf { u -> "scdn.co" in u }
+                                ?: it["src"]?.jsonPrimitive?.contentOrNull?.takeIf { u -> "scdn.co" in u }
+                        } ?: element[key]?.jsonPrimitive?.contentOrNull?.takeIf { u -> "scdn.co" in u }
+                    }
                 direct ?: element.values.firstNotNullOfOrNull { findPreviewUrl(it) }
             }
             is JsonArray -> element.firstNotNullOfOrNull { findPreviewUrl(it) }
