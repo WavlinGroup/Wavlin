@@ -35,14 +35,14 @@ import java.io.File
  * Downloads a Spotify track as a local audio file and adds it to the library with Spotify's own
  * title, artist and album art. Because the result is a local file it plays offline too.
  *
- * The spclient CDN path delivers a Widevine-encrypted OGG stream that ExoPlayer cannot play
- * without the decryption key — so we skip it entirely. Provider chain:
- *   1. api.spotifydown.com   — third-party proxy; returns a plain MP3 from Spotify's CDN.
- *   2. spotifydown.com       — legacy site API; last-resort, also returns MP3.
- *   3. Spotify 30s preview   — DRM-free preview from p.scdn.co; capped at 30 s.
- *
- * Callers should try [SpotifyImporter] / [SpotifyMatcher] first; that path streams full-quality
- * audio via YouTube Music and doesn't need a download at all.
+ * Provider chain (tried in order, stops at first success):
+ *   1. api.spotifydown.com   — third-party proxy; returns a plain MP3.
+ *   2. spotifydown.com       — legacy API; also MP3. Both providers source from YouTube,
+ *                              so they fail for tracks that YouTube doesn't have.
+ *   3. SoundCloud search     — searches SoundCloud by artist+title; full-length stream.
+ *                              Covers many indie/niche tracks absent from YouTube.
+ *   4. Spotify 30s preview   — DRM-free MP3 preview from p.scdn.co; capped at 30 s.
+ *                              Last resort when no full-length source is available.
  */
 object SpotifyDirectDownloader {
     private const val USER_AGENT =
@@ -68,10 +68,17 @@ object SpotifyDirectDownloader {
                 expectSuccess = false
             }
             try {
-                val audioUrl = resolveAudioUrl(client, trackId, spotifyAccessToken) ?: return@withContext null
+                // Provider chain: spotifydown APIs → SoundCloud → 30s Spotify preview
+                val audioUrl = tryApiSpotifydown(client, trackId)
+                    ?: tryLegacySpotifydown(client, trackId)
+                    ?: tryAudioFromSoundCloud(client, track.title, track.artist)
+                    ?: trySpotifyPreview(client, trackId)
+                    ?: return@withContext null
                 // Pick extension from URL so ExoPlayer selects the right demuxer
                 val ext = when {
-                    audioUrl.contains(".mp3", ignoreCase = true) || audioUrl.contains("mp3-preview") -> "mp3"
+                    audioUrl.contains(".mp3", ignoreCase = true)
+                        || audioUrl.contains("mp3-preview")
+                        || audioUrl.contains("sndcdn.com") -> "mp3"
                     audioUrl.contains(".ogg", ignoreCase = true) -> "ogg"
                     audioUrl.contains(".m4a", ignoreCase = true) -> "m4a"
                     else -> "opus"
@@ -118,6 +125,63 @@ object SpotifyDirectDownloader {
         tryApiSpotifydown(client, trackId)
             ?: tryLegacySpotifydown(client, trackId)
             ?: trySpotifyPreview(client, trackId)
+
+    // ── SoundCloud helpers (used by callers that have track metadata) ─────────
+
+    /**
+     * Searches SoundCloud for [artist] – [title] and returns a streamable MP3 URL.
+     * Uses SoundCloud's public API with a dynamically fetched client_id.
+     * Returns null if SoundCloud has no match or the stream is not publicly available.
+     */
+    suspend fun tryAudioFromSoundCloud(client: HttpClient, title: String, artist: String): String? =
+        runCatching {
+            val clientId = fetchSoundCloudClientId(client) ?: return@runCatching null
+            val query = "${artist.trim()} ${title.trim()}"
+            val searchUrl = "https://api-v2.soundcloud.com/search/tracks?q=${java.net.URLEncoder.encode(query, "UTF-8")}&limit=5&client_id=$clientId"
+            val searchBody = client.get(searchUrl) {
+                header("User-Agent", USER_AGENT)
+                header("Accept", "application/json")
+            }.bodyAsText()
+            val searchRoot = json.parseToJsonElement(searchBody).jsonObject
+            val collection = searchRoot["collection"]?.jsonArray ?: return@runCatching null
+            // Pick first track whose title+user roughly match to avoid wrong songs
+            val trackObj = collection.firstNotNullOfOrNull { item ->
+                val obj = item.jsonObject
+                val t = obj["title"]?.jsonPrimitive?.contentOrNull?.lowercase() ?: return@firstNotNullOfOrNull null
+                val u = obj["user"]?.jsonObject?.get("username")?.jsonPrimitive?.contentOrNull?.lowercase() ?: ""
+                val matchTitle = title.lowercase()
+                val matchArtist = artist.lowercase().split(",", "&", " feat", " ft").first().trim()
+                if (t.contains(matchTitle) || matchTitle.contains(t.take(15))) {
+                    if (u.contains(matchArtist) || matchArtist.contains(u.take(10))) obj else null
+                } else null
+            } ?: collection.firstOrNull()?.jsonObject ?: return@runCatching null
+            val permalink = trackObj["permalink_url"]?.jsonPrimitive?.contentOrNull ?: return@runCatching null
+            val trackApiUrl = "https://api-v2.soundcloud.com/resolve?url=${java.net.URLEncoder.encode(permalink, "UTF-8")}&client_id=$clientId"
+            val trackBody = client.get(trackApiUrl) { header("User-Agent", USER_AGENT) }.bodyAsText()
+            val trackRoot = json.parseToJsonElement(trackBody).jsonObject
+            val streamsUrl = trackRoot["media"]?.jsonObject
+                ?.get("transcodings")?.jsonArray
+                ?.firstOrNull { it.jsonObject["format"]?.jsonObject?.get("mime_type")?.jsonPrimitive?.contentOrNull == "audio/mpeg" }
+                ?.jsonObject?.get("url")?.jsonPrimitive?.contentOrNull ?: return@runCatching null
+            val streamBody = client.get("$streamsUrl?client_id=$clientId") { header("User-Agent", USER_AGENT) }.bodyAsText()
+            json.parseToJsonElement(streamBody).jsonObject["url"]?.jsonPrimitive?.contentOrNull
+        }.getOrNull()
+
+    @Volatile private var soundCloudClientId: String? = null
+
+    private suspend fun fetchSoundCloudClientId(client: HttpClient): String? {
+        soundCloudClientId?.let { return it }
+        return runCatching {
+            val html = client.get("https://soundcloud.com") { header("User-Agent", USER_AGENT) }.bodyAsText()
+            val scriptUrl = Regex("""<script[^>]+src="(https://a-v2\.sndcdn\.com/assets/[^"]+\.js)"""")
+                .findAll(html).lastOrNull()?.groupValues?.get(1) ?: return@runCatching null
+            val js = client.get(scriptUrl) { header("User-Agent", USER_AGENT) }.bodyAsText()
+            val id = Regex("""client_id\s*[:=]\s*"([A-Za-z0-9]{32})"""").find(js)?.groupValues?.get(1)
+                ?: return@runCatching null
+            soundCloudClientId = id
+            id
+        }.getOrNull()
+    }
 
     // ── Provider 1: api.spotifydown.com ──────────────────────────────────────
     // Uses Spotify's own CDN; the returned link is the exact track.
