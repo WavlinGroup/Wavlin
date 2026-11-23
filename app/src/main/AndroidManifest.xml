@@ -269,9 +269,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="wavlindiscord" />
-                <data android:host="oauth2" />
-                <data android:pathPrefix="/callback" />
+                <data android:scheme="${discordRedirectScheme}" />
+                <data android:host="${discordRedirectHost}" />
+                <data android:pathPrefix="${discordRedirectPath}" />
             </intent-filter>
         </activity>
 

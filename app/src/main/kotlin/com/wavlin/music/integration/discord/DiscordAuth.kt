@@ -63,7 +63,11 @@ class DiscordAuth(
                 challenge = pkce.challenge,
             )
 
-            Timber.tag(TAG).i("authorize: launching URL (clientId prefix=%s)", BuildConfig.DISCORD_APP_ID.toString().take(8))
+            Timber.tag(TAG).i(
+                "authorize: launching URL (clientId prefix=%s, redirect_uri=%s)",
+                BuildConfig.DISCORD_APP_ID.toString().take(8),
+                REDIRECT_URI,
+            )
 
             val intent = CustomTabsIntent.Builder().build().intent
             intent.data = authUrl.toUri()
@@ -212,7 +216,7 @@ class DiscordAuth(
 
     companion object {
         private const val TAG = "DiscordSvc"
-        const val REDIRECT_URI = "wavlindiscord://oauth2/callback"
+        val REDIRECT_URI: String get() = BuildConfig.DISCORD_REDIRECT_URI
 
         private fun defaultClient(): HttpClient = HttpClient(CIO) {
             install(HttpTimeout) {

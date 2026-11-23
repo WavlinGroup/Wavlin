@@ -183,6 +183,21 @@ android {
         buildConfigField("String", "SPOTIFY_CLIENT_SECRET", "\"$spotifyClientSecret\"")
         buildConfigField("String", "ARCHITECTURE", "\"universal\"")
         buildConfigField("Long", "DISCORD_APP_ID", "1447278780795064401L")
+
+        // Single source for the Discord OAuth2 redirect. The exact string must be registered under
+        // OAuth2 > Redirects in the Discord Developer Portal for DISCORD_APP_ID, or Discord shows
+        // "Invalid OAuth2 redirect_uri".
+        val discordRedirectScheme = "wavlindiscord"
+        val discordRedirectHost = "oauth2"
+        val discordRedirectPath = "/callback"
+        buildConfigField(
+            "String",
+            "DISCORD_REDIRECT_URI",
+            "\"$discordRedirectScheme://$discordRedirectHost$discordRedirectPath\"",
+        )
+        manifestPlaceholders["discordRedirectScheme"] = discordRedirectScheme
+        manifestPlaceholders["discordRedirectHost"] = discordRedirectHost
+        manifestPlaceholders["discordRedirectPath"] = discordRedirectPath
     }
 
     flavorDimensions += listOf("variant")
