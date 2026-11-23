@@ -52,11 +52,13 @@ class DiscordOAuthActivity : Activity() {
         val code = uri.getQueryParameter("code")
         val state = uri.getQueryParameter("state")
         val error = uri.getQueryParameter("error")
+        val errorDescription = uri.getQueryParameter("error_description")
 
         if (error != null) {
-            Timber.tag(TAG).w("OAuthActivity: error=%s", error)
+            Timber.tag(TAG).w("OAuthActivity: error=%s, error_description=%s", error, errorDescription)
+            val detail = if (errorDescription.isNullOrBlank()) error else "$error: $errorDescription"
             deferred?.completeExceptionally(
-                DiscordAuthException.UserCancelled("Authorization denied: $error")
+                DiscordAuthException.UserCancelled("Authorization denied: $detail")
             )
             finish()
             return
