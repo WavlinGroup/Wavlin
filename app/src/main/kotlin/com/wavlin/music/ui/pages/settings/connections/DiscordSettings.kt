@@ -182,16 +182,23 @@ fun DiscordSettings(
     }
 
     val lastErrorKey by DiscordRpcManager.lastError.collectAsState()
+    val lastErrorDetail by DiscordRpcManager.lastErrorDetail.collectAsState()
     val lastErrorText = lastErrorKey?.let { key ->
         val resId = when (key) {
             "discord_error_loopback_unbound" -> R.string.discord_error_loopback_unbound
             "discord_error_loopback_timeout" -> R.string.discord_error_loopback_timeout
             "discord_error_no_browser" -> R.string.discord_error_no_browser
+            "discord_error_cancelled" -> R.string.discord_error_cancelled
+            "discord_error_token_rejected" -> R.string.discord_error_token_rejected
+            "discord_error_network" -> R.string.discord_error_network
+            "discord_error_gateway" -> R.string.discord_error_gateway
+            "discord_error_unexpected" -> R.string.discord_error_unexpected
             "discord_error_token_refresh_failed" -> R.string.discord_error_token_refresh_failed
             "discord_error_invalid_scope" -> R.string.discord_error_invalid_scope
             else -> R.string.discord_error_banner_title
         }
-        stringResource(resId)
+        val base = stringResource(resId)
+        lastErrorDetail?.takeIf { it.isNotBlank() }?.let { "$base ($it)" } ?: base
     }
 
     LaunchedEffect(Unit) {

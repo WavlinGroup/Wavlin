@@ -44,6 +44,9 @@ sealed class DiscordAuthException(message: String, cause: Throwable? = null) : E
     class InvalidGrant(message: String = "Invalid or expired grant") : DiscordAuthException(message)
     class StateMismatch : DiscordAuthException("OAuth state mismatch")
     class NoBrowser(message: String = "No browser available") : DiscordAuthException(message)
+    class CallbackTimeout : DiscordAuthException("No OAuth callback received before the timeout")
+    class TokenRejected(val httpStatus: Int, val errorCode: String, val description: String) :
+        DiscordAuthException("Token endpoint rejected the request: HTTP $httpStatus $errorCode $description")
 }
 
 class DiscordAuth(
@@ -84,7 +87,8 @@ class DiscordAuth(
             val callback = try {
                 DiscordOAuthActivity.awaitCode(timeoutMs = 120_000L)
             } catch (e: TimeoutCancellationException) {
-                throw DiscordAuthException.UserCancelled()
+                Timber.tag(TAG).w("authorize: no callback within timeout (redirect never reached %s)", REDIRECT_URI)
+                throw DiscordAuthException.CallbackTimeout()
             } catch (e: CancellationException) {
                 Timber.tag(TAG).i("authorize: cancelled")
                 throw DiscordAuthException.UserCancelled()
@@ -144,16 +148,20 @@ class DiscordAuth(
         grantType: String,
         extraParams: io.ktor.http.Parameters,
     ): DiscordAuthResult {
-        val response: HttpResponse = httpClient.submitForm(
-            url = DISCORD_OAUTH_TOKEN,
-            formParameters = parameters {
-                append("client_id", BuildConfig.DISCORD_APP_ID.toString())
-                append("grant_type", grantType)
-                extraParams.forEach { name, values ->
-                    values.forEach { value -> append(name, value) }
-                }
-            },
-        )
+        val response: HttpResponse = try {
+            httpClient.submitForm(
+                url = DISCORD_OAUTH_TOKEN,
+                formParameters = parameters {
+                    append("client_id", BuildConfig.DISCORD_APP_ID.toString())
+                    append("grant_type", grantType)
+                    extraParams.forEach { name, values ->
+                        values.forEach { value -> append(name, value) }
+                    }
+                },
+            )
+        } catch (e: IOException) {
+            throw DiscordAuthException.NetworkFailure(e)
+        }
 
         val status = response.status
         val body = response.bodyAsText()
@@ -184,14 +192,17 @@ class DiscordAuth(
             Timber.tag(TAG).w("token exchange: invalid_grant on %s", grantType)
             throw DiscordAuthException.InvalidGrant()
         }
+        val errorDescription = runCatching { JSONObject(body).optString("error_description", "") }
+            .getOrDefault("")
         Timber.tag(TAG).w(
-            "token exchange: HTTP %d (grantType=%s, error=%s, body=%s)",
+            "token exchange: HTTP %d (grantType=%s, error=%s, description=%s, body=%s)",
             status.value,
             grantType,
             errorCode,
+            errorDescription,
             body.take(200),
         )
-        throw DiscordAuthException.NetworkFailure(IOException("HTTP ${status.value}: $body"))
+        throw DiscordAuthException.TokenRejected(status.value, errorCode, errorDescription)
     }
 
     private fun buildAuthorizeUrl(

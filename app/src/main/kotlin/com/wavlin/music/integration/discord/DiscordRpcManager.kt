@@ -65,6 +65,8 @@ object DiscordRpcManager {
 
     private val _lastError = MutableStateFlow<String?>(null)
     val lastError: StateFlow<String?> = _lastError
+    private val _lastErrorDetail = MutableStateFlow<String?>(null)
+    val lastErrorDetail: StateFlow<String?> = _lastErrorDetail
 
     private val _currentUser = MutableStateFlow<DiscordUser?>(null)
     val currentUser: StateFlow<DiscordUser?> = _currentUser
@@ -187,6 +189,7 @@ object DiscordRpcManager {
 
         _connectionStatus.value = Status.Authorizing
         _lastError.value = null
+        _lastErrorDetail.value = null
 
         scope.launch {
             try {
@@ -209,7 +212,8 @@ object DiscordRpcManager {
                     completeWith(true)
                 } catch (e: Throwable) {
                     Timber.tag(TAG).e(e, "authorize: gateway connect/identify failed")
-                    _lastError.value = "discord_error_loopback_timeout"
+                    _lastError.value = "discord_error_gateway"
+                    _lastErrorDetail.value = e.javaClass.simpleName
                     _connectionStatus.value = Status.Disconnected
                     _ready = false
                     _authorized = false
@@ -217,7 +221,19 @@ object DiscordRpcManager {
                 }
             } catch (e: DiscordAuthException.UserCancelled) {
                 Timber.tag(TAG).i("authorize: user cancelled")
+                _lastError.value = "discord_error_cancelled"
+                _lastErrorDetail.value = e.message
+                _connectionStatus.value = Status.Disconnected
+                completeWith(false)
+            } catch (e: DiscordAuthException.CallbackTimeout) {
+                Timber.tag(TAG).w(e, "authorize: callback timeout")
                 _lastError.value = "discord_error_loopback_timeout"
+                _connectionStatus.value = Status.Disconnected
+                completeWith(false)
+            } catch (e: DiscordAuthException.TokenRejected) {
+                Timber.tag(TAG).w(e, "authorize: token endpoint rejected the code exchange")
+                _lastError.value = "discord_error_token_rejected"
+                _lastErrorDetail.value = "HTTP ${e.httpStatus} ${e.errorCode} ${e.description}".trim()
                 _connectionStatus.value = Status.Disconnected
                 completeWith(false)
             } catch (e: DiscordAuthException.StateMismatch) {
@@ -227,7 +243,8 @@ object DiscordRpcManager {
                 completeWith(false)
             } catch (e: DiscordAuthException.NetworkFailure) {
                 Timber.tag(TAG).e(e, "authorize: network failure")
-                _lastError.value = "discord_error_loopback_timeout"
+                _lastError.value = "discord_error_network"
+                _lastErrorDetail.value = e.message
                 _connectionStatus.value = Status.Disconnected
                 completeWith(false)
             } catch (e: DiscordAuthException.NoBrowser) {
@@ -242,7 +259,8 @@ object DiscordRpcManager {
                 completeWith(false)
             } catch (e: Throwable) {
                 Timber.tag(TAG).e(e, "authorize: unexpected failure")
-                _lastError.value = "discord_error_loopback_timeout"
+                _lastError.value = "discord_error_unexpected"
+                _lastErrorDetail.value = e.javaClass.simpleName
                 _connectionStatus.value = Status.Disconnected
                 completeWith(false)
             } finally {
