@@ -500,7 +500,11 @@ dependencies {
     implementation(project(":shazamkit"))
     implementation(project(":paxsenix"))
 
-    implementation(project(":librespot"))
+    implementation(project(":librespot")) {
+        // librespot uses full protobuf-java; exclude lite to prevent classpath split
+        exclude(group = "com.google.protobuf", module = "protobuf-javalite")
+        exclude(group = "com.google.protobuf", module = "protobuf-kotlin-lite")
+    }
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.content.negotiation)

@@ -21,6 +21,19 @@ tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
 
+// librespot uses full protobuf-java; force it to win over javalite everywhere
+// so the merged runtime classpath stays consistent.
+subprojects {
+    configurations.all {
+        resolutionStrategy.eachDependency {
+            if (requested.group == "com.google.protobuf" && requested.module.name == "protobuf-javalite") {
+                useTarget("com.google.protobuf:protobuf-java:3.25.2")
+                because("librespot requires full protobuf-java for Descriptors + JsonFormat")
+            }
+        }
+    }
+}
+
 subprojects {
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
         compilerOptions {

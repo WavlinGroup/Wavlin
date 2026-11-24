@@ -19,7 +19,7 @@ package xyz.gianlu.librespot.common;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.protobuf.MessageLite;
+import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,11 +38,9 @@ public final class ProtobufToJson {
     }
 
     @NotNull
-    public static JsonObject convert(@NotNull com.google.protobuf.MessageLite message) {
+    public static JsonObject convert(@NotNull Message message) {
         try {
-            // JsonFormat requires the full Message interface; cast is safe because
-            // lite generated classes implement Message when using the full printer.
-            String json = PRINTER.print((com.google.protobuf.Message) message);
+            String json = PRINTER.print(message);
             return JsonParser.parseString(json).getAsJsonObject();
         } catch (Exception e) {
             throw new RuntimeException("ProtobufToJson.convert failed", e);
@@ -50,9 +48,9 @@ public final class ProtobufToJson {
     }
 
     @NotNull
-    public static JsonArray convertList(@NotNull List<? extends com.google.protobuf.MessageLite> list) {
+    public static JsonArray convertList(@NotNull List<? extends Message> list) {
         JsonArray array = new JsonArray(list.size());
-        for (com.google.protobuf.MessageLite msg : list) array.add(convert(msg));
+        for (Message msg : list) array.add(convert(msg));
         return array;
     }
 }

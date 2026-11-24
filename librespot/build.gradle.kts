@@ -35,23 +35,23 @@ protobuf {
     generateProtoTasks {
         all().configureEach {
             builtins {
-                create("java") {
-                    option("lite")
-                }
+                create("java") // full, not lite — required for Descriptors + JsonFormat
             }
         }
     }
 }
 
+configurations.all {
+    // Prevent javalite from being pulled in transitively alongside full protobuf-java
+    exclude(group = "com.google.protobuf", module = "protobuf-javalite")
+}
+
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 
-    // Protobuf lite (Android-friendly)
-    api("com.google.protobuf:protobuf-javalite:3.25.2")
-    // JsonFormat for ProtobufToJson (works with lite runtime)
-    api("com.google.protobuf:protobuf-java-util:3.25.2") {
-        exclude(group = "com.google.protobuf", module = "protobuf-java")
-    }
+    // Full protobuf — required for Descriptors API and JsonFormat
+    api("com.google.protobuf:protobuf-java:3.25.2")
+    api("com.google.protobuf:protobuf-java-util:3.25.2")
 
     // HTTP client used by Session
     api("com.squareup.okhttp3:okhttp:4.12.0")
