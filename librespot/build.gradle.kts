@@ -2,7 +2,7 @@ import com.google.protobuf.gradle.proto
 
 plugins {
     id("com.android.library")
-    id("com.google.protobuf") version "0.9.4"
+    id("com.google.protobuf") version "0.9.5"
 }
 
 android {
