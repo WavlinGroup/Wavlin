@@ -4,15 +4,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.protobuf.ByteString;
 import com.spotify.Authentication;
-import com.sun.net.httpserver.HttpServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -43,8 +39,9 @@ public class OAuth implements Closeable {
     private String codeVerifier;
     private String code;
     private String token;
-    private HttpServer server;
 
+    // Minimal HTTP/1.x callback server backed by ServerSocket — no com.sun.* required.
+    private volatile ServerSocket callbackSocket;
 
     public OAuth(String clientId, String redirectUrl) {
         this.clientId = clientId;
@@ -113,23 +110,68 @@ public class OAuth implements Closeable {
                 .build();
     }
 
+    /**
+     * Starts a minimal single-request HTTP/1.x server on the redirect URL's port.
+     * Waits for one GET /login?code=... request, extracts the code, signals the
+     * flow() thread, then stops.
+     *
+     * Replaces the original com.sun.net.httpserver.HttpServer usage which is
+     * unavailable on Android.
+     */
     public void runCallbackServer() throws IOException {
         URL url = new URL(redirectUrl);
-        server = HttpServer.create(new InetSocketAddress(url.getHost(), url.getPort()), 0);
-        server.createContext("/login", exchange -> {
-            String response = "librespot-java received callback";
-            exchange.sendResponseHeaders(200, response.length());
-            OutputStream os = exchange.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
-            String query = exchange.getRequestURI().getQuery();
-            setCode(query.substring(query.indexOf('=') + 1));
-            synchronized (credentialsLock) {
-                credentialsLock.notifyAll();
+        int port = url.getPort() == -1 ? 80 : url.getPort();
+        callbackSocket = new ServerSocket(port, 1, InetAddress.getByName(url.getHost()));
+
+        Thread t = new Thread(() -> {
+            try {
+                LOGGER.info("OAuth: Waiting for callback on port {}", port);
+                try (Socket client = callbackSocket.accept()) {
+                    // Read request line + headers (we only care about the first line)
+                    BufferedReader in = new BufferedReader(
+                            new InputStreamReader(client.getInputStream(), StandardCharsets.UTF_8));
+                    String requestLine = in.readLine(); // e.g. "GET /login?code=xyz HTTP/1.1"
+
+                    // Send a minimal 200 response
+                    String body = "librespot-java received callback";
+                    String response = "HTTP/1.1 200 OK\r\n"
+                            + "Content-Type: text/plain\r\n"
+                            + "Content-Length: " + body.length() + "\r\n"
+                            + "Connection: close\r\n"
+                            + "\r\n"
+                            + body;
+                    client.getOutputStream().write(response.getBytes(StandardCharsets.UTF_8));
+                    client.getOutputStream().flush();
+
+                    // Parse the code out of the request line
+                    if (requestLine != null && requestLine.contains("?")) {
+                        String query = requestLine.substring(
+                                requestLine.indexOf('?') + 1,
+                                requestLine.lastIndexOf(' ')   // trim " HTTP/1.1"
+                        );
+                        // query is e.g. "code=ABCD" or "error=access_denied"
+                        for (String param : query.split("&")) {
+                            if (param.startsWith("code=")) {
+                                setCode(URLDecoder.decode(
+                                        param.substring("code=".length()),
+                                        StandardCharsets.UTF_8.name()));
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                synchronized (credentialsLock) {
+                    credentialsLock.notifyAll();
+                }
+            } catch (IOException e) {
+                if (!callbackSocket.isClosed()) {
+                    LOGGER.error("OAuth callback server error", e);
+                }
             }
-        });
-        server.start();
-        LOGGER.info("OAuth: Waiting for callback on {}", server.getAddress());
+        }, "oauth-callback");
+        t.setDaemon(true);
+        t.start();
     }
 
     public Authentication.LoginCredentials flow() throws IOException, InterruptedException {
@@ -144,7 +186,8 @@ public class OAuth implements Closeable {
 
     @Override
     public void close() throws IOException {
-        if (server != null)
-            server.stop(0);
+        if (callbackSocket != null && !callbackSocket.isClosed()) {
+            callbackSocket.close();
+        }
     }
 }
