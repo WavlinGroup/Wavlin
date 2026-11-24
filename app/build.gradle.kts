@@ -141,7 +141,7 @@ abstract class GenerateProtoTask : DefaultTask() {
             executable = protocFile.absolutePath
             args(
                 "--java_out=lite:$outputDir",
-                "--kotlin_out=$outputDir",
+                "--kotlin_out=lite:$outputDir",
                 "-I=${protoFile.parentFile}",
                 protoFile.absolutePath,
             )
