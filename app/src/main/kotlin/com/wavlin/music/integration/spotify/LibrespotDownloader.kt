@@ -12,31 +12,18 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import xyz.gianlu.librespot.audio.PlayableContentFeeder
+import xyz.gianlu.librespot.audio.format.AudioQualityPicker
 import xyz.gianlu.librespot.audio.format.SuperAudioFormat
 import xyz.gianlu.librespot.core.Session
 import xyz.gianlu.librespot.metadata.TrackId
+import com.spotify.metadata.Metadata
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 
-/**
- * Downloads a full Spotify track OGG stream using the librespot AP protocol.
- *
- * Authentication uses an existing Spotify access token (from SpotifyAuth / sp_dc flow),
- * so no separate Premium password is required. The token must have streaming scope
- * (the web player token does). Requires Spotify Premium — free accounts will get
- * CONTENT_RESTRICTED from the CDN.
- *
- * Returns the raw OGG/Vorbis bytes, or null on any failure.
- */
 object LibrespotDownloader {
 
     private const val TAG = "LibrespotDownloader"
 
-    /**
-     * @param trackId   The 22-char base62 Spotify track ID (e.g. "0VWfkieYW5d9IPKKOEs7HM")
-     * @param accessToken  A valid Spotify access token (from SpotifyAuth)
-     */
     suspend fun downloadOgg(
         trackId: String,
         accessToken: String,
@@ -48,7 +35,6 @@ object LibrespotDownloader {
 
         var session: Session? = null
         try {
-            // Build LoginCredentials using the access token
             val credentials = Authentication.LoginCredentials.newBuilder()
                 .setUsername("")
                 .setTyp(Authentication.AuthenticationType.AUTHENTICATION_SPOTIFY_TOKEN)
@@ -59,24 +45,31 @@ object LibrespotDownloader {
                 .setStoreCredentials(false)
                 .build()
 
+            Timber.tag(TAG).d("Building librespot session for track $trackId")
+
             session = Session.Builder(conf)
                 .credentials(credentials)
                 .create()
 
+            Timber.tag(TAG).d("Session created, authenticated as ${session.username()}")
+
             val id = TrackId.fromBase62(trackId)
-            val feeder = PlayableContentFeeder(session)
+
+            // Use session's own content feeder (initialised after auth)
+            val feeder = session.contentFeeder()
             val loaded = feeder.load(
                 id,
-                xyz.gianlu.librespot.audio.format.AudioQualityPicker { files ->
-                    // Prefer OGG 320 → OGG 160 → anything OGG
-                    files.firstOrNull { it.format == com.spotify.metadata.Metadata.AudioFile.Format.OGG_VORBIS_320 }
-                        ?: files.firstOrNull { it.format == com.spotify.metadata.Metadata.AudioFile.Format.OGG_VORBIS_160 }
-                        ?: files.firstOrNull { it.format == com.spotify.metadata.Metadata.AudioFile.Format.OGG_VORBIS_96 }
+                AudioQualityPicker { files ->
+                    files.firstOrNull { it.format == Metadata.AudioFile.Format.OGG_VORBIS_320 }
+                        ?: files.firstOrNull { it.format == Metadata.AudioFile.Format.OGG_VORBIS_160 }
+                        ?: files.firstOrNull { it.format == Metadata.AudioFile.Format.OGG_VORBIS_96 }
                         ?: files.firstOrNull()
                 },
                 false,
                 null,
             )
+
+            Timber.tag(TAG).d("Track loaded, reading stream")
 
             val stream: InputStream = loaded.`in`.stream()
             val out = ByteArrayOutputStream()
@@ -88,11 +81,24 @@ object LibrespotDownloader {
             stream.close()
 
             val bytes = out.toByteArray()
-            if (bytes.isEmpty()) null else bytes
+            Timber.tag(TAG).d("Stream read complete: ${bytes.size} bytes")
+
+            if (bytes.isEmpty()) {
+                Timber.tag(TAG).w("Stream was empty for track $trackId")
+                null
+            } else {
+                bytes
+            }
         } catch (e: CancellationException) {
             throw e
+        } catch (e: xyz.gianlu.librespot.audio.PlayableContentFeeder.ContentRestrictedException) {
+            Timber.tag(TAG).w("Track $trackId is content-restricted (Premium required or geo-blocked)")
+            null
+        } catch (e: Session.SpotifyAuthenticationException) {
+            Timber.tag(TAG).e(e, "Spotify AP auth rejected for track $trackId — token may lack streaming scope or account isn't Premium")
+            null
         } catch (e: Exception) {
-            Timber.tag(TAG).e(e, "librespot download failed for $trackId")
+            Timber.tag(TAG).e(e, "librespot download failed for $trackId [${e::class.java.simpleName}]: ${e.message}")
             null
         } finally {
             runCatching { session?.close() }
