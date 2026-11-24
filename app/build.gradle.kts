@@ -321,7 +321,13 @@ android {
     }
 }
 
-val protocVersion = libs.versions.protobuf.get()
+// The resolution strategy in the root build forces all protobuf artifacts to
+// protobuf-java:3.25.2 (the version librespot was built against). Using protoc
+// 4.x here would emit @com.google.protobuf.Generated on the generated Java file,
+// but that annotation does not exist in protobuf-java 3.25.2, causing javac to
+// fail with "cannot find symbol". Pin protoc to 3.25.2 so the generated source
+// is compatible with the runtime that Gradle actually resolves.
+val protocVersion = "3.25.2"
 
 fun getProtocUrl(): String {
     val os = System.getProperty("os.name").lowercase()
