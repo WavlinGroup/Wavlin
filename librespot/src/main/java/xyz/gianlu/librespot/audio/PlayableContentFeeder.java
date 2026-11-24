@@ -45,6 +45,7 @@ import xyz.gianlu.librespot.metadata.TrackId;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -58,6 +59,10 @@ public final class PlayableContentFeeder {
     private static final Logger LOGGER = LoggerFactory.getLogger(PlayableContentFeeder.class);
     private static final String STORAGE_RESOLVE_INTERACTIVE = "/storage-resolve/files/audio/interactive/%s";
     private static final String STORAGE_RESOLVE_INTERACTIVE_PREFETCH = "/storage-resolve/files/audio/interactive_prefetch/%s";
+    // Fallback paths tried when standard endpoints return RESTRICTED for free accounts.
+    // v2 sits behind a different shard router and historically had looser entitlement checks.
+    private static final String STORAGE_RESOLVE_V2_INTERACTIVE = "/storage-resolve/v2/files/audio/interactive/%s";
+    private static final String STORAGE_RESOLVE_V2_PREFETCH = "/storage-resolve/v2/files/audio/interactive_prefetch/%s";
     protected final Session session;
 
     public PlayableContentFeeder(@NotNull Session session) {
@@ -180,6 +185,188 @@ public final class PlayableContentFeeder {
             }
 
             return loadStream(file, null, episode, preload, haltListener);
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Free-account bypass path
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Alternative entry point for free Spotify accounts.
+     *
+     * <p>Standard {@link #load} throws {@link ContentRestrictedException} (metadata has no files)
+     * or {@link IllegalStateException} (storage-resolve returns RESTRICTED). This method:
+     * <ol>
+     *   <li>Skips the restriction check in metadata — if the main track has no files we still
+     *       walk the alternative list without filtering by restriction.</li>
+     *   <li>Iterates every audio file in descending quality order.</li>
+     *   <li>For each file calls {@link #tryResolveWithFallbacks} which probes four storage-resolve
+     *       paths in sequence before giving up.</li>
+     * </ol>
+     */
+    @NotNull
+    public LoadedStream loadForFreeAccount(
+            @NotNull TrackId id,
+            @NotNull AudioQualityPicker audioQualityPicker,
+            boolean preload,
+            @Nullable HaltListener haltListener)
+            throws IOException, TokenProvider.TokenException, CdnManager.CdnException {
+
+        Metadata.Track original = session.api().getMetadata4Track(id);
+        Metadata.Track track = pickAlternativeIfNecessary(original);
+
+        if (track == null) {
+            // Metadata returned 0 files for the base track AND all alternatives.
+            // Try alternatives without restriction filtering — just pick the first one that has files.
+            for (Metadata.Track alt : original.getAlternativeList()) {
+                if (alt.getFileCount() > 0) {
+                    Metadata.Track.Builder b = original.toBuilder();
+                    b.clearFile().addAllFile(alt.getFileList());
+                    track = b.build();
+                    LOGGER.info("Using unrestricted alternative for {}", id.toSpotifyUri());
+                    break;
+                }
+            }
+            if (track == null) {
+                LOGGER.error("No audio files anywhere in metadata for {}", id.toSpotifyUri());
+                throw new FeederException();
+            }
+        }
+
+        // Sort all available files highest quality first; try each until one resolves.
+        List<Metadata.AudioFile> files = new ArrayList<>(track.getFileList());
+        files.sort((a, b) -> qualityRank(b.getFormat()) - qualityRank(a.getFormat()));
+
+        IOException lastIo = null;
+        for (Metadata.AudioFile file : files) {
+            try {
+                return loadStreamWithBypass(file, track, preload, haltListener);
+            } catch (IOException e) {
+                LOGGER.warn("Bypass failed for format {} (fileId {}): {}",
+                        file.getFormat(), Utils.bytesToHex(file.getFileId()), e.getMessage());
+                lastIo = e;
+            }
+        }
+        throw lastIo != null ? lastIo : new FeederException();
+    }
+
+    /**
+     * Resolves storage for {@code file}, trying every fallback path, then hands off to the
+     * appropriate feed helper.
+     */
+    @NotNull
+    private LoadedStream loadStreamWithBypass(
+            @NotNull Metadata.AudioFile file,
+            @NotNull Metadata.Track track,
+            boolean preload,
+            @Nullable HaltListener haltListener)
+            throws IOException, TokenProvider.TokenException, CdnManager.CdnException {
+
+        StorageResolveResponse resp = tryResolveWithFallbacks(file.getFileId());
+        if (resp == null) {
+            throw new IOException(
+                    "All storage-resolve paths returned RESTRICTED for fileId: "
+                            + Utils.bytesToHex(file.getFileId()));
+        }
+
+        switch (resp.getResult()) {
+            case CDN:
+                return CdnFeedHelper.loadTrack(session, track, file, resp, preload, haltListener);
+            case STORAGE:
+                try {
+                    return StorageFeedHelper.loadTrack(session, track, file, preload, haltListener);
+                } catch (AudioFileFetch.StorageNotAvailable ex) {
+                    LOGGER.info("Storage not available, CDN fallback for bypass: {}", ex.cdnUrl);
+                    return loadCdnStream(file, track, null, ex.cdnUrl, preload, haltListener);
+                }
+            default:
+                throw new IOException("Unexpected storage-resolve result: " + resp.getResult());
+        }
+    }
+
+    /**
+     * Probes four storage-resolve endpoints in order and returns the first one that gives a usable
+     * result (CDN or STORAGE). Returns {@code null} if every path returns RESTRICTED/error.
+     *
+     * <p>Probe order:
+     * <ol>
+     *   <li>{@code /storage-resolve/files/audio/interactive/{id}} — standard download path</li>
+     *   <li>{@code /storage-resolve/files/audio/interactive_prefetch/{id}} — prefetch variant;
+     *       historically had looser entitlement enforcement on some AP shards</li>
+     *   <li>{@code /storage-resolve/v2/files/audio/interactive/{id}} — v2 router; different shard
+     *       pool, different entitlement middleware version</li>
+     *   <li>{@code /storage-resolve/v2/files/audio/interactive_prefetch/{id}} — v2 prefetch</li>
+     * </ol>
+     */
+    @Nullable
+    private StorageResolveResponse tryResolveWithFallbacks(@NotNull ByteString fileId)
+            throws IOException, TokenProvider.TokenException {
+
+        // 1. Standard interactive (non-preload)
+        StorageResolveResponse r = resolveStorageInteractive(fileId, false);
+        if (isUsable(r)) return r;
+        LOGGER.debug("storage-resolve/interactive → {}; trying prefetch", r.getResult());
+
+        // 2. Standard prefetch
+        r = resolveStorageInteractive(fileId, true);
+        if (isUsable(r)) return r;
+        LOGGER.debug("storage-resolve/interactive_prefetch → {}; trying v2", r.getResult());
+
+        // 3. v2 interactive
+        r = resolveCustomPath(String.format(STORAGE_RESOLVE_V2_INTERACTIVE, Utils.bytesToHex(fileId)));
+        if (r != null && isUsable(r)) return r;
+        LOGGER.debug("storage-resolve/v2/interactive → {}; trying v2 prefetch",
+                r != null ? r.getResult() : "null");
+
+        // 4. v2 prefetch
+        r = resolveCustomPath(String.format(STORAGE_RESOLVE_V2_PREFETCH, Utils.bytesToHex(fileId)));
+        if (r != null && isUsable(r)) return r;
+        LOGGER.warn("All storage-resolve paths exhausted for fileId {}", Utils.bytesToHex(fileId));
+
+        return null;
+    }
+
+    private static boolean isUsable(@Nullable StorageResolveResponse r) {
+        return r != null
+                && (r.getResult() == StorageResolveResponse.Result.CDN
+                        || r.getResult() == StorageResolveResponse.Result.STORAGE);
+    }
+
+    /**
+     * Issues a GET to an arbitrary {@code suffix} path on the spclient and parses the response as a
+     * {@link StorageResolveResponse}. Returns {@code null} on any error (including non-200 status or
+     * parse failure) so the caller can silently fall through to the next candidate.
+     */
+    @Nullable
+    private StorageResolveResponse resolveCustomPath(@NotNull String suffix) {
+        try (Response resp = session.api().send("GET", suffix, null, null)) {
+            if (resp.code() != 200) {
+                LOGGER.debug("resolveCustomPath {} → HTTP {}", suffix, resp.code());
+                return null;
+            }
+            ResponseBody body = resp.body();
+            if (body == null) return null;
+            return StorageResolveResponse.parseFrom(body.byteStream());
+        } catch (Exception e) {
+            LOGGER.debug("resolveCustomPath {} threw: {}", suffix, e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Quality rank for audio file format selection — higher is better. Free accounts often have
+     * access to lower-bitrate formats even when higher ones are RESTRICTED.
+     */
+    private static int qualityRank(@NotNull Metadata.AudioFile.Format fmt) {
+        switch (fmt) {
+            case OGG_VORBIS_320: return 6;
+            case OGG_VORBIS_160: return 5;
+            case OGG_VORBIS_96:  return 4;
+            case MP3_320:        return 3;
+            case MP3_256:        return 2;
+            case MP3_160:        return 1;
+            default:             return 0;
         }
     }
 
