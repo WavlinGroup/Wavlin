@@ -37,6 +37,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "Wavlin"
 include(":app")
+include(":librespot")
 include(":innertube")
 include(":kugou")
 include(":lrclib")

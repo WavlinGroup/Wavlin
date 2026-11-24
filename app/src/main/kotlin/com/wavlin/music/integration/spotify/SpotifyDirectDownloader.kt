@@ -40,6 +40,9 @@ import java.io.File
  * Downloads a Spotify track as a local audio file and adds it to the library.
  *
  * Provider chain (tried in order, stops at first success):
+ *   0. librespot         — Spotify's own AP protocol (OGG Vorbis 320/160/96).
+ *                          Requires a valid Spotify access token and Premium account.
+ *                          Returns the EXACT original track — no YouTube approximation.
  *   1. lucida.to         — multi-service proxy; serves full MP3/FLAC from Deezer/Tidal.
  *                          No token required. Best coverage including slowed/reverb edits.
  *   2. Deezer via ISRC   — ISRC lookup → Deezer ID → loaderapp proxy full MP3.
@@ -76,7 +79,12 @@ object SpotifyDirectDownloader {
             try {
                 val audioUrl = resolveAudioUrl(client, trackId, track.title, track.artist, spotifyAccessToken)
                     ?: return@withContext null
+
+                // librespot returns a "librespot://<base62>/<tmpFilePath>" sentinel so we
+                // read the already-written temp file instead of making an HTTP request.
+                val isLibrespotResult = audioUrl.startsWith("librespot://")
                 val ext = when {
+                    isLibrespotResult -> "ogg"
                     audioUrl.contains(".mp3", ignoreCase = true)
                         || audioUrl.contains("mp3-preview")
                         || audioUrl.contains("sndcdn.com")
@@ -87,12 +95,22 @@ object SpotifyDirectDownloader {
                 }
                 val audioFile = File(musicDir, "$safeName.$ext")
                 if (!audioFile.exists() || audioFile.length() == 0L) {
-                    val bytes = client.get(audioUrl) {
-                        header("User-Agent", "Mozilla/5.0 (Linux; Android 10; Mobile)")
-                        header("Accept", "*/*")
-                    }.readBytes()
-                    if (bytes.isEmpty()) return@withContext null
-                    audioFile.writeBytes(bytes)
+                    if (isLibrespotResult) {
+                        // The temp file path is everything after "librespot://<trackId>"
+                        // e.g. "librespot://0VW.../tmp/librespot_0VW_xyz.ogg"
+                        val tmpPath = audioUrl.removePrefix("librespot://").substringAfter(trackId)
+                        val tmpFile = File(tmpPath)
+                        if (!tmpFile.exists() || tmpFile.length() == 0L) return@withContext null
+                        tmpFile.copyTo(audioFile, overwrite = true)
+                        tmpFile.delete()
+                    } else {
+                        val bytes = client.get(audioUrl) {
+                            header("User-Agent", "Mozilla/5.0 (Linux; Android 10; Mobile)")
+                            header("Accept", "*/*")
+                        }.readBytes()
+                        if (bytes.isEmpty()) return@withContext null
+                        audioFile.writeBytes(bytes)
+                    }
                 }
                 val song = LocalSongs.add(
                     context, database, Uri.fromFile(audioFile),
@@ -134,11 +152,26 @@ object SpotifyDirectDownloader {
         artist: String = "",
         spotifyAccessToken: String? = null,
     ): String? =
-        tryLucida(client, trackId)
+        (if (!spotifyAccessToken.isNullOrBlank()) tryLibrespot(trackId, spotifyAccessToken) else null)
+            ?: tryLucida(client, trackId)
             ?: tryDeezerViaIsrc(client, trackId, spotifyAccessToken)
             ?: tryApiSpotifydown(client, trackId)
             ?: tryLegacySpotifydown(client, trackId)
             ?: (if (title.isNotBlank() || artist.isNotBlank()) tryAudioFromSoundCloud(client, title, artist) else null)
+
+    // ── Provider 0: librespot (Spotify AP — full OGG, exact original track) ───
+    // Uses the access token from SpotifyAuth (sp_dc → web player token) to
+    // authenticate with Spotify's internal Access Point over TCP + Shannon cipher.
+    // Downloads the exact OGG Vorbis stream (up to 320 kbps). Requires Premium.
+    // On success, returns a "librespot://<trackId>/<tmpFilePath>" sentinel that
+    // downloadAsLocalSong() recognises and reads from disk instead of HTTP.
+    private suspend fun tryLibrespot(trackId: String, accessToken: String): String? =
+        runCatching {
+            val bytes = LibrespotDownloader.downloadOgg(trackId, accessToken) ?: return@runCatching null
+            val tmpFile = File.createTempFile("librespot_${trackId}_", ".ogg")
+            tmpFile.writeBytes(bytes)
+            "librespot://$trackId/${tmpFile.absolutePath}"
+        }.getOrNull()
 
     // ── Provider 1: lucida.to (multi-service proxy, full track, no token) ───
     // POST lucida.to/api/load → poll server for "completed" → download binary URL.
