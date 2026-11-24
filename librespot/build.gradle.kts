@@ -48,6 +48,10 @@ dependencies {
 
     // Protobuf lite (Android-friendly)
     api("com.google.protobuf:protobuf-javalite:3.25.2")
+    // JsonFormat for ProtobufToJson (works with lite runtime)
+    api("com.google.protobuf:protobuf-java-util:3.25.2") {
+        exclude(group = "com.google.protobuf", module = "protobuf-java")
+    }
 
     // HTTP client used by Session
     api("com.squareup.okhttp3:okhttp:4.12.0")

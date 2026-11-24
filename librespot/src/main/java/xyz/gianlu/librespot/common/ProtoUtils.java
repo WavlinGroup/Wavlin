@@ -20,7 +20,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.protobuf.ByteString;
-import com.google.protobuf.Descriptors;
+
 import com.spotify.connectstate.Player;
 import com.spotify.connectstate.Player.ContextPlayerOptions;
 import com.spotify.context.ContextOuterClass.Context;
@@ -35,7 +35,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.gianlu.librespot.metadata.PlayableId;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 import static com.spotify.context.ContextTrackOuterClass.ContextTrack;
@@ -49,12 +48,6 @@ public final class ProtoUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProtoUtils.class);
 
     private ProtoUtils() {
-    }
-
-    public static void overrideDefaultValue(@NotNull Descriptors.FieldDescriptor desc, Object newDefault) throws IllegalAccessException, NoSuchFieldException {
-        Field f = Descriptors.FieldDescriptor.class.getDeclaredField("defaultValue");
-        f.setAccessible(true);
-        f.set(desc, newDefault);
     }
 
     @NotNull
