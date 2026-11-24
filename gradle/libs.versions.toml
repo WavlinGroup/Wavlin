@@ -40,7 +40,7 @@ kuromojiIpadic = "0.9.0"
 extractor = "3cd3341"
 tinypinyin = "2.0.3"
 protobuf = "4.35.1"
-protobufPlugin = "1.0.0-rc-3"
+protobufPlugin = "0.10.1"
 
 [libraries]
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
