@@ -152,8 +152,7 @@ object SpotifyDirectDownloader {
         artist: String = "",
         spotifyAccessToken: String? = null,
     ): String? =
-        (if (!spotifyAccessToken.isNullOrBlank()) tryLibrespot(trackId, spotifyAccessToken) else null)
-            ?: tryLucida(client, trackId)
+        tryLucida(client, trackId)
             ?: tryDeezerViaIsrc(client, trackId, spotifyAccessToken)
             ?: tryApiSpotifydown(client, trackId)
             ?: tryLegacySpotifydown(client, trackId)
