@@ -1,5 +1,3 @@
-import com.google.protobuf.gradle.proto
-
 plugins {
     id("com.android.library")
     alias(libs.plugins.protobuf.gradle)
@@ -17,14 +15,6 @@ android {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
-    }
-
-    sourceSets {
-        getByName("main") {
-            proto {
-                srcDir("src/main/proto")
-            }
-        }
     }
 }
 
