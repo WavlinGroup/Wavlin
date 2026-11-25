@@ -99,6 +99,8 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.wavlin.music.ui.state.SpotifyViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -109,6 +111,7 @@ fun SearchScreen(
     val navController = LocalNavController.current
     val pinkLily = LocalPinkLilyTheme.current
     val database = LocalDatabase.current
+    val spotifyViewModel: SpotifyViewModel = hiltViewModel()
     val pauseListenHistory by rememberPreference(PauseListenHistoryKey, defaultValue = false)
     val eventCount by database.eventCount().collectAsStateWithLifecycle(initialValue = 0)
     val showHistoryButton =
@@ -303,8 +306,10 @@ fun SearchScreen(
                             }
                             return@launch
                         }
-                        // No YouTube match — try spotifydown proxy, then 30s preview.
-                        val added = SpotifyDirectDownloader.downloadAsLocalSong(context, database, track)
+                        // No YouTube match — try lucida/Deezer/spotifydown/SoundCloud/librespot.
+                        // Pass the access token so the librespot path (and ISRC-via-AP) are reachable.
+                        val token = spotifyViewModel.validAccessToken()
+                        val added = SpotifyDirectDownloader.downloadAsLocalSong(context, database, track, token)
                         withContext(Dispatchers.Main) {
                             if (added != null) {
                                 playerConnection?.playQueue(

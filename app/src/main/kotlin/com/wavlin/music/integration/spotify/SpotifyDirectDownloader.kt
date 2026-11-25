@@ -153,13 +153,23 @@ object SpotifyDirectDownloader {
         artist: String = "",
         spotifyAccessToken: String? = null,
         knownIsrc: String? = null,
-    ): String? =
-        tryLucida(client, trackId)
+    ): String? {
+        // When a Spotify access token is available, try librespot first — it is the most
+        // reliable source for tracks that aren't indexed on YouTube / lucida / Deezer.
+        // loadForFreeAccount() handles free-tier accounts by walking all storage-resolve
+        // paths and format tiers, so no Premium account is required.
+        val librespotResult = spotifyAccessToken
+            ?.takeIf { it.isNotBlank() }
+            ?.let { tryLibrespot(trackId, it) }
+        if (librespotResult != null) return librespotResult
+
+        // Fallback chain (token-free paths + Deezer ISRC which also uses the token for AP metadata).
+        return tryLucida(client, trackId)
             ?: tryDeezerViaIsrc(client, trackId, spotifyAccessToken, knownIsrc)
             ?: tryApiSpotifydown(client, trackId)
             ?: tryLegacySpotifydown(client, trackId)
             ?: (if (title.isNotBlank() || artist.isNotBlank()) tryAudioFromSoundCloud(client, title, artist) else null)
-            ?: spotifyAccessToken?.takeIf { it.isNotBlank() }?.let { tryLibrespot(trackId, it) }
+    }
 
     // ── Provider 0: librespot (Spotify AP — full OGG, exact original track) ───
     // Uses the access token from SpotifyAuth (sp_dc → web player token) to
