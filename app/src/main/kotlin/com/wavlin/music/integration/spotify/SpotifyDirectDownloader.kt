@@ -159,11 +159,15 @@ object SpotifyDirectDownloader {
             ?: tryApiSpotifydown(client, trackId)
             ?: tryLegacySpotifydown(client, trackId)
             ?: (if (title.isNotBlank() || artist.isNotBlank()) tryAudioFromSoundCloud(client, title, artist) else null)
+            ?: spotifyAccessToken?.takeIf { it.isNotBlank() }?.let { tryLibrespot(trackId, it) }
 
     // ── Provider 0: librespot (Spotify AP — full OGG, exact original track) ───
     // Uses the access token from SpotifyAuth (sp_dc → web player token) to
-    // authenticate with Spotify's internal Access Point over TCP + Shannon cipher.
-    // Downloads the exact OGG Vorbis stream (up to 320 kbps). Requires Premium.
+    // authenticate with Spotify's AP over TCP + Shannon cipher, then downloads
+    // the OGG Vorbis stream (up to 320 kbps). Called last in the chain because it
+    // downloads the full file before returning (unlike URL providers).
+    // Free accounts: PlayableContentFeeder.loadForFreeAccount() probes four
+    // storage-resolve paths + all file format tiers before giving up.
     // On success, returns a "librespot://<trackId>/<tmpFilePath>" sentinel that
     // downloadAsLocalSong() recognises and reads from disk instead of HTTP.
     private suspend fun tryLibrespot(trackId: String, accessToken: String): String? =
