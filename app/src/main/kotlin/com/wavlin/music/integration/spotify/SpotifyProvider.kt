@@ -27,6 +27,12 @@ data class SpotifyTrack(
     val durationSeconds: Int,
     val url: String?,
     val coverUrl: String? = null,
+    /**
+     * ISRC carried from [SpotifyWebTrack.isrc] when the track came through the signed-in
+     * library flow. Null for tracks resolved via the keyless embed/provider path.
+     * When non-null, the download chain uses it directly and skips all ISRC lookup.
+     */
+    val isrc: String? = null,
 )
 
 sealed interface SpotifyResult {

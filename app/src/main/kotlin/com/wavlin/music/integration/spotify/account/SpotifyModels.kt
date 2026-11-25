@@ -64,6 +64,15 @@ data class SpotifyWebTrack(
     val durationMs: Int = 0,
     val explicit: Boolean = false,
     val uri: String? = null,
+    /**
+     * ISRC (International Standard Recording Code), parsed from the `externalId` field in the
+     * Spotify partner GraphQL API response. Available on tracks fetched through [SpotifyClient];
+     * null for tracks constructed from other sources (e.g. keyless embed page).
+     *
+     * When non-null this is threaded through to [SpotifyTrack.isrc] and used as the primary
+     * ISRC source in the download chain, bypassing any need for the public Web API.
+     */
+    val isrc: String? = null,
 )
 
 @Immutable
@@ -114,5 +123,6 @@ fun SpotifyWebTrack.toImportTrack(): SpotifyTrack {
         durationSeconds = durationMs / 1000,
         url = if (id.isNotEmpty()) "https://open.spotify.com/track/$id" else null,
         coverUrl = thumbnailUrl(),
+        isrc = isrc,
     )
 }

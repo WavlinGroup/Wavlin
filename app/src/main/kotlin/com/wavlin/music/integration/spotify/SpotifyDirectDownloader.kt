@@ -45,7 +45,8 @@ import java.io.File
  *                          Returns the EXACT original track — no YouTube approximation.
  *   1. lucida.to         — multi-service proxy; serves full MP3/FLAC from Deezer/Tidal.
  *                          No token required. Best coverage including slowed/reverb edits.
- *   2. Deezer via ISRC   — ISRC lookup → Deezer ID → loaderapp proxy full MP3.
+ *   2. Deezer via ISRC   — ISRC lookup (partner GQL / librespot AP / spotifydown / page scrape;
+ *                          no Spotify developer client_id required) → Deezer ID → loaderapp MP3.
  *   3. api.spotifydown.com — third-party proxy (sources from YouTube).
  *   4. spotifydown.com   — legacy API fallback (sources from YouTube).
  *   5. SoundCloud search — full-length stream; covers indie/niche tracks.
@@ -77,7 +78,7 @@ object SpotifyDirectDownloader {
                 expectSuccess = false
             }
             try {
-                val audioUrl = resolveAudioUrl(client, trackId, track.title, track.artist, spotifyAccessToken)
+                val audioUrl = resolveAudioUrl(client, trackId, track.title, track.artist, spotifyAccessToken, track.isrc)
                     ?: return@withContext null
 
                 // librespot returns a "librespot://<base62>/<tmpFilePath>" sentinel so we
@@ -151,9 +152,10 @@ object SpotifyDirectDownloader {
         title: String = "",
         artist: String = "",
         spotifyAccessToken: String? = null,
+        knownIsrc: String? = null,
     ): String? =
         tryLucida(client, trackId)
-            ?: tryDeezerViaIsrc(client, trackId, spotifyAccessToken)
+            ?: tryDeezerViaIsrc(client, trackId, spotifyAccessToken, knownIsrc)
             ?: tryApiSpotifydown(client, trackId)
             ?: tryLegacySpotifydown(client, trackId)
             ?: (if (title.isNotBlank() || artist.isNotBlank()) tryAudioFromSoundCloud(client, title, artist) else null)
@@ -217,9 +219,11 @@ object SpotifyDirectDownloader {
 
     // ── Provider 2: Deezer full track via ISRC ──────────────────────────────
     // ISRC sources (tried in order, stops at first hit):
-    //   A1) api.spotifydown.com/metadata/{id}    — no token, returns isrc directly
-    //   A2) open.spotify.com/track/{id}           — canonical page __NEXT_DATA__, no token
-    //   A3) api.spotify.com/v1/tracks/{id}        — OAuth fallback when token supplied
+    //   A0) knownIsrc (from SpotifyWebTrack.isrc populated by partner GQL)  — zero extra calls
+    //   A1) LibrespotDownloader.resolveIsrc — AP metadata protobuf, no developer client_id needed
+    //   A2) api.spotifydown.com/metadata/{id}    — no token
+    //   A3) open.spotify.com/track/{id}          — __NEXT_DATA__ page scrape, no token
+    //   (api.spotify.com/v1 removed — requires registered developer app since Nov 2024)
     // Then:
     //   B) api.deezer.com/track/isrc:{isrc} → Deezer track id
     //   C) dz.loaderapp.info → full unencrypted MP3 (128 kbps)
@@ -227,23 +231,18 @@ object SpotifyDirectDownloader {
         client: HttpClient,
         trackId: String,
         accessToken: String? = null,
+        knownIsrc: String? = null,
     ): String? = runCatching {
-        // A1 — ISRC from spotifydown metadata (no token required)
-        val isrc = findIsrcViaSpotifydown(client, trackId)
-            // A2 — ISRC from canonical open.spotify.com page __NEXT_DATA__
-            ?: findIsrcViaOpenPage(client, trackId)
-            // A3 — ISRC from Web API OAuth fallback
+        // A0 — pre-computed ISRC from the partner GraphQL response (zero extra network calls)
+        val isrc = knownIsrc?.takeIf { it.isNotBlank() }
+            // A1 — librespot AP metadata protobuf (no developer client_id; works with sp_dc token)
             ?: accessToken?.takeIf { it.isNotBlank() }?.let { token ->
-                runCatching {
-                    val resp = client.get("https://api.spotify.com/v1/tracks/$trackId") {
-                        header("Authorization", "Bearer $token")
-                        header("User-Agent", USER_AGENT)
-                    }
-                    if (resp.status.value !in 200..299) return@runCatching null
-                    val root = json.parseToJsonElement(resp.bodyAsText()).jsonObject
-                    root["external_ids"]?.jsonObject?.get("isrc")?.jsonPrimitive?.contentOrNull
-                }.getOrNull()
+                LibrespotDownloader.resolveIsrc(trackId, token)
             }
+            // A2 — spotifydown metadata endpoint (no token required)
+            ?: findIsrcViaSpotifydown(client, trackId)
+            // A3 — open.spotify.com page __NEXT_DATA__ scrape (no token required)
+            ?: findIsrcViaOpenPage(client, trackId)
             ?: return@runCatching null
 
         // B — Deezer track ID via ISRC

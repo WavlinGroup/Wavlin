@@ -211,6 +211,23 @@ object SpotifyClient {
         val uri = uriOverride ?: track.str("uri") ?: track.str("_uri").orEmpty()
         val albumData = track.obj("albumOfTrack")
         val albumUri = albumData?.str("uri").orEmpty()
+
+        // The partner API returns ISRC in one of two shapes depending on the operation:
+        //   • { "externalId": {"id": "GBMAD1200071", "type": "isrc"} }   (fetchPlaylist / fetchLibraryTracks)
+        //   • { "externalId": {"isrc": "GBMAD1200071"} }                 (some query variants)
+        // Both are tried; this needs no developer client_id — it's already present in the
+        // partner GraphQL response we fetch for the library.
+        val externalId = track.obj("externalId")
+        val isrc: String? = externalId?.let { ext ->
+            val type = ext.str("type")
+            when {
+                // shape 1: type/id pair
+                type == "isrc" -> ext.str("id")
+                // shape 2: flat isrc key
+                else -> ext.str("isrc")
+            }
+        }?.takeIf { it.isNotBlank() }
+
         return SpotifyWebTrack(
             id = uri.substringAfterLast(":"),
             name = track.str("name").orEmpty(),
@@ -225,6 +242,7 @@ object SpotifyClient {
             durationMs = parseDurationMs(track),
             explicit = track.obj("contentRating")?.str("label") == "EXPLICIT",
             uri = uri.ifEmpty { null },
+            isrc = isrc,
         )
     }
 

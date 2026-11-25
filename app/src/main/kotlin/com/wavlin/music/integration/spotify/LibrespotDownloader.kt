@@ -24,6 +24,51 @@ object LibrespotDownloader {
 
     private const val TAG = "LibrespotDownloader"
 
+    /**
+     * Opens an authenticated librespot Session using the web-player Bearer token.
+     * No developer client_id or Premium account is required for session creation itself —
+     * restrictions are enforced later at the storage-resolve / audio-key level.
+     */
+    private fun buildSession(accessToken: String): Session {
+        val credentials = Authentication.LoginCredentials.newBuilder()
+            .setUsername("")
+            .setTyp(Authentication.AuthenticationType.AUTHENTICATION_SPOTIFY_TOKEN)
+            .setAuthData(ByteString.copyFromUtf8(accessToken))
+            .build()
+        val conf = Session.Configuration.Builder()
+            .setStoreCredentials(false)
+            .build()
+        return Session.Builder(conf)
+            .credentials(credentials)
+            .create()
+    }
+
+    /**
+     * Resolves the ISRC for a track via the librespot AP metadata endpoint.
+     *
+     * Builds a session (no audio streaming), calls getMetadata4Track over the Shannon-encrypted
+     * AP channel, then extracts the type=isrc entry from the protobuf ExternalId list.
+     *
+     * No Spotify developer client_id is required — only a valid web-player access token from
+     * SpotifyAuth. Free accounts work. Returns null on any failure.
+     */
+    suspend fun resolveIsrc(trackId: String, accessToken: String): String? =
+        runCatching {
+            withContext(Dispatchers.IO) {
+                val session = buildSession(accessToken)
+                val meta = session.api().getMetadata4Track(
+                    xyz.gianlu.librespot.metadata.TrackId.fromBase62(trackId)
+                )
+                meta.externalIdList
+                    .firstOrNull { it.type.equals("isrc", ignoreCase = true) }
+                    ?.id
+                    ?.takeIf { it.isNotBlank() }
+            }
+        }.getOrElse { e ->
+            Timber.tag(TAG).w("ISRC resolve via librespot AP failed for $trackId: ${e.message}")
+            null
+        }
+
     suspend fun downloadOgg(
         trackId: String,
         accessToken: String,
@@ -35,22 +80,8 @@ object LibrespotDownloader {
 
         var session: Session? = null
         try {
-            val credentials = Authentication.LoginCredentials.newBuilder()
-                .setUsername("")
-                .setTyp(Authentication.AuthenticationType.AUTHENTICATION_SPOTIFY_TOKEN)
-                .setAuthData(ByteString.copyFromUtf8(accessToken))
-                .build()
-
-            val conf = Session.Configuration.Builder()
-                .setStoreCredentials(false)
-                .build()
-
             Timber.tag(TAG).d("Building librespot session for track $trackId")
-
-            session = Session.Builder(conf)
-                .credentials(credentials)
-                .create()
-
+            session = buildSession(accessToken)
             Timber.tag(TAG).d("Session created, authenticated as ${session.username()}")
 
             val id = TrackId.fromBase62(trackId)
