@@ -296,7 +296,7 @@ fun SearchScreen(
                 isDownloadingSpotify = true
                 coroutineScope.launch(Dispatchers.IO) {
                     try {
-                        // Re-try YouTube Music match (initial attempt may have timed out).
+                        // Re-try YouTube Music song match (initial attempt may have timed out).
                         val ytMatch = SpotifyMatcher.match(track)
                         if (ytMatch != null) {
                             withContext(Dispatchers.Main) {
@@ -306,8 +306,22 @@ fun SearchScreen(
                             }
                             return@launch
                         }
-                        // No YouTube match — try lucida/Deezer/spotifydown/SoundCloud/librespot.
-                        // Pass the access token so the librespot path (and ISRC-via-AP) are reachable.
+                        // YouTube Music has no match — try plain YouTube video search as a second
+                        // path before going to the download providers. Some niche tracks exist as
+                        // videos but are absent from the YouTube Music index.
+                        val ytVideoId = SpotifyMatcher.matchVideoId(
+                            track.title, track.artist, track.durationSeconds,
+                        )
+                        if (ytVideoId != null) {
+                            withContext(Dispatchers.Main) {
+                                playerConnection?.playQueue(YouTubeQueue(WatchEndpoint(videoId = ytVideoId)))
+                                spotifyUnmatched = null
+                                isDownloadingSpotify = false
+                            }
+                            return@launch
+                        }
+                        // No YouTube match anywhere — download directly from Spotify/proxies.
+                        // Pass the access token so librespot (and ISRC-via-AP) are reachable.
                         val token = spotifyViewModel.validAccessToken()
                         val added = SpotifyDirectDownloader.downloadAsLocalSong(context, database, track, token)
                         withContext(Dispatchers.Main) {
@@ -318,7 +332,11 @@ fun SearchScreen(
                                 downloadedMetadata = added
                                 spotifyUnmatched = null
                             } else {
-                                Toast.makeText(context, "Download failed — no source returned audio", Toast.LENGTH_SHORT).show()
+                                val msg = if (token == null)
+                                    "Sign in to Spotify in Settings to download this track"
+                                else
+                                    "Download failed — no source returned audio"
+                                Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
                             }
                             isDownloadingSpotify = false
                         }

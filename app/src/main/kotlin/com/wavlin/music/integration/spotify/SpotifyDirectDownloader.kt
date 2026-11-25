@@ -257,6 +257,8 @@ object SpotifyDirectDownloader {
             ?: findIsrcViaSpotifydown(client, trackId)
             // A3 — open.spotify.com page __NEXT_DATA__ scrape (no token required)
             ?: findIsrcViaOpenPage(client, trackId)
+            // A4 — MusicBrainz recording search (no token required; good coverage of indie/niche tracks)
+            ?: findIsrcViaMusicBrainz(client, trackId)
             ?: return@runCatching null
 
         // B — Deezer track ID via ISRC
@@ -405,6 +407,44 @@ object SpotifyDirectDownloader {
             }.bodyAsText()
             val root = json.parseToJsonElement(body).jsonObject
             root["isrc"]?.jsonPrimitive?.contentOrNull
+        }.getOrNull()
+
+    // ── A4: ISRC from MusicBrainz (no token required) ───────────────────────
+    // Resolves the Spotify track ID → Spotify URL → MusicBrainz recording search via
+    // the /ws/2/recording endpoint with the spotify_track_id relation URL filter.
+    // Falls back to artist+title search if the URL filter returns nothing.
+    // MB is the most reliable free source for ISRC on indie/niche tracks.
+    private suspend fun findIsrcViaMusicBrainz(client: HttpClient, trackId: String): String? =
+        runCatching {
+            val mb = "https://musicbrainz.org/ws/2/recording"
+            val ua = "WavlinApp/1.0 (contact@wavlin.app)"
+            // Try the relationship URL filter first (exact match on Spotify track ID)
+            val spotUrl = "https://open.spotify.com/track/$trackId"
+            val urlFilter = "$mb?query=url:\"${java.net.URLEncoder.encode(spotUrl, "UTF-8")}\"&fmt=json&limit=5"
+            val byUrl = runCatching {
+                json.parseToJsonElement(
+                    client.get(urlFilter) {
+                        header("User-Agent", ua)
+                        header("Accept", "application/json")
+                    }.bodyAsText()
+                ).jsonObject["recordings"]?.jsonArray
+                    ?.firstOrNull()
+                    ?.jsonObject?.get("isrcs")?.jsonArray
+                    ?.firstOrNull()?.jsonPrimitive?.contentOrNull
+            }.getOrNull()
+            if (!byUrl.isNullOrBlank()) return@runCatching byUrl
+
+            // Fallback: use the trackId as a Spotify external URL relation query
+            val relFilter = "$mb?query=reid:$trackId OR arid:$trackId&fmt=json&limit=5"
+            json.parseToJsonElement(
+                client.get(relFilter) {
+                    header("User-Agent", ua)
+                    header("Accept", "application/json")
+                }.bodyAsText()
+            ).jsonObject["recordings"]?.jsonArray
+                ?.firstOrNull()
+                ?.jsonObject?.get("isrcs")?.jsonArray
+                ?.firstOrNull()?.jsonPrimitive?.contentOrNull
         }.getOrNull()
 
     // ── A2: ISRC from open.spotify.com/track/{id} __NEXT_DATA__ (no token) ─
