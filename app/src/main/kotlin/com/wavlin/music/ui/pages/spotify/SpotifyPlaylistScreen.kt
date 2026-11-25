@@ -90,6 +90,7 @@ import com.wavlin.music.LocalDatabase
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
+import com.wavlin.music.integration.spotify.SpotifyDirectDownloader
 import com.wavlin.music.integration.spotify.SpotifyImporter
 import com.wavlin.music.integration.spotify.account.thumbnailUrl
 import com.wavlin.music.integration.spotify.account.toImportTrack
@@ -122,30 +123,54 @@ fun SpotifyPlaylistScreen(
     val downloads by downloadUtil.downloads.collectAsStateWithLifecycle()
     val trackToSong by com.wavlin.music.integration.spotify.SpotifyDownloadStore.trackToSong.collectAsStateWithLifecycle()
 
-    // Finds the YouTube Music match for each picked song, saves it and starts its download
+    // Downloads each picked song. First tries to match on YouTube Music (ExoPlayer download).
+    // When YouTube Music has no match, falls back to SpotifyDirectDownloader which tries
+    // librespot → lucida.to → Deezer/ISRC → spotifydown.com → SoundCloud in order.
     fun startDownload(picked: List<com.wavlin.music.integration.spotify.account.SpotifyWebTrack>, format: SpotifyDownloadFormat = SpotifyDownloadFormat.OPUS) {
         if (picked.isEmpty()) return
         Toast.makeText(context, context.getString(R.string.spotify_download_preparing), Toast.LENGTH_SHORT).show()
         scope.launch {
+            // Grab a fresh Spotify access token once for the whole batch so librespot
+            // and other CDN providers can use it without re-authenticating per track.
+            val spotifyToken = viewModel.validAccessToken()
             var started = 0
             picked.chunked(5).forEach { chunk ->
                 val matches = coroutineScope { chunk.map { async { SpotifyPlayback.resolve(it) } }.awaitAll() }
                 chunk.zip(matches).forEach { (spotifyTrack, metadata) ->
-                    if (metadata == null) return@forEach
-                    withContext(Dispatchers.IO) { database.query { insert(metadata) } }
-                    // Stays with this Spotify playlist: kept out of the Downloaded library, shown with a check here
-                    com.wavlin.music.integration.spotify.SpotifyDownloadStore.record(context, spotifyTrack.id, metadata.id)
-                    // Encode "<title>|<format>" so ExoDownloadService can honour the
-                    // chosen container format when transcoding support is added later.
-                    val requestData = "${metadata.title}|${format.name}".toByteArray()
-                    val request =
-                        DownloadRequest
-                            .Builder(metadata.id, metadata.id.toUri())
-                            .setCustomCacheKey(metadata.id)
-                            .setData(requestData)
-                            .build()
-                    DownloadService.sendAddDownload(context, ExoDownloadService::class.java, request, false)
-                    started++
+                    if (metadata != null) {
+                        // YouTube Music match found — queue through ExoDownloadService as before.
+                        withContext(Dispatchers.IO) { database.query { insert(metadata) } }
+                        // Stays with this Spotify playlist: kept out of the Downloaded library, shown with a check here
+                        com.wavlin.music.integration.spotify.SpotifyDownloadStore.record(context, spotifyTrack.id, metadata.id)
+                        // Encode "<title>|<format>" so ExoDownloadService can honour the
+                        // chosen container format when transcoding support is added later.
+                        val requestData = "${metadata.title}|${format.name}".toByteArray()
+                        val request =
+                            DownloadRequest
+                                .Builder(metadata.id, metadata.id.toUri())
+                                .setCustomCacheKey(metadata.id)
+                                .setData(requestData)
+                                .build()
+                        DownloadService.sendAddDownload(context, ExoDownloadService::class.java, request, false)
+                        started++
+                    } else {
+                        // No YouTube Music match — download directly from Spotify via the
+                        // 5-provider chain (librespot → lucida.to → Deezer → spotifydown → SoundCloud).
+                        val localSong = withContext(Dispatchers.IO) {
+                            SpotifyDirectDownloader.downloadAsLocalSong(
+                                context = context,
+                                database = database,
+                                track = spotifyTrack.toImportTrack(),
+                                spotifyAccessToken = spotifyToken,
+                            )
+                        }
+                        if (localSong != null) {
+                            // downloadAsLocalSong already adds the file to the local library;
+                            // just record it so the playlist screen can show the check mark.
+                            com.wavlin.music.integration.spotify.SpotifyDownloadStore.record(context, spotifyTrack.id, localSong.id)
+                            started++
+                        }
+                    }
                 }
             }
             val message =
