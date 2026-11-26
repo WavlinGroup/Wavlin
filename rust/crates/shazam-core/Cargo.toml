@@ -1,0 +1,9 @@
+[package]
+name = "shazam-core"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+description = "Wavlin Shazam core: signature generation and linear resampling ported from ShazamSignatureGenerator.kt and AudioResampler.kt"
+
+[lib]
+crate-type = ["rlib"]

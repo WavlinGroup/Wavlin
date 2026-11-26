@@ -54,6 +54,17 @@ object AudioResampler {
         try {
             Timber.tag(TAG).d("Resampling: %dHz → %dHz, %d bytes input", decodedAudio.sampleRate, outputSampleRate, decodedAudio.data.size)
 
+            // Native code is used only after it has produced the same bytes as the loop below on this device.
+            NativeShazam.trustedResample(decodedAudio.data, decodedAudio.sampleRate, outputSampleRate)?.let { nativeData ->
+                Timber.tag(TAG).d("Resampling complete (native): %d bytes output, %dHz, %d channels", nativeData.size, outputSampleRate, decodedAudio.channelCount)
+                return@withContext Result.success(DecodedAudio(
+                    data = nativeData,
+                    channelCount = decodedAudio.channelCount,
+                    sampleRate = outputSampleRate,
+                    pcmEncoding = decodedAudio.pcmEncoding,
+                ))
+            }
+
             val inputSamples = shortArrayFromByteArray(decodedAudio.data)
             val ratio = outputSampleRate.toDouble() / decodedAudio.sampleRate
             val outputLength = (inputSamples.size * ratio).toInt()
@@ -73,6 +84,9 @@ object AudioResampler {
             }
 
             val resampledData = byteArrayFromShortArray(outputSamples)
+            if (NativeShazam.needsResampleCheck) {
+                NativeShazam.verifyResample(decodedAudio.data, decodedAudio.sampleRate, outputSampleRate, resampledData)
+            }
             Timber.tag(TAG).d("Resampling complete: %d bytes output, %dHz, %d channels", resampledData.size, outputSampleRate, decodedAudio.channelCount)
 
             Result.success(DecodedAudio(

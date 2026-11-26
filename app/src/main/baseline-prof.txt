@@ -1,0 +1,6 @@
+HSPLcom/wavlin/music/App**->**(**)**
+HSPLcom/wavlin/music/MainActivity**->**(**)**
+HSPLcom/wavlin/music/ui/pages/home/**->**(**)**
+HSPLcom/wavlin/music/ui/nowplaying/**->**(**)**
+HSPLcom/wavlin/music/ui/kit/**->**(**)**
+HSPLcom/wavlin/music/ui/style/**->**(**)**

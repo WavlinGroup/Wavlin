@@ -25,6 +25,7 @@ dependencies = [
  "lyrics-core",
  "player-config-core",
  "queue-core",
+ "shazam-core",
 ]
 
 [[package]]
@@ -244,6 +245,10 @@ dependencies = [
  "serde_core",
  "zmij",
 ]
+
+[[package]]
+name = "shazam-core"
+version = "0.1.0"
 
 [[package]]
 name = "syn"

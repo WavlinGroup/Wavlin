@@ -177,6 +177,9 @@
 -keepclassmembers class com.wavlin.music.integration.identify.VibraSignature {
     native <methods>;
 }
+-keepclassmembers class com.wavlin.music.integration.identify.NativeShazam {
+    native <methods>;
+}
 
 ## Kotlin Reflection Fix
 -keep class kotlin.Metadata { *; }
