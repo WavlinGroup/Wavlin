@@ -43,6 +43,22 @@ class WordTimingEstimatorTest {
     }
 
     @Test
+    fun slowLineInShortGapIsSlowedInsteadOfRushed() {
+        val fitted = WordTimingEstimator.estimateLine("There will always be space", 0, 6_000, 6.0)
+        val songWide = WordTimingEstimator.estimateLine("There will always be space", 0, 8_000, 6.0)
+        assertTrue(fitted[2].endTime > songWide[2].endTime)
+        assertTrue(fitted.last().endTime <= 6.0 + eps)
+    }
+
+    @Test
+    fun stretchIsLimitedSoBreaksStayQuiet() {
+        val normal = WordTimingEstimator.estimateLine("Hello you", 0, 20_000)
+        val shortGap = WordTimingEstimator.estimateLine("Hello you", 0, 6_000)
+        assertTrue(shortGap.last().endTime <= normal.last().endTime + 2.0)
+        assertTrue(shortGap.last().endTime <= 6.0 + eps)
+    }
+
+    @Test
     fun heldLastWordIsCapped() {
         val words = WordTimingEstimator.estimateLine("Hello you", 0, 60_000)
         assertTrue(words.last().endTime < 4.0)

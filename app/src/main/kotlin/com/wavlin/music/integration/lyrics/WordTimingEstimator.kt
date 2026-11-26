@@ -12,8 +12,9 @@ package com.wavlin.music.integration.lyrics
  * 1. Each word gets a weight in syllables, because singing follows syllables, not letters.
  * 2. The singing speed (syllables per second) is learned per song from its own lines, using the
  *    dense lines that have little room for held notes.
- * 3. Words move at that speed from the line start. Room left before the next line is not spread
- *    over the words: most of it goes to a held last word, the rest stays silent.
+ * 3. Words move at that speed from the line start. When the gap to the next line is short enough
+ *    to be one sung phrase, the line is slowed to fill most of that gap, so a slow line is not
+ *    swept early by the song-wide speed. Room still left goes mostly to a held last word.
  *
  * The result is an estimate, not real word sync. Lines that already carry word timings are left
  * untouched. Pure Kotlin, no Android dependencies. All constants are untuned heuristics.
@@ -31,6 +32,10 @@ object WordTimingEstimator {
 
     /** Dense lines have the least slack, so a high percentile approximates the real speed. */
     private const val SPEED_PERCENTILE = 0.75
+
+    /** Share of a short gap that the sung words fill, and how far a line may slow down to do it. */
+    private const val LINE_FILL_SHARE = 0.9
+    private const val MAX_LINE_STRETCH = 2.0
 
     /** Share of the leftover room given to the held last word, and its upper bound. */
     private const val HOLD_SHARE = 0.6
@@ -106,7 +111,7 @@ object WordTimingEstimator {
         val timedSyllables = tokens.sumOf { it.syllables } + tokens.dropLast(1).sumOf { it.pauseSyllables }
         val bodySeconds = timedSyllables / syllablesPerSecond
         val availableSeconds = nextStartMs?.let { (it - startMs) / 1000.0 }
-        val sungSeconds = if (availableSeconds != null) minOf(bodySeconds, availableSeconds) else bodySeconds
+        val sungSeconds = sungSeconds(bodySeconds, timedSyllables, availableSeconds)
         val secondsPerSyllable = sungSeconds / timedSyllables
 
         val holdSeconds = if (availableSeconds != null) {
@@ -123,6 +128,20 @@ object WordTimingEstimator {
             if (index == tokens.lastIndex) end += holdSeconds
             WordTimestamp(token.text, start, end, token.hasTrailingSpace)
         }
+    }
+
+    /**
+     * Time the words sweep over. A line that does not fit its gap is compressed to it. A line in a
+     * short gap is slowed toward the gap, limited by [MAX_LINE_STRETCH] and the slowest believable
+     * speed, so one fast song-wide speed cannot rush the words of a slow line. Long gaps are breaks
+     * and keep the song-wide speed.
+     */
+    private fun sungSeconds(bodySeconds: Double, timedSyllables: Double, availableSeconds: Double?): Double {
+        if (availableSeconds == null) return bodySeconds
+        if (availableSeconds <= bodySeconds) return availableSeconds
+        if (availableSeconds > MAX_SAMPLE_GAP_SECONDS) return bodySeconds
+        val stretchLimit = minOf(bodySeconds * MAX_LINE_STRETCH, timedSyllables / MIN_SYLLABLES_PER_SECOND)
+        return maxOf(bodySeconds, minOf(availableSeconds * LINE_FILL_SHARE, stretchLimit))
     }
 
     private fun tokenize(text: String): List<Token> {
