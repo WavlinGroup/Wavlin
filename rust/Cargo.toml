@@ -7,6 +7,7 @@ members = [
     "crates/lyrics-core",
     "crates/player-config-core",
     "crates/queue-core",
+    "crates/shazam-core",
 ]
 
 [workspace.package]

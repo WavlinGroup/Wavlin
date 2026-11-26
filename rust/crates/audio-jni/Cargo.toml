@@ -3,7 +3,7 @@ name = "audio-jni"
 version.workspace = true
 edition.workspace = true
 publish.workspace = true
-description = "JNI bridge exposing audio-dsp, lyrics-core, cipher-core, queue-core and player-config-core to the Wavlin Android app as libwavlin_audio.so"
+description = "JNI bridge exposing audio-dsp, lyrics-core, cipher-core, queue-core, player-config-core and shazam-core to the Wavlin Android app as libwavlin_audio.so"
 
 [lib]
 name = "wavlin_audio"
@@ -15,4 +15,5 @@ lyrics-core = { path = "../lyrics-core" }
 cipher-core = { path = "../cipher-core" }
 queue-core = { path = "../queue-core" }
 player-config-core = { path = "../player-config-core" }
+shazam-core = { path = "../shazam-core" }
 jni = "0.21"
