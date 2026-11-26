@@ -57,7 +57,10 @@ import com.wavlin.music.LocalNavController
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
+import com.wavlin.music.core.ext.toMediaItem
+import com.wavlin.music.media.queue.ListQueue
 import com.wavlin.music.media.queue.YouTubeQueue
+import com.wavlin.music.integration.spotify.SpotifyDirectDownloader
 import com.wavlin.music.integration.spotify.SpotifyImporter
 import com.wavlin.music.integration.spotify.SpotifyMatcher
 import com.wavlin.music.integration.spotify.SpotifyProvider
@@ -67,6 +70,7 @@ import com.wavlin.music.ui.kit.GlassDialog
 import com.wavlin.music.ui.kit.GlassIconButton
 import com.wavlin.music.ui.pages.search.SpotifyPlaylistPreviewDialog
 import com.wavlin.music.ui.pages.search.SpotifyTrackDialog
+import com.wavlin.music.ui.pages.search.SpotifyUnmatchedDialog
 import com.wavlin.music.core.util.SearchRoutes
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -115,12 +119,15 @@ fun SpotifyImportFlow(onDismiss: () -> Unit) {
     var loading by remember { mutableStateOf(false) }
     var collection by remember { mutableStateOf<SpotifyResult.Tracks?>(null) }
     var trackMatch by remember { mutableStateOf<Pair<SpotifyTrack, SongItem>?>(null) }
+    var unmatchedTrack by remember { mutableStateOf<SpotifyTrack?>(null) }
+    var isDownloadingTrack by remember { mutableStateOf(false) }
 
-    val notFoundMsg = stringResource(R.string.spotify_flow_not_found)
     val errorMsg = stringResource(R.string.spotify_flow_error)
+    val noMatchMsg = stringResource(R.string.spotify_no_match)
 
     val pendingCollection = collection
     val pendingTrack = trackMatch
+    val pendingUnmatched = unmatchedTrack
     when {
         pendingCollection != null ->
             SpotifyPlaylistPreviewDialog(
@@ -129,6 +136,7 @@ fun SpotifyImportFlow(onDismiss: () -> Unit) {
                 onImport = { finalName, matched, download ->
                     SpotifyImporter.start(context, database, finalName, pendingCollection.tracks, matched, download)
                 },
+                onMissingClick = { unmatchedTrack = it },
             )
 
         pendingTrack != null ->
@@ -139,6 +147,46 @@ fun SpotifyImportFlow(onDismiss: () -> Unit) {
                     playerConnection?.playQueue(YouTubeQueue(WatchEndpoint(videoId = pendingTrack.second.id)))
                 },
                 onSearch = { navController.navigate(SearchRoutes.resultRoute(pendingTrack.first.query)) },
+                onDismiss = onDismiss,
+            )
+
+        // Not on YouTube Music: same fallback as the search bar's "paste a Spotify link" flow —
+        // grab it straight from Spotify (spotifydown) and save it as a local song, or open Spotify / search instead.
+        pendingUnmatched != null ->
+            SpotifyUnmatchedDialog(
+                track = pendingUnmatched,
+                onSearch = { navController.navigate(SearchRoutes.resultRoute(pendingUnmatched.query)) },
+                onOpenSpotify = {
+                    pendingUnmatched.url?.let { spotifyLink ->
+                        try {
+                            context.startActivity(
+                                android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(spotifyLink))
+                                    .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK),
+                            )
+                        } catch (e: Exception) {
+                            Toast.makeText(context, "No app to open the link", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                },
+                onDownload = {
+                    if (isDownloadingTrack) return@SpotifyUnmatchedDialog
+                    isDownloadingTrack = true
+                    scope.launch {
+                        val song =
+                            withContext(Dispatchers.IO) {
+                                SpotifyDirectDownloader.downloadAsLocalSong(context, database, pendingUnmatched)
+                            }
+                        isDownloadingTrack = false
+                        if (song != null) {
+                            playerConnection?.playQueue(ListQueue(title = song.title, items = listOf(song.toMediaItem())))
+                            unmatchedTrack = null
+                            onDismiss()
+                        } else {
+                            Toast.makeText(context, noMatchMsg, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                },
+                isDownloading = isDownloadingTrack,
                 onDismiss = onDismiss,
             )
 
@@ -156,7 +204,7 @@ fun SpotifyImportFlow(onDismiss: () -> Unit) {
                                     if (match != null) {
                                         trackMatch = result.track to match
                                     } else {
-                                        Toast.makeText(context, notFoundMsg, Toast.LENGTH_SHORT).show()
+                                        unmatchedTrack = result.track
                                     }
                                 }
                             }
