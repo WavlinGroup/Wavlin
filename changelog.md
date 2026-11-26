@@ -1,3 +1,21 @@
+---v1.0.1
+# Fixes
+- Discord sign-in now shows the real error instead of a generic timeout, and uses the Wavlin Discord app by default
+- Import from Spotify now falls back to Spotify download when a track can't be played normally
+- Shared tracks keep their own metadata, so the person you send to gets the same version you picked
+- Share links now open through the Wavlin site
+
+# Smoother UI
+- The glass menu in the player slides up and down more smoothly
+- Less stutter when scrolling Home and long lists
+- Home speed dial fits its items and the top bar is shorter
+- Material 3 bubbles have a pink glass fill
+
+# Under the hood
+- Reverb, EQ, Dolby Atmos, volume normalization, shuffle, lyrics parsing and player config parsing now run in Rust, with the old Kotlin code as backup
+- Reverb visualizer, EQ graph and Wrapped background are drawn with Flutter, with Compose as backup
+- Source folders reorganized
+
 ---v13.6.1
 # THE FUTURE OF WAVLIN
 The new Kotlin Multiplatform version of Wavlin is now in a good state, and we are aiming to release it within the next month. Until then, the current app will remain in maintenance mode and receive bug fixes and minor improvements.

@@ -158,8 +158,8 @@ android {
         applicationId = applicationIdOverride ?: baseApplicationId
         minSdk = 26
         targetSdk = 36
-        versionCode = 150
-        versionName = "1.0.0"
+        versionCode = 151
+        versionName = "1.0.1"
         resValue("string", "app_name", appNameOverride ?: "Wavlin")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
