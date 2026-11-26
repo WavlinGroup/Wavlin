@@ -3,6 +3,8 @@ package com.wavlin.lrclib
 import com.wavlin.lrclib.models.Track
 import com.wavlin.lrclib.models.bestMatchingFor
 import com.wavlin.lrclib.models.bestMatchingForRelaxed
+import com.wavlin.lrclib.models.bestWordSyncedLrc
+import com.wavlin.lrclib.models.wordSyncedLrc
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -148,14 +150,14 @@ object LrcLib {
         val res = when {
             duration == -1 -> {
                 tracks.bestMatchingFor(duration, cleanedTitle, cleanedArtist)?.let { track ->
-                    track.syncedLyrics ?: track.plainLyrics
+                    track.wordSyncedLrc() ?: track.syncedLyrics ?: track.plainLyrics
                 }?.let(LrcLib::Lyrics)
             }
             else -> {
-                // Try with relaxed duration matching (±5 seconds instead of ±2)
-                tracks.bestMatchingForRelaxed(duration)?.let { track ->
-                    track.syncedLyrics ?: track.plainLyrics
-                }?.let(LrcLib::Lyrics)
+                tracks.bestWordSyncedLrc(duration)?.let(LrcLib::Lyrics)
+                    ?: tracks.bestMatchingForRelaxed(duration)?.let { track ->
+                        track.syncedLyrics ?: track.plainLyrics
+                    }?.let(LrcLib::Lyrics)
             }
         }
 
@@ -201,6 +203,11 @@ object LrcLib {
         sortedTracks.forEach { track ->
             currentCoroutineContext().ensureActive()
             if (count <= 4) {
+                val wordSynced = track.wordSyncedLrc()
+                if (wordSynced != null && (duration == -1 || abs(track.duration.toInt() - duration) <= 5)) {
+                    count++
+                    callback(wordSynced)
+                }
                 if (track.syncedLyrics != null && duration == -1) {
                     count++
                     track.syncedLyrics.let(callback)

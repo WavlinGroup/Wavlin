@@ -1,5 +1,6 @@
 package com.wavlin.lrclib.models
 
+import com.wavlin.lrclib.Lyricsfile
 import kotlinx.serialization.Serializable
 import kotlin.math.abs
 
@@ -11,7 +12,23 @@ data class Track(
     val duration: Double,
     val plainLyrics: String?,
     val syncedLyrics: String?,
+    val hasWordSync: Boolean = false,
+    val lyricsfile: String? = null,
 )
+
+/** Word-synced lyrics from the track's Lyricsfile, or null when it has none or cannot be read. */
+internal fun Track.wordSyncedLrc(): String? =
+    if (hasWordSync && lyricsfile != null) Lyricsfile.toWordSyncedLrc(lyricsfile) else null
+
+private const val WORD_SYNC_DURATION_TOLERANCE_SECONDS = 2
+
+/** Word-synced lyrics of the track closest in length to [duration], within a strict tolerance. */
+internal fun List<Track>.bestWordSyncedLrc(duration: Int): String? =
+    asSequence()
+        .filter { it.hasWordSync && it.lyricsfile != null }
+        .filter { abs(it.duration.toInt() - duration) <= WORD_SYNC_DURATION_TOLERANCE_SECONDS }
+        .sortedBy { abs(it.duration.toInt() - duration) }
+        .firstNotNullOfOrNull { it.wordSyncedLrc() }
 
 internal fun List<Track>.bestMatchingFor(duration: Int): Track? {
     if (isEmpty()) return null
