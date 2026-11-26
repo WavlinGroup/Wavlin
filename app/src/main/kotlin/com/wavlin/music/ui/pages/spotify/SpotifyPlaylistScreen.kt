@@ -163,7 +163,11 @@ fun SpotifyPlaylistScreen(
         startIndex: Int = 0,
         shuffle: Boolean = false,
     ) {
-        val connection = playerConnection ?: return
+        val connection = playerConnection
+        if (connection == null) {
+            Toast.makeText(context, context.getString(R.string.spotify_player_not_ready), Toast.LENGTH_SHORT).show()
+            return
+        }
         scope.launch { playSpotifyTracks(context, database, connection, title, tracks, startIndex, shuffle) }
     }
 

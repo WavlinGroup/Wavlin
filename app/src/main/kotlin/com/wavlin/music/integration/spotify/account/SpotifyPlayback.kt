@@ -29,6 +29,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -55,25 +56,38 @@ object SpotifyPlayback {
         resolved[key]?.let { return it }
 
         val importTrack = track.toImportTrack()
+        val label = "${track.name} - ${track.artistNames} (id=${track.id})"
         val metadata =
             withContext(Dispatchers.IO) {
                 try {
-                    SpotifyMatcher.match(importTrack)?.toMediaMetadata()
-                        ?: fallbackMatch(track)
-                        ?: fallback?.invoke(track)
+                    val matched = SpotifyMatcher.match(importTrack)?.toMediaMetadata()
+                    if (matched != null) return@withContext matched
+                    Timber.d("Spotify resolve: no YT Music match for $label, trying fallback search")
+                    val viaSearch = fallbackMatch(track)
+                    if (viaSearch != null) return@withContext viaSearch
+                    Timber.d("Spotify resolve: no YT fallback match for $label, trying download fallback")
+                    fallback?.invoke(track)
                 } catch (e: CancellationException) {
                     throw e
                 } catch (e: Exception) {
+                    Timber.e(e, "Spotify resolve: failed to resolve $label")
                     null
                 }
             }
+        if (metadata == null) Timber.w("Spotify resolve: nothing playable for $label")
         if (metadata != null) resolved[key] = metadata
         return metadata
     }
 
     private suspend fun fallbackMatch(track: SpotifyWebTrack): MediaMetadata? {
         val query = "${track.name} ${track.artistNames}".replace(Regex("[!,]"), "").trim()
-        val videoId = YouTube.searchFirstVideoId(query).getOrNull() ?: return null
+        if (query.isBlank()) {
+            Timber.w("Spotify resolve: track has no name/artist to search for (id=${track.id})")
+            return null
+        }
+        val searchResult = YouTube.searchFirstVideoId(query)
+        searchResult.exceptionOrNull()?.let { Timber.e(it, "Spotify resolve: YouTube search failed for \"$query\"") }
+        val videoId = searchResult.getOrNull() ?: return null
         return MediaMetadata(
             id = videoId,
             title = track.name,

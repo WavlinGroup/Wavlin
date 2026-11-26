@@ -1174,6 +1174,7 @@
 
     <string name="spotify_download_preparing">Finding matches for download…</string>
     <string name="spotify_no_match">No YouTube Music match found</string>
+    <string name="spotify_player_not_ready">Player isn\'t ready yet, try again in a moment</string>
     <string name="spotify_import_playlist">Import</string>
     <string name="spotify_import_and_download">Import &amp; download</string>
     <string name="audio_effects">Audio Effects</string>

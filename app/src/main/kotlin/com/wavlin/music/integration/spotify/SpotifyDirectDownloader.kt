@@ -25,6 +25,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import timber.log.Timber
 import java.io.File
 
 /**
@@ -46,14 +47,22 @@ object SpotifyDirectDownloader {
         track: SpotifyTrack,
     ): MediaMetadata? =
         withContext(Dispatchers.IO) {
-            val trackId = track.url?.let { TRACK_ID_REGEX.find(it)?.groupValues?.getOrNull(1) } ?: return@withContext null
+            val trackId = track.url?.let { TRACK_ID_REGEX.find(it)?.groupValues?.getOrNull(1) }
+            if (trackId == null) {
+                Timber.w("SpotifyDirectDownloader: no Spotify track id in url=${track.url} for \"${track.title}\"")
+                return@withContext null
+            }
             val musicDir = context.getExternalFilesDir(Environment.DIRECTORY_MUSIC) ?: context.filesDir
             val audioFile = File(musicDir, "${"${track.artist} - ${track.title}".replace(UNSAFE_FILE_CHARS, "_")}.opus")
 
             try {
                 // A file from an earlier attempt is reused instead of downloading it again
                 if (!audioFile.exists() || audioFile.length() == 0L) {
-                    val bytes = fetchAudio(trackId) ?: return@withContext null
+                    val bytes = fetchAudio(trackId)
+                    if (bytes == null) {
+                        Timber.w("SpotifyDirectDownloader: spotifydown.com had no audio for trackId=$trackId (\"${track.title}\")")
+                        return@withContext null
+                    }
                     audioFile.writeBytes(bytes)
                 }
                 val song = LocalSongs.add(context, database, Uri.fromFile(audioFile), track.title, track.artist, track.coverUrl)
@@ -63,6 +72,7 @@ object SpotifyDirectDownloader {
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
+                Timber.e(e, "SpotifyDirectDownloader: failed to save local song for trackId=$trackId (\"${track.title}\")")
                 audioFile.delete()
                 null
             }
