@@ -81,11 +81,16 @@ object SpotifyDirectDownloader {
                 val audioUrl = resolveAudioUrl(client, trackId, track.title, track.artist, spotifyAccessToken, track.isrc)
                     ?: return@withContext null
 
-                // librespot returns a "librespot://<base62>/<tmpFilePath>" sentinel so we
-                // read the already-written temp file instead of making an HTTP request.
+                // Sentinels — providers that download to a temp file return a URI-style string
+                // instead of a live HTTP URL so this function reads from disk rather than
+                // issuing a second network request.
+                //   "librespot://<base62>/<absPath>"  — OGG written by LibrespotDownloader
+                //   "bytesfile://<absPath>"           — MP3 written by loaderapp binary handler
                 val isLibrespotResult = audioUrl.startsWith("librespot://")
+                val isBytesFileResult = audioUrl.startsWith("bytesfile://")
                 val ext = when {
                     isLibrespotResult -> "ogg"
+                    isBytesFileResult -> "mp3"
                     audioUrl.contains(".mp3", ignoreCase = true)
                         || audioUrl.contains("mp3-preview")
                         || audioUrl.contains("sndcdn.com")
@@ -96,21 +101,30 @@ object SpotifyDirectDownloader {
                 }
                 val audioFile = File(musicDir, "$safeName.$ext")
                 if (!audioFile.exists() || audioFile.length() == 0L) {
-                    if (isLibrespotResult) {
-                        // The temp file path is everything after "librespot://<trackId>"
-                        // e.g. "librespot://0VW.../tmp/librespot_0VW_xyz.ogg"
-                        val tmpPath = audioUrl.removePrefix("librespot://").substringAfter(trackId)
-                        val tmpFile = File(tmpPath)
-                        if (!tmpFile.exists() || tmpFile.length() == 0L) return@withContext null
-                        tmpFile.copyTo(audioFile, overwrite = true)
-                        tmpFile.delete()
-                    } else {
-                        val bytes = client.get(audioUrl) {
-                            header("User-Agent", "Mozilla/5.0 (Linux; Android 10; Mobile)")
-                            header("Accept", "*/*")
-                        }.readBytes()
-                        if (bytes.isEmpty()) return@withContext null
-                        audioFile.writeBytes(bytes)
+                    when {
+                        isLibrespotResult -> {
+                            // The temp file path is everything after "librespot://<trackId>"
+                            // e.g. "librespot://0VW.../tmp/librespot_0VW_xyz.ogg"
+                            val tmpPath = audioUrl.removePrefix("librespot://").substringAfter(trackId)
+                            val tmpFile = File(tmpPath)
+                            if (!tmpFile.exists() || tmpFile.length() == 0L) return@withContext null
+                            tmpFile.copyTo(audioFile, overwrite = true)
+                            tmpFile.delete()
+                        }
+                        isBytesFileResult -> {
+                            val tmpFile = File(audioUrl.removePrefix("bytesfile://"))
+                            if (!tmpFile.exists() || tmpFile.length() == 0L) return@withContext null
+                            tmpFile.copyTo(audioFile, overwrite = true)
+                            tmpFile.delete()
+                        }
+                        else -> {
+                            val bytes = client.get(audioUrl) {
+                                header("User-Agent", "Mozilla/5.0 (Linux; Android 10; Mobile)")
+                                header("Accept", "*/*")
+                            }.readBytes()
+                            if (bytes.isEmpty()) return@withContext null
+                            audioFile.writeBytes(bytes)
+                        }
                     }
                 }
                 val song = LocalSongs.add(
@@ -136,6 +150,20 @@ object SpotifyDirectDownloader {
         }
         try {
             val audioUrl = resolveAudioUrl(client, trackId) ?: return null
+            // Handle temp-file sentinels — read from disk instead of issuing a network request
+            if (audioUrl.startsWith("librespot://")) {
+                val tmpPath = audioUrl.removePrefix("librespot://").substringAfter(trackId)
+                val tmpFile = File(tmpPath)
+                return tmpFile.takeIf { it.exists() && it.length() > 0 }?.readBytes()
+            }
+            if (audioUrl.startsWith("bytesfile://")) {
+                val tmpFile = File(audioUrl.removePrefix("bytesfile://"))
+                return try {
+                    tmpFile.takeIf { it.exists() && it.length() > 0 }?.readBytes()
+                } finally {
+                    runCatching { tmpFile.delete() }
+                }
+            }
             return client
                 .get(audioUrl) { header("User-Agent", "Mozilla/5.0 (Linux; Android 10; Mobile)") }
                 .readBytes()
@@ -194,13 +222,11 @@ object SpotifyDirectDownloader {
     // covers slowed+reverb edits and niche tracks that YouTube proxies miss.
     private suspend fun tryLucida(client: HttpClient, trackId: String): String? = runCatching {
         val spotifyUrl = "https://open.spotify.com/track/$trackId"
-        val payload = buildString {
-            append("""{"account":{"id":"US","type":"country"},""")
-            append(""""downscale":"mp3-320","handoff":true,"metadata":false,"private":true,""")
-            append(""""token":{"expiry":1727419066,"primary":"XLj8xzbZJSfloOrw-XUmNGAmG6k"},""")
-            append(""""upload":{"enabled":false,"service":"pixeldrain"},""")
-            append(""""url":"$spotifyUrl"}""")
-        }
+        // No auth token — lucida allows unauthenticated requests for a subset of tracks.
+        // A hardcoded token (expiry 1727419066 = September 2024) was here before; it was
+        // long-expired and caused immediate success=false on every call.
+        val payload =
+            """{"account":{"id":"US","type":"country"},"downscale":"mp3-320","handoff":true,"metadata":false,"private":false,"upload":{"enabled":false,"service":"pixeldrain"},"url":"$spotifyUrl"}"""
         // Step 1 — submit job
         val initText = client.post("https://lucida.to/api/load?url=/api/fetch/stream/v2") {
             header("User-Agent", USER_AGENT)
@@ -237,10 +263,14 @@ object SpotifyDirectDownloader {
     //   A1) LibrespotDownloader.resolveIsrc — AP metadata protobuf, no developer client_id needed
     //   A2) api.spotifydown.com/metadata/{id}    — no token
     //   A3) open.spotify.com/track/{id}          — __NEXT_DATA__ page scrape, no token
+    //   A4) MusicBrainz recording search         — no token; good for indie/niche tracks
     //   (api.spotify.com/v1 removed — requires registered developer app since Nov 2024)
     // Then:
     //   B) api.deezer.com/track/isrc:{isrc} → Deezer track id
-    //   C) dz.loaderapp.info → full unencrypted MP3 (128 kbps)
+    //   C) dz.loaderapp.info → MP3 128 kbps
+    //      loaderapp may respond with JSON {"url":"…"}, a plain URL in the body, a 302 redirect,
+    //      OR stream the audio binary directly (Content-Type: audio/mpeg). All four cases handled.
+    //   D) cobalt.tools — backup Deezer download (routes Deezer URLs internally)
     private suspend fun tryDeezerViaIsrc(
         client: HttpClient,
         trackId: String,
@@ -271,7 +301,7 @@ object SpotifyDirectDownloader {
         val deezerTrackId = deezerJson["id"]?.jsonPrimitive?.contentOrNull
             ?: return@runCatching null
 
-        // C — full MP3 via loaderapp (open proxy backed by Deezer)
+        // C — loaderapp: try first; fall through to cobalt on any failure
         val loaderResp = client.get(
             "https://dz.loaderapp.info/deezer" +
                 "?quality=MP3_128" +
@@ -281,18 +311,55 @@ object SpotifyDirectDownloader {
             header("Origin", "https://loader.to")
             header("Referer", "https://loader.to/")
         }
-        when (val status = loaderResp.status.value) {
+        val loaderContentType = loaderResp.headers["Content-Type"].orEmpty()
+        val audioFromLoader: String? = when (loaderResp.status.value) {
             in 200..299 -> {
-                val body = loaderResp.bodyAsText()
-                runCatching {
-                    json.parseToJsonElement(body).jsonObject["url"]
-                        ?.jsonPrimitive?.contentOrNull?.takeIf { it.startsWith("http") }
-                }.getOrNull() ?: body.trim().takeIf { it.startsWith("http") }
+                if (loaderContentType.contains("audio", ignoreCase = true) ||
+                    loaderContentType.contains("octet-stream", ignoreCase = true)) {
+                    // loaderapp streamed the binary directly — write to a temp file and return
+                    // a "bytesfile://" sentinel so downloadAsLocalSong reads from disk
+                    val bytes = loaderResp.readBytes()
+                    if (bytes.size > 1024) {
+                        val tmp = File.createTempFile("dz_${deezerTrackId}_", ".mp3")
+                        tmp.writeBytes(bytes)
+                        "bytesfile://${tmp.absolutePath}"
+                    } else null
+                } else {
+                    val body = loaderResp.bodyAsText()
+                    runCatching {
+                        json.parseToJsonElement(body).jsonObject["url"]
+                            ?.jsonPrimitive?.contentOrNull?.takeIf { it.startsWith("http") }
+                    }.getOrNull() ?: body.trim().takeIf { it.startsWith("http") }
+                }
             }
             in 300..399 -> loaderResp.headers["Location"]?.takeIf { it.startsWith("http") }
             else -> null
         }
+
+        // D — cobalt.tools as backup (supports Deezer URLs, routes internally)
+        audioFromLoader ?: tryCobaltDeezer(client, deezerTrackId)
     }.getOrNull()
+
+    // ── Provider 2-backup: cobalt.tools with a Deezer track URL ─────────────
+    // cobalt routes Deezer URLs to its own backend (ISRC → Deezer CDN) without
+    // requiring any auth token. Used when loaderapp fails or returns nothing usable.
+    private suspend fun tryCobaltDeezer(client: HttpClient, deezerTrackId: String): String? =
+        runCatching {
+            val deezerUrl = "https://www.deezer.com/track/$deezerTrackId"
+            val body = client.post("https://api.cobalt.tools/") {
+                header("User-Agent", USER_AGENT)
+                header("Accept", "application/json")
+                contentType(ContentType.Application.Json)
+                setBody(
+                    """{"url":"$deezerUrl","isAudioOnly":true,"aFormat":"mp3","filenameStyle":"basic"}"""
+                )
+            }.bodyAsText()
+            val root = json.parseToJsonElement(body).jsonObject
+            when (root["status"]?.jsonPrimitive?.contentOrNull) {
+                "stream", "redirect", "tunnel" -> root["url"]?.jsonPrimitive?.contentOrNull
+                else -> null
+            }
+        }.getOrNull()
 
     // ── Provider 2: api.spotifydown.com ─────────────────────────────────────
     private suspend fun tryApiSpotifydown(client: HttpClient, trackId: String): String? =
