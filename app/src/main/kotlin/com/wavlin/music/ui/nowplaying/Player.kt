@@ -1378,137 +1378,139 @@ fun BottomSheetPlayer(
 
             Spacer(Modifier.height(12.dp))
 
-            when (if (appleMusicPlayer) SliderStyle.SLIM else sliderStyle) {
-                SliderStyle.DEFAULT -> {
-                    Slider(
-                        value = (sliderPosition ?: effectivePosition).toFloat(),
-                        valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
-                        onValueChange = {
-                            if (!isListenTogetherGuest) {
-                                sliderPosition = it.toLong()
-                            }
-                        },
-                        onValueChangeFinished = {
-                            if (!isListenTogetherGuest) {
-                                sliderPosition?.let {
-                                    if (isCasting) {
-                                        castHandler?.seekTo(it)
-                                        lastManualSeekTime = System.currentTimeMillis()
-                                    } else {
-                                        playerConnection.player.seekTo(it)
-                                    }
-                                    position = it
-                                }
-                                sliderPosition = null
-                            }
-                        },
-                        enabled = !isListenTogetherGuest,
-                        colors = PlayerSliderColors.getSliderColors(textButtonColor, playerBackground, useDarkTheme),
-                        modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
-                    )
-                }
-
-                SliderStyle.WAVY -> {
-                    if (squigglySlider) {
-                        SquigglySlider(
+            RecompositionBoundary {
+                when (if (appleMusicPlayer) SliderStyle.SLIM else sliderStyle) {
+                    SliderStyle.DEFAULT -> {
+                        Slider(
                             value = (sliderPosition ?: effectivePosition).toFloat(),
                             valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
                             onValueChange = {
-                                sliderPosition = it.toLong()
+                                if (!isListenTogetherGuest) {
+                                    sliderPosition = it.toLong()
+                                }
                             },
                             onValueChangeFinished = {
-                                sliderPosition?.let {
-                                    if (isCasting) {
-                                        castHandler?.seekTo(it)
-                                        lastManualSeekTime = System.currentTimeMillis()
-                                    } else {
-                                        playerConnection.player.seekTo(it)
+                                if (!isListenTogetherGuest) {
+                                    sliderPosition?.let {
+                                        if (isCasting) {
+                                            castHandler?.seekTo(it)
+                                            lastManualSeekTime = System.currentTimeMillis()
+                                        } else {
+                                            playerConnection.player.seekTo(it)
+                                        }
+                                        position = it
                                     }
-                                    position = it
+                                    sliderPosition = null
                                 }
-                                sliderPosition = null
                             },
-                            modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
-                            colors = PlayerSliderColors.getSliderColors(textButtonColor, playerBackground, useDarkTheme),
-                            isPlaying = effectiveIsPlaying,
-                        )
-                    } else {
-                        WavySlider(
-                            value = (sliderPosition ?: effectivePosition).toFloat(),
-                            valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
-                            onValueChange = {
-                                sliderPosition = it.toLong()
-                            },
-                            onValueChangeFinished = {
-                                sliderPosition?.let {
-                                    if (isCasting) {
-                                        castHandler?.seekTo(it)
-                                        lastManualSeekTime = System.currentTimeMillis()
-                                    } else {
-                                        playerConnection.player.seekTo(it)
-                                    }
-                                    position = it
-                                }
-                                sliderPosition = null
-                            },
+                            enabled = !isListenTogetherGuest,
                             colors = PlayerSliderColors.getSliderColors(textButtonColor, playerBackground, useDarkTheme),
                             modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
-                            isPlaying = effectiveIsPlaying,
                         )
                     }
-                }
 
-                SliderStyle.SLIM -> {
-                    val seekInteractionSource = remember { MutableInteractionSource() }
-                    val seekDragging by seekInteractionSource.collectIsDraggedAsState()
-                    val appleTrackHeight by androidx.compose.animation.core.animateDpAsState(
-                        targetValue = if (seekDragging) 12.dp else 6.dp,
-                        label = "appleSeekTrackHeight",
-                    )
-                    Slider(
-                        interactionSource = seekInteractionSource,
-                        value = (sliderPosition ?: effectivePosition).toFloat(),
-                        valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
-                        onValueChange = {
-                            if (!isListenTogetherGuest) {
-                                sliderPosition = it.toLong()
-                            }
-                        },
-                        onValueChangeFinished = {
-                            if (!isListenTogetherGuest) {
-                                sliderPosition?.let {
-                                    if (isCasting) {
-                                        castHandler?.seekTo(it)
-                                        lastManualSeekTime = System.currentTimeMillis()
-                                    } else {
-                                        playerConnection.player.seekTo(it)
+                    SliderStyle.WAVY -> {
+                        if (squigglySlider) {
+                            SquigglySlider(
+                                value = (sliderPosition ?: effectivePosition).toFloat(),
+                                valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
+                                onValueChange = {
+                                    sliderPosition = it.toLong()
+                                },
+                                onValueChangeFinished = {
+                                    sliderPosition?.let {
+                                        if (isCasting) {
+                                            castHandler?.seekTo(it)
+                                            lastManualSeekTime = System.currentTimeMillis()
+                                        } else {
+                                            playerConnection.player.seekTo(it)
+                                        }
+                                        position = it
                                     }
-                                    position = it
-                                }
-                                sliderPosition = null
-                            }
-                        },
-                        enabled = !isListenTogetherGuest,
-                        thumb = {
-                            Spacer(modifier = Modifier.size(0.dp))
-                        },
-                        track = { sliderState ->
-                            PlayerSliderTrack(
-                                sliderState = sliderState,
-                                colors =
-                                    if (appleMusicPlayer) {
-                                        SliderDefaults.colors(
-                                            activeTrackColor = TextBackgroundColor,
-                                            inactiveTrackColor = TextBackgroundColor.copy(alpha = 0.25f),
-                                        )
-                                    } else {
-                                        PlayerSliderColors.getSliderColors(textButtonColor, playerBackground, useDarkTheme)
-                                    },
-                                trackHeight = if (appleMusicPlayer) appleTrackHeight else 10.dp,
+                                    sliderPosition = null
+                                },
+                                modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
+                                colors = PlayerSliderColors.getSliderColors(textButtonColor, playerBackground, useDarkTheme),
+                                isPlaying = effectiveIsPlaying,
                             )
-                        },
-                        modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
-                    )
+                        } else {
+                            WavySlider(
+                                value = (sliderPosition ?: effectivePosition).toFloat(),
+                                valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
+                                onValueChange = {
+                                    sliderPosition = it.toLong()
+                                },
+                                onValueChangeFinished = {
+                                    sliderPosition?.let {
+                                        if (isCasting) {
+                                            castHandler?.seekTo(it)
+                                            lastManualSeekTime = System.currentTimeMillis()
+                                        } else {
+                                            playerConnection.player.seekTo(it)
+                                        }
+                                        position = it
+                                    }
+                                    sliderPosition = null
+                                },
+                                colors = PlayerSliderColors.getSliderColors(textButtonColor, playerBackground, useDarkTheme),
+                                modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
+                                isPlaying = effectiveIsPlaying,
+                            )
+                        }
+                    }
+
+                    SliderStyle.SLIM -> {
+                        val seekInteractionSource = remember { MutableInteractionSource() }
+                        val seekDragging by seekInteractionSource.collectIsDraggedAsState()
+                        val appleTrackHeight by androidx.compose.animation.core.animateDpAsState(
+                            targetValue = if (seekDragging) 12.dp else 6.dp,
+                            label = "appleSeekTrackHeight",
+                        )
+                        Slider(
+                            interactionSource = seekInteractionSource,
+                            value = (sliderPosition ?: effectivePosition).toFloat(),
+                            valueRange = 0f..(if (duration == C.TIME_UNSET) 0f else duration.toFloat()),
+                            onValueChange = {
+                                if (!isListenTogetherGuest) {
+                                    sliderPosition = it.toLong()
+                                }
+                            },
+                            onValueChangeFinished = {
+                                if (!isListenTogetherGuest) {
+                                    sliderPosition?.let {
+                                        if (isCasting) {
+                                            castHandler?.seekTo(it)
+                                            lastManualSeekTime = System.currentTimeMillis()
+                                        } else {
+                                            playerConnection.player.seekTo(it)
+                                        }
+                                        position = it
+                                    }
+                                    sliderPosition = null
+                                }
+                            },
+                            enabled = !isListenTogetherGuest,
+                            thumb = {
+                                Spacer(modifier = Modifier.size(0.dp))
+                            },
+                            track = { sliderState ->
+                                PlayerSliderTrack(
+                                    sliderState = sliderState,
+                                    colors =
+                                        if (appleMusicPlayer) {
+                                            SliderDefaults.colors(
+                                                activeTrackColor = TextBackgroundColor,
+                                                inactiveTrackColor = TextBackgroundColor.copy(alpha = 0.25f),
+                                            )
+                                        } else {
+                                            PlayerSliderColors.getSliderColors(textButtonColor, playerBackground, useDarkTheme)
+                                        },
+                                    trackHeight = if (appleMusicPlayer) appleTrackHeight else 10.dp,
+                                )
+                            },
+                            modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
+                        )
+                    }
                 }
             }
 
@@ -1525,13 +1527,15 @@ fun BottomSheetPlayer(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.align(Alignment.CenterStart),
                 ) {
-                    Text(
-                        text = makeTimeString(sliderPosition ?: effectivePosition),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = TextBackgroundColor,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
+                    RecompositionBoundary {
+                        Text(
+                            text = makeTimeString(sliderPosition ?: effectivePosition),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = TextBackgroundColor,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
                     if (useNewPlayerDesign) {
                         Spacer(Modifier.width(6.dp))
                         AnimatedContent(targetState = showInlineLyrics, label = "ShareButton") { showLyrics ->
@@ -1619,13 +1623,15 @@ fun BottomSheetPlayer(
                         }
                         Spacer(Modifier.width(6.dp))
                     }
-                    Text(
-                        text = if (duration != C.TIME_UNSET) makeTimeString(duration) else "",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = TextBackgroundColor,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
+                    RecompositionBoundary {
+                        Text(
+                            text = if (duration != C.TIME_UNSET) makeTimeString(duration) else "",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = TextBackgroundColor,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
                 }
             }
 
@@ -2567,6 +2573,15 @@ private fun PlayerMoreMenuButton(
             colorFilter = ColorFilter.tint(iconButtonColor),
         )
     }
+}
+
+/**
+ * Not inline on purpose: [content] gets its own recompose scope, so state read inside it
+ * (the playback position, updated every 100 ms) does not invalidate the caller.
+ */
+@Composable
+private fun RecompositionBoundary(content: @Composable () -> Unit) {
+    content()
 }
 
 @Composable
