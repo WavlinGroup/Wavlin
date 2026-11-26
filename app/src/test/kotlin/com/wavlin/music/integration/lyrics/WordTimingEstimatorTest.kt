@@ -16,29 +16,42 @@ class WordTimingEstimatorTest {
     private val eps = 1e-6
 
     @Test
-    fun wordsFillTheGapToTheNextLine() {
-        val entries = WordTimingEstimator.estimate(
-            listOf(LyricsEntry(10_000, "There will always be space"), LyricsEntry(14_000, "Right where you left it")),
-        )
-        val words = entries[0].words!!
+    fun countsSyllables() {
+        val expected = mapOf("love" to 1, "always" to 2, "people" to 2, "baby" to 2, "space" to 1, "you" to 1, "table" to 2, "me" to 1, "\u4F60" to 1)
+        expected.forEach { (word, count) -> assertEquals(word, count, WordTimingEstimator.syllablesOf(word)) }
+    }
+
+    @Test
+    fun wordsAdvanceInOrderFromTheLineStart() {
+        val words = WordTimingEstimator.estimateLine("There will always be space", 10_000, 14_000)
         assertEquals(listOf("There", "will", "always", "be", "space"), words.map { it.text })
         assertEquals(10.0, words.first().startTime, eps)
-        assertEquals(14.0, words.last().endTime, eps)
         assertTrue(words.zipWithNext().all { (a, b) -> a.endTime <= b.startTime + eps })
+        assertTrue(words.last().endTime <= 14.0 + eps)
         assertFalse(words.last().hasTrailingSpace)
         assertTrue(words.dropLast(1).all { it.hasTrailingSpace })
     }
 
     @Test
-    fun longerWordsGetMoreTime() {
-        val words = WordTimingEstimator.estimateLine("a wonderful", 0, 3_000)
-        assertTrue(words[1].endTime - words[1].startTime > words[0].endTime - words[0].startTime)
+    fun roomBeforeTheNextLineIsNotSpreadOverTheWords() {
+        val tight = WordTimingEstimator.estimateLine("There will always be space", 0, 2_000)
+        val roomy = WordTimingEstimator.estimateLine("There will always be space", 0, 8_000)
+        assertTrue(tight.last().endTime <= 2.0 + eps)
+        // Same speed, so the first words take the same time however long the gap is.
+        assertTrue(roomy[2].endTime < 3.0)
+        assertTrue(roomy.last().endTime - roomy.last().startTime > roomy[0].endTime - roomy[0].startTime)
     }
 
     @Test
-    fun longGapIsTreatedAsABreak() {
+    fun heldLastWordIsCapped() {
         val words = WordTimingEstimator.estimateLine("Hello you", 0, 60_000)
-        assertTrue(words.last().endTime < 10.0)
+        assertTrue(words.last().endTime < 4.0)
+    }
+
+    @Test
+    fun moreSyllablesGetMoreTime() {
+        val words = WordTimingEstimator.estimateLine("a wonderful", 0, 3_000)
+        assertTrue(words[1].endTime - words[1].startTime > words[0].endTime - words[0].startTime)
     }
 
     @Test
@@ -52,6 +65,24 @@ class WordTimingEstimatorTest {
     fun phraseEndingPunctuationLeavesAPause() {
         val words = WordTimingEstimator.estimateLine("Well, okay", 0, 3_000)
         assertTrue(words[1].startTime > words[0].endTime)
+    }
+
+    @Test
+    fun learnsSpeedFromDenseLines() {
+        val lines = (0 until 6).map { LyricsEntry(it * 2_000L, "There will always be space") }
+        assertEquals(3.0, WordTimingEstimator.songSpeed(lines), eps)
+    }
+
+    @Test
+    fun fewSamplesFallBackToDefaultSpeed() {
+        val lines = listOf(LyricsEntry(0, "There will always be space"), LyricsEntry(2_000, "Hi"))
+        assertEquals(3.5, WordTimingEstimator.songSpeed(lines), eps)
+    }
+
+    @Test
+    fun speedIsClamped() {
+        val lines = (0 until 6).map { LyricsEntry(it * 600L, "There will always be space") }
+        assertEquals(6.0, WordTimingEstimator.songSpeed(lines), eps)
     }
 
     @Test
@@ -76,13 +107,15 @@ class WordTimingEstimatorTest {
                 LyricsEntry(4_000, "Next main line"),
             ),
         )
-        assertEquals(4.0, result[0].words!!.last().endTime, eps)
+        val end = result[0].words!!.last().endTime
+        assertTrue(end > 2.0)
+        assertTrue(end <= 4.0 + eps)
     }
 
     @Test
     fun cjkTextIsSplitPerCharacterWithoutSpaces() {
-        val words = WordTimingEstimator.estimateLine("你好世界", 0, 2_000)
-        assertEquals(listOf("你", "好", "世", "界"), words.map { it.text })
+        val words = WordTimingEstimator.estimateLine("\u4F60\u597D\u4E16\u754C", 0, 2_000)
+        assertEquals(listOf("\u4F60", "\u597D", "\u4E16", "\u754C"), words.map { it.text })
         assertTrue(words.none { it.hasTrailingSpace })
     }
 
