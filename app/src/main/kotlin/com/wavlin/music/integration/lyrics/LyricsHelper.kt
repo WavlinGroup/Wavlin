@@ -30,6 +30,12 @@ private const val MAX_LYRICS_FETCH_MS = 25000L
 private const val PER_PROVIDER_TIMEOUT_MS = 8000L
 private const val PROVIDER_NONE = ""
 
+// After a provider answers without word timing, later providers get a short, bounded chance to
+// deliver real word-by-word timing, which is more accurate than the estimate for line-only lyrics.
+private const val WORD_SYNC_SEARCH_BUDGET_MS = 6000L
+private const val WORD_SYNC_PROVIDER_TIMEOUT_MS = 4000L
+private const val WORD_SYNCED_QUALITY = 3
+
 class LyricsHelper
 @Inject
 constructor(
@@ -67,6 +73,10 @@ constructor(
             return LyricsWithProvider(LYRICS_NOT_FOUND, PROVIDER_NONE)
         }
 
+        var best: LyricsWithProvider? = null
+        var bestQuality = 0
+        var firstFoundAtMs = 0L
+
         val result = withTimeoutOrNull(MAX_LYRICS_FETCH_MS) {
             val cleanedTitle = LyricsUtils.cleanTitleForSearch(mediaMetadata.title)
             val enabledProviders = orderedProviders.filter { it.isEnabled(context) }
@@ -75,9 +85,11 @@ constructor(
             Timber.tag("LyricsHelper").d("Enabled providers in order: ${enabledProviders.joinToString { it.name }}")
 
             for (provider in enabledProviders) {
+                val searchingForWordSync = best != null
+                if (searchingForWordSync && System.currentTimeMillis() - firstFoundAtMs > WORD_SYNC_SEARCH_BUDGET_MS) break
                 Timber.tag("LyricsHelper").d("Trying provider: ${provider.name}")
                 val providerResult = try {
-                    withTimeoutOrNull(PER_PROVIDER_TIMEOUT_MS) {
+                    withTimeoutOrNull(if (searchingForWordSync) WORD_SYNC_PROVIDER_TIMEOUT_MS else PER_PROVIDER_TIMEOUT_MS) {
                         provider.getLyrics(
                             context,
                             mediaMetadata.id,
@@ -97,18 +109,27 @@ constructor(
                 if (providerResult != null && providerResult.isSuccess) {
                     Timber.tag("LyricsHelper").i("Got lyrics from ${provider.name}")
                     val filtered = LyricsUtils.filterLyricsCreditLines(providerResult.getOrNull()!!)
-                    return@withTimeoutOrNull LyricsWithProvider(filtered, provider.name)
+                    val quality = LyricsUtils.getLyricsQuality(filtered)
+                    if (quality > bestQuality) {
+                        best = LyricsWithProvider(filtered, provider.name)
+                        bestQuality = quality
+                        if (firstFoundAtMs == 0L) firstFoundAtMs = System.currentTimeMillis()
+                    }
+                    if (quality >= WORD_SYNCED_QUALITY) break
                 } else {
                     val errorMsg = providerResult?.exceptionOrNull()?.message ?: "timeout or exception"
                     Timber.tag("LyricsHelper").w("${provider.name} failed: $errorMsg")
                 }
             }
 
-            Timber.tag("LyricsHelper").w("No lyrics found after checking all providers")
-            LyricsWithProvider(LYRICS_NOT_FOUND, PROVIDER_NONE)
+            best ?: run {
+                Timber.tag("LyricsHelper").w("No lyrics found after checking all providers")
+                LyricsWithProvider(LYRICS_NOT_FOUND, PROVIDER_NONE)
+            }
         }
 
-        return result ?: LyricsWithProvider(LYRICS_NOT_FOUND, PROVIDER_NONE)
+        // On the overall timeout, keep what was already found instead of dropping it.
+        return result ?: best ?: LyricsWithProvider(LYRICS_NOT_FOUND, PROVIDER_NONE)
     }
 
     suspend fun getAllLyrics(
