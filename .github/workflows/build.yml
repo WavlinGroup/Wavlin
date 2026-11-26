@@ -50,6 +50,26 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android,armv7-linux-androideabi
+
+      - name: Install cargo-ndk
+        run: cargo install cargo-ndk --locked
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Build Flutter AAR (arm64-v8a, armeabi-v7a)
+        working-directory: flutter/wavlin_visuals
+        run: |
+          flutter pub get
+          flutter build aar --no-debug --no-profile --target-platform android-arm,android-arm64
+
       - name: Check release signing secrets
         id: check_release_secrets
         env:
@@ -65,6 +85,8 @@ jobs:
       - name: Build Release APK and Run Lint
         run: ./gradlew --console=plain assemble${{ matrix.variantName }}Release :app:lint${{ matrix.variantName }}Release --warning-mode summary
         env:
+          WAVLIN_REQUIRE_RUST: "true"
+          WAVLIN_REQUIRE_FLUTTER: "true"
           WAVLIN_APPLICATION_ID: com.wavlin.music
           WAVLIN_APP_NAME: Wavlin
           PULL_REQUEST: "false"
@@ -72,6 +94,7 @@ jobs:
           LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
           LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
           SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          DISCORD_APP_ID: ${{ secrets.DISCORD_APP_ID }}
           SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
 
       - name: Sign APK

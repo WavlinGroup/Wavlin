@@ -1,0 +1,18 @@
+[package]
+name = "audio-jni"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+description = "JNI bridge exposing audio-dsp, lyrics-core, cipher-core, queue-core and player-config-core to the Wavlin Android app as libwavlin_audio.so"
+
+[lib]
+name = "wavlin_audio"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+audio-dsp = { path = "../audio-dsp" }
+lyrics-core = { path = "../lyrics-core" }
+cipher-core = { path = "../cipher-core" }
+queue-core = { path = "../queue-core" }
+player-config-core = { path = "../player-config-core" }
+jni = "0.21"

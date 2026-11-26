@@ -1,0 +1,240 @@
+/**
+ * Wavlin Project (C) 2026
+ * Licensed under GPL-3.0 | See git history for contributors
+ */
+
+package com.wavlin.music.ui.kit
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ripple
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.composed
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.isSpecified
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.HazeTint
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
+import dev.chrisbanes.haze.materials.HazeMaterials
+
+/**
+ * A near-black frosted style for surfaces under the "Pure Black" OLED preference. Keeps the
+ * dark aesthetic (heavy black tint) while still actually blurring content behind it, instead
+ * of Pure Black disabling glass entirely and falling back to a flat, zero-variation fill.
+ */
+fun pureBlackHazeStyle(): HazeStyle = HazeStyle(
+    backgroundColor = Color.Black,
+    tints = listOf(HazeTint(Color.Black.copy(alpha = 0.75f))),
+    blurRadius = 14.dp,
+    noiseFactor = 0.15f,
+)
+
+/**
+ * A single shared blur coordinator for the whole screen. The main scrollable content
+ * is marked as the "source" (see Modifier.hazeSource in MainActivity), and floating
+ * surfaces - the mini-player, bottom nav bar and floating action buttons - read from
+ * it via [glassPanel] to render a real iOS-style frosted backdrop blur instead of a
+ * flat color.
+ */
+/** True while the Secret Pink theme (light mode) is active, so glass surfaces can use the pink lily look. */
+val LocalPinkLilyTheme = staticCompositionLocalOf { false }
+
+/** A stronger pink frosted style for the bottom bar, so blurred artwork never shows as dark smudges. */
+fun pinkLilyNavHazeStyle(): HazeStyle = HazeStyle(
+    backgroundColor = Color(0xFFFFF1F6),
+    tints = listOf(
+        HazeTint(Color(0xFFFFD3E2).copy(alpha = 0.62f)),
+        HazeTint(Color.White.copy(alpha = 0.14f)),
+    ),
+    blurRadius = 20.dp,
+    noiseFactor = 0.03f,
+)
+
+/** A pink frosted-glass style for the Secret Pink theme. */
+fun pinkLilyHazeStyle(): HazeStyle = HazeStyle(
+    backgroundColor = Color(0xFFFFF1F6),
+    tints = listOf(
+        HazeTint(Color(0xFFFFD0E0).copy(alpha = 0.40f)),
+        HazeTint(Color.White.copy(alpha = 0.16f)),
+    ),
+    blurRadius = 14.dp,
+    noiseFactor = 0.04f,
+)
+
+/** True when the user enabled reduced glass: [glassPanel] skips the border pass and halves the Haze blur radius. */
+val LocalReduceGlass = staticCompositionLocalOf { false }
+
+/**
+ * False while no screen content is recorded as a Haze source (Home in Apple glass). Haze glass then has
+ * nothing to blur, so [legacyGlassPanel] draws its flat fill and border without the Haze pass.
+ */
+val LocalHazeSourceActive = compositionLocalOf { true }
+
+val LocalHazeState = staticCompositionLocalOf<HazeState> {
+    error("No HazeState provided - wrap the root content in Modifier.hazeSource(LocalHazeState.current)")
+}
+
+/**
+ * A neutral, theme-agnostic "glass edge" highlight: a soft white gradient stroke that
+ * catches the light the way real glass (or iOS's frosted panels) does.
+ *
+ * Deliberately NOT derived from MaterialTheme.colorScheme.primary - that would tint
+ * the glow with whatever accent color Material You / dynamic color picked (often
+ * purple), which isn't the iOS look being asked for here. White stays correct across
+ * every wallpaper and theme.
+ */
+fun glassStrokeBrush(): Brush = Brush.linearGradient(
+    colors = listOf(
+        Color.White.copy(alpha = 0.55f),
+        Color.White.copy(alpha = 0.06f),
+        Color.White.copy(alpha = 0.28f),
+    ),
+)
+
+/**
+ * Applies a real backdrop blur - sampling whatever content is behind this composable,
+ * via the shared [LocalHazeState] - plus a subtle glowing glass-edge stroke around the
+ * given [shape]. Use on floating surfaces such as the mini-player, nav bar, or FABs.
+ */
+@Composable
+fun Modifier.glassPanel(
+    shape: Shape = RoundedCornerShape(32.dp),
+    style: HazeStyle? = null,
+    strokeWidth: Dp = 1.dp,
+    drawStroke: Boolean = true,
+): Modifier =
+    if (LocalInterfaceAppleMusic.current) {
+        // Apple Music style: every glass surface uses the shared liquid-glass backdrop.
+        this.appleGlass(shape, style)
+    } else {
+        this.legacyGlassPanel(shape, style, strokeWidth, drawStroke && !LocalReduceGlass.current)
+    }
+
+/** The original Haze-based glass. Also the fallback for [appleGlass] when the backdrop is unavailable. */
+@OptIn(ExperimentalHazeMaterialsApi::class)
+fun Modifier.legacyGlassPanel(
+    shape: Shape = RoundedCornerShape(32.dp),
+    style: HazeStyle? = null,
+    strokeWidth: Dp = 1.dp,
+    drawStroke: Boolean = true,
+): Modifier = composed {
+    val hazeState = LocalHazeState.current
+    val resolvedStyle = style ?: if (LocalPinkLilyTheme.current) pinkLilyHazeStyle() else HazeMaterials.thin()
+    val reduce = LocalReduceGlass.current
+    val hazeSourceActive = LocalHazeSourceActive.current
+    var m = this
+        .clip(shape)
+        .let { base ->
+            if (hazeSourceActive) {
+                base.hazeEffect(state = hazeState, style = resolvedStyle) {
+                    if (reduce && resolvedStyle.blurRadius.isSpecified) blurRadius = resolvedStyle.blurRadius / 2
+                }
+            } else {
+                base
+            }
+        }
+    if (drawStroke) {
+        m = m.border(strokeWidth, glassStrokeBrush(), shape)
+    }
+    m
+}
+
+/**
+ * A thin glowing hairline along the top edge, for edge-to-edge glass surfaces (like the
+ * bottom nav bar) where a full rounded-corner border would look wrong.
+ */
+fun Modifier.glassTopEdgeGlow(height: Dp = 1.dp): Modifier = drawWithContent {
+    drawContent()
+    drawRect(
+        brush = Brush.horizontalGradient(
+            colors = listOf(
+                Color.Transparent,
+                Color.White.copy(alpha = 0.35f),
+                Color.Transparent,
+            ),
+        ),
+        size = Size(size.width, height.toPx()),
+    )
+}
+
+/**
+ * Circular glass icon button built from bare primitives instead of Material3's
+ * FloatingActionButton/SmallFloatingActionButton (those compute shadow/elevation from an
+ * internal shape independent of any shape param passed in, which showed up as a visible
+ * polygon artifact behind the circular clipped content). Uses a flat translucent fill
+ * instead of real backdrop blur too - at this small a scale (40-56dp) blur sampling doesn't
+ * read as meaningfully "frosted" anyway, and skipping it avoids any further blur-related
+ * rendering quirks at the circular clip boundary.
+ */
+@Composable
+fun GlassIconButton(
+    onClick: () -> Unit,
+    size: Dp,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val pinkLily = LocalPinkLilyTheme.current
+    val appleGlassStyle = LocalInterfaceAppleMusic.current
+    Box(
+        modifier = modifier
+            .size(size)
+            .let { base ->
+                if (pinkLily && !appleGlassStyle) {
+                    // These bubbles sit inside the screen that Haze records as its source, where the Haze pass draws
+                    // nothing. The flat fill matches the mini player's pink glass so the bubble keeps a background.
+                    base
+                        .clip(androidx.compose.foundation.shape.CircleShape)
+                        .background(Color(0xFFFFF1F6).copy(alpha = 0.82f))
+                        .background(Color(0xFFFFD0E0).copy(alpha = 0.40f))
+                        .pinkGlass(androidx.compose.foundation.shape.CircleShape)
+                } else if (pinkLily) {
+                    base.pinkGlass(androidx.compose.foundation.shape.CircleShape)
+                } else if (appleGlassStyle) {
+                    base.appleGlass(androidx.compose.foundation.shape.CircleShape)
+                } else {
+                    base
+                        .clip(androidx.compose.foundation.shape.CircleShape)
+                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.55f))
+                        .border(1.dp, glassStrokeBrush(), androidx.compose.foundation.shape.CircleShape)
+                }
+            }
+            .clip(androidx.compose.foundation.shape.CircleShape)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = ripple(bounded = true, radius = size / 2),
+                onClick = onClick,
+            )
+            .let {
+                if (contentDescription != null) it.semantics { this.contentDescription = contentDescription } else it
+            },
+        contentAlignment = Alignment.Center,
+    ) {
+        content()
+    }
+}

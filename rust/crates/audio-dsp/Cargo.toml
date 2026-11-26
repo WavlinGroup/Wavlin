@@ -1,0 +1,9 @@
+[package]
+name = "audio-dsp"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+description = "Wavlin audio DSP core: Freeverb reverb and parametric-EQ biquad chain, ported from the Kotlin processors"
+
+[lib]
+crate-type = ["rlib"]

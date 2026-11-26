@@ -14,16 +14,16 @@
 -dontobfuscate
 
 # WebView JavaScript interfaces
--keepclassmembers class com.wavlin.music.utils.cipher.CipherWebView {
+-keepclassmembers class com.wavlin.music.stream.cipher.CipherWebView {
     @android.webkit.JavascriptInterface public *;
 }
--keepclassmembers class com.wavlin.music.utils.potoken.PoTokenWebView {
+-keepclassmembers class com.wavlin.music.stream.potoken.PoTokenWebView {
     @android.webkit.JavascriptInterface public *;
 }
 
 # Keep streaming utility classes
--keep class com.wavlin.music.utils.cipher.** { *; }
--keep class com.wavlin.music.utils.potoken.** { *; }
+-keep class com.wavlin.music.stream.cipher.** { *; }
+-keep class com.wavlin.music.stream.potoken.** { *; }
 
 # Keep coroutine continuation for WebView callbacks
 -keepclassmembers class * {
@@ -150,7 +150,7 @@
 -keep class com.wavlin.music.models.PersistPlayerState { *; }
 -keep class com.wavlin.music.models.QueueData { *; }
 -keep class com.wavlin.music.models.QueueType { *; }
--keep class com.wavlin.music.playback.queues.** { *; }
+-keep class com.wavlin.music.media.queue.** { *; }
 
 # Keep serialization methods for queue persistence
 -keepclassmembers class * implements java.io.Serializable {
@@ -165,6 +165,7 @@
 
 ## Google Cast Rules
 -keep class com.wavlin.music.cast.** { *; }
+-keep class com.wavlin.music.media.cast.** { *; }
 -keep class com.google.android.gms.cast.** { *; }
 -keep class androidx.mediarouter.** { *; }
 
@@ -172,8 +173,8 @@
 -dontwarn com.google.re2j.**
 
 # Vibra fingerprint library
--keep class com.wavlin.music.recognition.VibraSignature { *; }
--keepclassmembers class com.wavlin.music.recognition.VibraSignature {
+-keep class com.wavlin.music.integration.identify.VibraSignature { *; }
+-keepclassmembers class com.wavlin.music.integration.identify.VibraSignature {
     native <methods>;
 }
 
@@ -213,8 +214,8 @@
 }
 
 ## Discord RPC JNI
--keep class com.wavlin.music.discord.DiscordRpcManager { *; }
--keepclassmembers class com.wavlin.music.discord.DiscordRpcManager {
+-keep class com.wavlin.music.integration.discord.DiscordRpcManager { *; }
+-keepclassmembers class com.wavlin.music.integration.discord.DiscordRpcManager {
     native <methods>;
 }
 

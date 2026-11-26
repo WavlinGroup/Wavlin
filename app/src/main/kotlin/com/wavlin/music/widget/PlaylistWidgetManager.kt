@@ -29,7 +29,7 @@ import com.wavlin.music.MainActivity
 import com.wavlin.music.R
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.db.entities.Playlist
-import com.wavlin.music.di.ApplicationScope
+import com.wavlin.music.core.inject.ApplicationScope
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope

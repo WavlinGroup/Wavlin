@@ -29,7 +29,7 @@ import com.wavlin.music.MainActivity
 import com.wavlin.music.R
 import com.wavlin.music.db.DatabaseDao
 import com.wavlin.music.db.entities.RecognitionHistory
-import com.wavlin.music.recognition.MusicRecognitionService
+import com.wavlin.music.integration.identify.MusicRecognitionService
 import com.wavlin.shazamkit.models.RecognitionStatus
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn

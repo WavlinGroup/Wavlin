@@ -29,6 +29,26 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android,armv7-linux-androideabi
+
+      - name: Install cargo-ndk
+        run: cargo install cargo-ndk --locked
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Build Flutter AAR (arm64-v8a, armeabi-v7a)
+        working-directory: flutter/wavlin_visuals
+        run: |
+          flutter pub get
+          flutter build aar --no-debug --no-profile --target-platform android-arm,android-arm64
+
       - name: Restore PR debug keystore
         id: pr_keystore
         uses: actions/cache/restore@v5
@@ -60,6 +80,8 @@ jobs:
         run: ./gradlew --console=plain assembleFossDebug :app:lintFossDebug --warning-mode summary
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
+          WAVLIN_REQUIRE_RUST: "true"
+          WAVLIN_REQUIRE_FLUTTER: "true"
           WAVLIN_APPLICATION_ID: com.wavlin.music.pr.p${{ github.event.number }}
           WAVLIN_APP_NAME: Wavlin PR ${{ github.event.number }}
           WAVLIN_DEBUG_KEYSTORE_PATH: pr-debug.keystore
@@ -67,6 +89,7 @@ jobs:
           LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
           LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
           SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          DISCORD_APP_ID: ${{ secrets.DISCORD_APP_ID }}
           SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
 
       - name: Upload APK

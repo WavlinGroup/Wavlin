@@ -1,0 +1,12 @@
+[package]
+name = "player-config-core"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+description = "Wavlin player-config core: validation of the cipher player-config JSON, ported from PlayerConfigParser.kt"
+
+[lib]
+crate-type = ["rlib"]
+
+[dependencies]
+serde_json = { version = "1", features = ["preserve_order", "arbitrary_precision"] }

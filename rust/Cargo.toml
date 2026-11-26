@@ -1,0 +1,20 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/audio-dsp",
+    "crates/audio-jni",
+    "crates/cipher-core",
+    "crates/lyrics-core",
+    "crates/player-config-core",
+    "crates/queue-core",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1

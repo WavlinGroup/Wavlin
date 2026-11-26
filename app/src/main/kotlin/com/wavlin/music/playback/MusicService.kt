@@ -24,8 +24,8 @@ import android.media.AudioDeviceInfo
 import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.audiofx.AudioEffect
-import com.wavlin.music.playback.audio.VolumeNormalizationAudioProcessor
-import com.wavlin.music.utils.safeDataStoreEdit
+import com.wavlin.music.sound.processors.VolumeNormalizationAudioProcessor
+import com.wavlin.music.core.util.safeDataStoreEdit
 import android.net.ConnectivityManager
 import android.os.Binder
 import android.os.Build
@@ -103,76 +103,76 @@ import com.wavlin.innertube.models.WatchEndpoint
 import com.wavlin.lastfm.LastFM
 import com.wavlin.music.MainActivity
 import com.wavlin.music.R
-import com.wavlin.music.constants.AndroidAutoTargetPlaylistKey
-import com.wavlin.music.constants.AudioNormalizationKey
-import com.wavlin.music.constants.AudioOffload
-import com.wavlin.music.constants.AudioQualityKey
-import com.wavlin.music.constants.LosslessStreamingEnabledKey
-import com.wavlin.music.constants.AudioTrackPlaybackParamsKey
-import com.wavlin.music.constants.AutoDownloadOnLikeKey
-import com.wavlin.music.constants.AutoLoadMoreKey
-import com.wavlin.music.constants.AutoSkipNextOnErrorKey
-import com.wavlin.music.constants.StreamSourceAndroidVRKey
-import com.wavlin.music.constants.StreamSourceTVHTML5Key
-import com.wavlin.music.constants.StreamSourceVisionOSKey
-import com.wavlin.music.constants.StreamSourceWebCreatorKey
-import com.wavlin.music.constants.StreamSourceWebRemixKey
-import com.wavlin.music.constants.AutoplayKey
-import com.wavlin.music.constants.CrossfadeDurationKey
-import com.wavlin.music.constants.CrossfadeEnabledKey
-import com.wavlin.music.constants.CrossfadeGaplessKey
-import com.wavlin.music.constants.KeepPlayingOverOtherAppsKey
-import com.wavlin.music.constants.DisableLoadMoreWhenRepeatAllKey
-import com.wavlin.music.constants.DiscordActivityNameKey
-import com.wavlin.music.constants.DiscordActivityTypeKey
-import com.wavlin.music.constants.DiscordAdvancedModeKey
-import com.wavlin.music.constants.DiscordButton1EnabledKey
-import com.wavlin.music.constants.DiscordButton1LabelKey
-import com.wavlin.music.constants.DiscordButton1UrlKey
-import com.wavlin.music.constants.DiscordButton2EnabledKey
-import com.wavlin.music.constants.DiscordButton2LabelKey
-import com.wavlin.music.constants.DiscordButton2UrlKey
-import com.wavlin.music.constants.DiscordDetailsTemplateKey
-import com.wavlin.music.constants.DiscordStateTemplateKey
-import com.wavlin.music.constants.DiscordUserStatusKey
-import com.wavlin.music.constants.EnableDiscordRPCKey
-import com.wavlin.music.discord.DiscordActivity
-import com.wavlin.music.discord.DiscordDefaults
-import com.wavlin.music.discord.DiscordRpcManager
-import com.wavlin.music.discord.DiscordActivityBuilder
-import com.wavlin.music.discord.DiscordTemplateRenderer
-import com.wavlin.music.discord.PresenceStatus
-import com.wavlin.music.constants.EnableLastFMScrobblingKey
-import com.wavlin.music.constants.EnableSongCacheKey
-import com.wavlin.music.constants.HideExplicitKey
-import com.wavlin.music.constants.HideVideoSongsKey
-import com.wavlin.music.constants.HistoryDuration
-import com.wavlin.music.constants.LastFMUseNowPlaying
-import com.wavlin.music.constants.MediaSessionConstants
-import com.wavlin.music.constants.MediaSessionConstants.CommandAddToTargetPlaylist
-import com.wavlin.music.constants.MediaSessionConstants.CommandToggleLike
-import com.wavlin.music.constants.MediaSessionConstants.CommandToggleRepeatMode
-import com.wavlin.music.constants.MediaSessionConstants.CommandToggleShuffle
-import com.wavlin.music.constants.MediaSessionConstants.CommandToggleStartRadio
-import com.wavlin.music.constants.PauseListenHistoryKey
-import com.wavlin.music.constants.PauseOnMute
-import com.wavlin.music.constants.PersistentQueueKey
-import com.wavlin.music.constants.PersistentShuffleAcrossQueuesKey
-import com.wavlin.music.constants.PlayerVolumeKey
-import com.wavlin.music.constants.PreventDuplicateTracksInQueueKey
-import com.wavlin.music.constants.RememberShuffleAndRepeatKey
-import com.wavlin.music.constants.RepeatModeKey
-import com.wavlin.music.constants.ResumeOnBluetoothConnectKey
-import com.wavlin.music.constants.ScrobbleDelayPercentKey
-import com.wavlin.music.constants.ScrobbleDelaySecondsKey
-import com.wavlin.music.constants.ScrobbleMinSongDurationKey
-import com.wavlin.music.constants.ShowLyricsKey
-import com.wavlin.music.constants.ShuffleModeKey
-import com.wavlin.music.constants.ShufflePlaylistFirstKey
-import com.wavlin.music.constants.SimilarContent
-import com.wavlin.music.constants.SkipSilenceInstantKey
-import com.wavlin.music.constants.SkipSilenceKey
-import com.wavlin.music.constants.StopMusicOnTaskClearKey
+import com.wavlin.music.core.config.AndroidAutoTargetPlaylistKey
+import com.wavlin.music.core.config.AudioNormalizationKey
+import com.wavlin.music.core.config.AudioOffload
+import com.wavlin.music.core.config.AudioQualityKey
+import com.wavlin.music.core.config.LosslessStreamingEnabledKey
+import com.wavlin.music.core.config.AudioTrackPlaybackParamsKey
+import com.wavlin.music.core.config.AutoDownloadOnLikeKey
+import com.wavlin.music.core.config.AutoLoadMoreKey
+import com.wavlin.music.core.config.AutoSkipNextOnErrorKey
+import com.wavlin.music.core.config.StreamSourceAndroidVRKey
+import com.wavlin.music.core.config.StreamSourceTVHTML5Key
+import com.wavlin.music.core.config.StreamSourceVisionOSKey
+import com.wavlin.music.core.config.StreamSourceWebCreatorKey
+import com.wavlin.music.core.config.StreamSourceWebRemixKey
+import com.wavlin.music.core.config.AutoplayKey
+import com.wavlin.music.core.config.CrossfadeDurationKey
+import com.wavlin.music.core.config.CrossfadeEnabledKey
+import com.wavlin.music.core.config.CrossfadeGaplessKey
+import com.wavlin.music.core.config.KeepPlayingOverOtherAppsKey
+import com.wavlin.music.core.config.DisableLoadMoreWhenRepeatAllKey
+import com.wavlin.music.core.config.DiscordActivityNameKey
+import com.wavlin.music.core.config.DiscordActivityTypeKey
+import com.wavlin.music.core.config.DiscordAdvancedModeKey
+import com.wavlin.music.core.config.DiscordButton1EnabledKey
+import com.wavlin.music.core.config.DiscordButton1LabelKey
+import com.wavlin.music.core.config.DiscordButton1UrlKey
+import com.wavlin.music.core.config.DiscordButton2EnabledKey
+import com.wavlin.music.core.config.DiscordButton2LabelKey
+import com.wavlin.music.core.config.DiscordButton2UrlKey
+import com.wavlin.music.core.config.DiscordDetailsTemplateKey
+import com.wavlin.music.core.config.DiscordStateTemplateKey
+import com.wavlin.music.core.config.DiscordUserStatusKey
+import com.wavlin.music.core.config.EnableDiscordRPCKey
+import com.wavlin.music.integration.discord.DiscordActivity
+import com.wavlin.music.integration.discord.DiscordDefaults
+import com.wavlin.music.integration.discord.DiscordRpcManager
+import com.wavlin.music.integration.discord.DiscordActivityBuilder
+import com.wavlin.music.integration.discord.DiscordTemplateRenderer
+import com.wavlin.music.integration.discord.PresenceStatus
+import com.wavlin.music.core.config.EnableLastFMScrobblingKey
+import com.wavlin.music.core.config.EnableSongCacheKey
+import com.wavlin.music.core.config.HideExplicitKey
+import com.wavlin.music.core.config.HideVideoSongsKey
+import com.wavlin.music.core.config.HistoryDuration
+import com.wavlin.music.core.config.LastFMUseNowPlaying
+import com.wavlin.music.core.config.MediaSessionConstants
+import com.wavlin.music.core.config.MediaSessionConstants.CommandAddToTargetPlaylist
+import com.wavlin.music.core.config.MediaSessionConstants.CommandToggleLike
+import com.wavlin.music.core.config.MediaSessionConstants.CommandToggleRepeatMode
+import com.wavlin.music.core.config.MediaSessionConstants.CommandToggleShuffle
+import com.wavlin.music.core.config.MediaSessionConstants.CommandToggleStartRadio
+import com.wavlin.music.core.config.PauseListenHistoryKey
+import com.wavlin.music.core.config.PauseOnMute
+import com.wavlin.music.core.config.PersistentQueueKey
+import com.wavlin.music.core.config.PersistentShuffleAcrossQueuesKey
+import com.wavlin.music.core.config.PlayerVolumeKey
+import com.wavlin.music.core.config.PreventDuplicateTracksInQueueKey
+import com.wavlin.music.core.config.RememberShuffleAndRepeatKey
+import com.wavlin.music.core.config.RepeatModeKey
+import com.wavlin.music.core.config.ResumeOnBluetoothConnectKey
+import com.wavlin.music.core.config.ScrobbleDelayPercentKey
+import com.wavlin.music.core.config.ScrobbleDelaySecondsKey
+import com.wavlin.music.core.config.ScrobbleMinSongDurationKey
+import com.wavlin.music.core.config.ShowLyricsKey
+import com.wavlin.music.core.config.ShuffleModeKey
+import com.wavlin.music.core.config.ShufflePlaylistFirstKey
+import com.wavlin.music.core.config.SimilarContent
+import com.wavlin.music.core.config.SkipSilenceInstantKey
+import com.wavlin.music.core.config.SkipSilenceKey
+import com.wavlin.music.core.config.StopMusicOnTaskClearKey
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.db.entities.Event
 import com.wavlin.music.db.entities.FormatEntity
@@ -180,56 +180,56 @@ import com.wavlin.music.db.entities.LyricsEntity
 import com.wavlin.music.db.entities.PlaylistEntity
 import com.wavlin.music.db.entities.RelatedSongMap
 import com.wavlin.music.db.entities.Song
-import com.wavlin.music.di.DownloadCache
-import com.wavlin.music.di.PlayerCache
-import com.wavlin.music.eq.EqualizerService
-import com.wavlin.music.eq.audio.CustomEqualizerAudioProcessor
-import com.wavlin.music.eq.data.EQProfileRepository
-import com.wavlin.music.extensions.SilentHandler
-import com.wavlin.music.extensions.collect
-import com.wavlin.music.extensions.collectLatest
-import com.wavlin.music.extensions.currentMetadata
-import com.wavlin.music.extensions.findNextMediaItemById
-import com.wavlin.music.extensions.mediaItems
-import com.wavlin.music.extensions.metadata
-import com.wavlin.music.extensions.setOffloadEnabled
-import com.wavlin.music.extensions.toEnum
-import com.wavlin.music.extensions.toMediaItem
-import com.wavlin.music.extensions.toPersistQueue
-import com.wavlin.music.extensions.toQueue
-import com.wavlin.music.local.LocalRoutingDataSource
-import com.wavlin.music.local.LocalSongs
-import com.wavlin.music.lyrics.LyricsHelper
+import com.wavlin.music.core.inject.DownloadCache
+import com.wavlin.music.core.inject.PlayerCache
+import com.wavlin.music.sound.equalizer.EqualizerService
+import com.wavlin.music.sound.equalizer.engine.CustomEqualizerAudioProcessor
+import com.wavlin.music.sound.equalizer.profiles.EQProfileRepository
+import com.wavlin.music.core.ext.SilentHandler
+import com.wavlin.music.core.ext.collect
+import com.wavlin.music.core.ext.collectLatest
+import com.wavlin.music.core.ext.currentMetadata
+import com.wavlin.music.core.ext.findNextMediaItemById
+import com.wavlin.music.core.ext.mediaItems
+import com.wavlin.music.core.ext.metadata
+import com.wavlin.music.core.ext.setOffloadEnabled
+import com.wavlin.music.core.ext.toEnum
+import com.wavlin.music.core.ext.toMediaItem
+import com.wavlin.music.core.ext.toPersistQueue
+import com.wavlin.music.core.ext.toQueue
+import com.wavlin.music.data.local.LocalRoutingDataSource
+import com.wavlin.music.data.local.LocalSongs
+import com.wavlin.music.integration.lyrics.LyricsHelper
 import com.wavlin.music.models.PersistPlayerState
 import com.wavlin.music.models.PersistQueue
 import com.wavlin.music.models.toMediaMetadata
-import com.wavlin.music.playback.alarm.MusicAlarmScheduler
-import com.wavlin.music.playback.alarm.MusicAlarmStore
-import com.wavlin.music.playback.audio.SilenceDetectorAudioProcessor
-import com.wavlin.music.playback.queues.EmptyQueue
-import com.wavlin.music.playback.queues.ListQueue
-import com.wavlin.music.playback.queues.Queue
-import com.wavlin.music.playback.queues.YouTubeQueue
-import com.wavlin.music.playback.queues.YouTubePlaylistQueue
-import com.wavlin.music.playback.queues.filterExplicit
-import com.wavlin.music.playback.queues.filterVideoSongs
-import com.wavlin.music.constants.LoudnessLevel
-import com.wavlin.music.constants.LoudnessLevelKey
-import com.wavlin.music.utils.CoilBitmapLoader
-import com.wavlin.music.utils.NetworkConnectivityObserver
-import com.wavlin.music.utils.ScrobbleManager
-import com.wavlin.music.utils.SyncUtils
-import com.wavlin.music.utils.getArtistSeparator
-import com.wavlin.music.utils.joinToArtistString
-import com.wavlin.music.utils.YTPlayerUtils
-import com.wavlin.music.utils.cipher.CipherDeobfuscator
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.get
-import com.wavlin.music.utils.reportException
+import com.wavlin.music.media.alarm.MusicAlarmScheduler
+import com.wavlin.music.media.alarm.MusicAlarmStore
+import com.wavlin.music.sound.processors.SilenceDetectorAudioProcessor
+import com.wavlin.music.media.queue.EmptyQueue
+import com.wavlin.music.media.queue.ListQueue
+import com.wavlin.music.media.queue.Queue
+import com.wavlin.music.media.queue.YouTubeQueue
+import com.wavlin.music.media.queue.YouTubePlaylistQueue
+import com.wavlin.music.media.queue.filterExplicit
+import com.wavlin.music.media.queue.filterVideoSongs
+import com.wavlin.music.core.config.LoudnessLevel
+import com.wavlin.music.core.config.LoudnessLevelKey
+import com.wavlin.music.core.util.CoilBitmapLoader
+import com.wavlin.music.core.util.NetworkConnectivityObserver
+import com.wavlin.music.core.util.ScrobbleManager
+import com.wavlin.music.core.util.SyncUtils
+import com.wavlin.music.core.util.getArtistSeparator
+import com.wavlin.music.core.util.joinToArtistString
+import com.wavlin.music.stream.YTPlayerUtils
+import com.wavlin.music.stream.cipher.CipherDeobfuscator
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.get
+import com.wavlin.music.core.util.reportException
 import com.wavlin.music.widget.WavlinWidgetManager
 import com.wavlin.music.widget.MusicWidgetReceiver
 import com.wavlin.music.widget.PlaylistWidgetReceiver
-import com.wavlin.music.ui.utils.resize
+import com.wavlin.music.ui.support.resize
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CancellationException
 import kotlin.coroutines.coroutineContext
@@ -267,6 +267,9 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 import kotlin.random.Random
 import java.util.Collections
+import com.wavlin.music.media.cast.CastConnectionHandler
+import com.wavlin.music.media.session.MediaLibrarySessionCallback
+import com.wavlin.music.media.timer.SleepTimer
 
 private const val INSTANT_SILENCE_SKIP_STEP_MS = 15_000L
 private const val INSTANT_SILENCE_SKIP_SETTLE_MS = 350L
@@ -300,7 +303,7 @@ class MusicService :
     lateinit var widgetManager: WavlinWidgetManager
 
     @Inject
-    lateinit var listenTogetherManager: com.wavlin.music.listentogether.ListenTogetherManager
+    lateinit var listenTogetherManager: com.wavlin.music.integration.together.ListenTogetherManager
 
     private lateinit var audioManager: AudioManager
     private var audioFocusRequest: AudioFocusRequest? = null
@@ -341,7 +344,7 @@ class MusicService :
     private val isNetworkConnected = MutableStateFlow(false)
     val currentStreamClient = MutableStateFlow<String?>(null)
 
-    private lateinit var audioQuality: com.wavlin.music.constants.AudioQuality
+    private lateinit var audioQuality: com.wavlin.music.core.config.AudioQuality
     private var losslessStreamingEnabled: Boolean = false
 
     private var currentQueue: Queue = EmptyQueue
@@ -642,11 +645,11 @@ class MusicService :
     override fun onCreate() {
         super.onCreate()
         isRunning = true
-        com.wavlin.music.audio.dolby.DolbyAtmosManager.init(this)
-        com.wavlin.music.audio.dolby.DolbyAtmosV2Manager.init(this)
-        com.wavlin.music.audio.xiaomi.XiaomiSoundManager.init(this)
-        com.wavlin.music.audio.dts.DtsSoundManager.init(this)
-        com.wavlin.music.audio.reverb.ReverbManager.init(this)
+        com.wavlin.music.sound.effects.dolby.DolbyAtmosManager.init(this)
+        com.wavlin.music.sound.effects.dolby.DolbyAtmosV2Manager.init(this)
+        com.wavlin.music.sound.effects.xiaomi.XiaomiSoundManager.init(this)
+        com.wavlin.music.sound.effects.dts.DtsSoundManager.init(this)
+        com.wavlin.music.sound.effects.reverb.ReverbManager.init(this)
         shutdownDeferred = kotlinx.coroutines.CompletableDeferred<Unit>()
 
         setListener(
@@ -791,12 +794,12 @@ class MusicService :
         val startupBaseQ = startupPrefs!![AudioQualityKey]?.let { value ->
             // Legacy migration: LOSSLESS was previously a picker value; now the toggle owns it.
             when (value) {
-                "LOSSLESS" -> { losslessStreamingEnabled = true; com.wavlin.music.constants.AudioQuality.HIGH }
-                "VERY_HIGH" -> com.wavlin.music.constants.AudioQuality.HIGH
-                else -> com.wavlin.music.constants.AudioQuality.entries.find { it.name == value }
+                "LOSSLESS" -> { losslessStreamingEnabled = true; com.wavlin.music.core.config.AudioQuality.HIGH }
+                "VERY_HIGH" -> com.wavlin.music.core.config.AudioQuality.HIGH
+                else -> com.wavlin.music.core.config.AudioQuality.entries.find { it.name == value }
             }
-        } ?: com.wavlin.music.constants.AudioQuality.AUTO
-        audioQuality = if (losslessStreamingEnabled) com.wavlin.music.constants.AudioQuality.LOSSLESS else startupBaseQ
+        } ?: com.wavlin.music.core.config.AudioQuality.AUTO
+        audioQuality = if (losslessStreamingEnabled) com.wavlin.music.core.config.AudioQuality.LOSSLESS else startupBaseQ
         playerVolume = MutableStateFlow((startupPrefs!![PlayerVolumeKey] ?: 1f).coerceIn(0f, 1f))
 
         initializeCast()
@@ -844,15 +847,15 @@ class MusicService :
                     val baseQ = it[AudioQualityKey]?.let { value ->
                         // Legacy: LOSSLESS in prefs = HIGH + toggle on
                         when (value) {
-                            "LOSSLESS", "VERY_HIGH" -> com.wavlin.music.constants.AudioQuality.HIGH
-                            else -> com.wavlin.music.constants.AudioQuality.entries.find { it.name == value }
+                            "LOSSLESS", "VERY_HIGH" -> com.wavlin.music.core.config.AudioQuality.HIGH
+                            else -> com.wavlin.music.core.config.AudioQuality.entries.find { it.name == value }
                         }
-                    } ?: com.wavlin.music.constants.AudioQuality.AUTO
+                    } ?: com.wavlin.music.core.config.AudioQuality.AUTO
                     isLossless to baseQ
                 }.distinctUntilChanged()
                 .collect { (isLossless, baseQ) ->
                     losslessStreamingEnabled = isLossless
-                    val newQuality = if (isLossless) com.wavlin.music.constants.AudioQuality.LOSSLESS else baseQ
+                    val newQuality = if (isLossless) com.wavlin.music.core.config.AudioQuality.LOSSLESS else baseQ
                     val oldQuality = audioQuality
                     audioQuality = newQuality
 
@@ -1008,9 +1011,9 @@ class MusicService :
         combine(
             dataStore.data.map { it[AudioOffload] ?: false },
             dataStore.data.map { it[CrossfadeEnabledKey] ?: false },
-            com.wavlin.music.audio.reverb.ReverbManager.isEnabled,
-            com.wavlin.music.audio.dolby.DolbyAtmosManager.isAtmosEnabledByUser,
-            combine(com.wavlin.music.audio.dolby.DolbyAtmosV2Manager.isEnabled, com.wavlin.music.audio.xiaomi.XiaomiSoundManager.isEnabled, com.wavlin.music.audio.dts.DtsSoundManager.isEnabled) { dolbyV2, xiaomi, dts -> dolbyV2 || xiaomi || dts },
+            com.wavlin.music.sound.effects.reverb.ReverbManager.isEnabled,
+            com.wavlin.music.sound.effects.dolby.DolbyAtmosManager.isAtmosEnabledByUser,
+            combine(com.wavlin.music.sound.effects.dolby.DolbyAtmosV2Manager.isEnabled, com.wavlin.music.sound.effects.xiaomi.XiaomiSoundManager.isEnabled, com.wavlin.music.sound.effects.dts.DtsSoundManager.isEnabled) { dolbyV2, xiaomi, dts -> dolbyV2 || xiaomi || dts },
         ) { offloadPref, crossfadeEnabled, reverbEnabled, dolbyEnabled, systemEffectEnabled ->
             // Offload is disabled with crossfade (volume ramp issues), reverb and Dolby Atmos (offloaded tracks bypass audio processors)
             if (crossfadeEnabled || reverbEnabled || dolbyEnabled || systemEffectEnabled) false else offloadPref
@@ -1385,10 +1388,10 @@ class MusicService :
         equalizerService.addAudioProcessor(eqProcessor)
 
         val silenceProcessor = SilenceDetectorAudioProcessor { handleLongSilenceDetected() }
-        val reverbProcessor = com.wavlin.music.playback.audio.ReverbAudioProcessor()
-        com.wavlin.music.audio.reverb.ReverbManager.setProcessor(reverbProcessor)
-        val dolbyProcessor = com.wavlin.music.playback.audio.DolbyAtmosAudioProcessor()
-        com.wavlin.music.audio.dolby.DolbyAtmosManager.registerProcessor(dolbyProcessor)
+        val reverbProcessor = com.wavlin.music.sound.processors.ReverbAudioProcessor()
+        com.wavlin.music.sound.effects.reverb.ReverbManager.setProcessor(reverbProcessor)
+        val dolbyProcessor = com.wavlin.music.sound.processors.DolbyAtmosAudioProcessor()
+        com.wavlin.music.sound.effects.dolby.DolbyAtmosManager.registerProcessor(dolbyProcessor)
 
         // Set initial state — use pre-read prefs when available, otherwise fall back to DataStore
         val useAudioTrackPlaybackParams = if (prefs != null) {
@@ -1439,14 +1442,14 @@ class MusicService :
         if (prefs != null) {
             val offload = prefs[AudioOffload] ?: false
             val crossfade = prefs[CrossfadeEnabledKey] ?: false
-            player.setOffloadEnabled(if (crossfade || com.wavlin.music.audio.reverb.ReverbManager.isEnabled.value || com.wavlin.music.audio.dolby.DolbyAtmosManager.isAtmosEnabledByUser.value || com.wavlin.music.audio.dolby.DolbyAtmosV2Manager.isEnabled.value || com.wavlin.music.audio.xiaomi.XiaomiSoundManager.isEnabled.value || com.wavlin.music.audio.dts.DtsSoundManager.isEnabled.value) false else offload)
+            player.setOffloadEnabled(if (crossfade || com.wavlin.music.sound.effects.reverb.ReverbManager.isEnabled.value || com.wavlin.music.sound.effects.dolby.DolbyAtmosManager.isAtmosEnabledByUser.value || com.wavlin.music.sound.effects.dolby.DolbyAtmosV2Manager.isEnabled.value || com.wavlin.music.sound.effects.xiaomi.XiaomiSoundManager.isEnabled.value || com.wavlin.music.sound.effects.dts.DtsSoundManager.isEnabled.value) false else offload)
             player.skipSilenceEnabled = prefs[SkipSilenceKey] ?: false
         } else {
             player.apply {
                 runBlocking {
                     val offload = dataStore.get(AudioOffload, false)
                     val crossfade = dataStore.get(CrossfadeEnabledKey, false)
-                    setOffloadEnabled(if (crossfade || com.wavlin.music.audio.reverb.ReverbManager.isEnabled.value || com.wavlin.music.audio.dolby.DolbyAtmosManager.isAtmosEnabledByUser.value || com.wavlin.music.audio.dolby.DolbyAtmosV2Manager.isEnabled.value || com.wavlin.music.audio.xiaomi.XiaomiSoundManager.isEnabled.value || com.wavlin.music.audio.dts.DtsSoundManager.isEnabled.value) false else offload)
+                    setOffloadEnabled(if (crossfade || com.wavlin.music.sound.effects.reverb.ReverbManager.isEnabled.value || com.wavlin.music.sound.effects.dolby.DolbyAtmosManager.isAtmosEnabledByUser.value || com.wavlin.music.sound.effects.dolby.DolbyAtmosV2Manager.isEnabled.value || com.wavlin.music.sound.effects.xiaomi.XiaomiSoundManager.isEnabled.value || com.wavlin.music.sound.effects.dts.DtsSoundManager.isEnabled.value) false else offload)
                     skipSilenceEnabled = dataStore.get(SkipSilenceKey, false)
                 }
             }
@@ -2194,6 +2197,12 @@ class MusicService :
                 }
                 prevList.reverse() // preserve original forward order
 
+                val nativeOrder = NativeQueue.playNextOrder(prevList, orderAfter, currentIndex, insertIndex, items.size, size)
+                if (nativeOrder != null) {
+                    player.setShuffleOrder(DefaultShuffleOrder(nativeOrder, System.currentTimeMillis()))
+                    return
+                }
+
                 val existingOrder = (prevList + orderAfter).filter { it != currentIndex && it !in newIndices }
 
                 // Build new shuffle order: current -> newly inserted (in insertion order) -> rest
@@ -2491,11 +2500,11 @@ class MusicService :
 
         isAudioEffectSessionOpened = true
         openedAudioEffectSessionId = audioSessionId
-        com.wavlin.music.audio.dolby.DolbyAtmosManager.attachSession(audioSessionId)
-        com.wavlin.music.audio.dolby.DolbyAtmosV2Manager.attachSession(audioSessionId)
-        com.wavlin.music.audio.xiaomi.XiaomiSoundManager.attachSession(audioSessionId)
-        com.wavlin.music.audio.dts.DtsSoundManager.attachSession(audioSessionId)
-        com.wavlin.music.audio.reverb.ReverbManager.attachSession(audioSessionId, player)
+        com.wavlin.music.sound.effects.dolby.DolbyAtmosManager.attachSession(audioSessionId)
+        com.wavlin.music.sound.effects.dolby.DolbyAtmosV2Manager.attachSession(audioSessionId)
+        com.wavlin.music.sound.effects.xiaomi.XiaomiSoundManager.attachSession(audioSessionId)
+        com.wavlin.music.sound.effects.dts.DtsSoundManager.attachSession(audioSessionId)
+        com.wavlin.music.sound.effects.reverb.ReverbManager.attachSession(audioSessionId, player)
 
         sendBroadcast(
             Intent(android.media.audiofx.AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION).apply {
@@ -2520,10 +2529,10 @@ class MusicService :
                     sessionIdToClose == openedAudioEffectSessionId
 
         if (isClosingCurrentSession) {
-            com.wavlin.music.audio.reverb.ReverbManager.detachSession(player)
-            com.wavlin.music.audio.dolby.DolbyAtmosV2Manager.detachSession()
-            com.wavlin.music.audio.xiaomi.XiaomiSoundManager.detachSession()
-            com.wavlin.music.audio.dts.DtsSoundManager.detachSession()
+            com.wavlin.music.sound.effects.reverb.ReverbManager.detachSession(player)
+            com.wavlin.music.sound.effects.dolby.DolbyAtmosV2Manager.detachSession()
+            com.wavlin.music.sound.effects.xiaomi.XiaomiSoundManager.detachSession()
+            com.wavlin.music.sound.effects.dts.DtsSoundManager.detachSession()
             isAudioEffectSessionOpened = false
             openedAudioEffectSessionId = C.AUDIO_SESSION_ID_UNSET
         }
@@ -2871,6 +2880,11 @@ class MusicService :
         shufflePlaylistFirst: Boolean,
     ) {
         if (totalCount == 0) return
+
+        NativeQueue.shuffleOrder(currentIndex, totalCount, shufflePlaylistFirst, originalQueueSize)?.let { order ->
+            player.setShuffleOrder(DefaultShuffleOrder(order, System.currentTimeMillis()))
+            return
+        }
 
         if (shufflePlaylistFirst && originalQueueSize > 0 && originalQueueSize < totalCount) {
             // Shuffle original items and added items separately
@@ -3944,8 +3958,8 @@ class MusicService :
     private fun createRenderersFactory(
         normalizationProcessor: VolumeNormalizationAudioProcessor,
         eqProcessor: CustomEqualizerAudioProcessor,
-        reverbProcessor: com.wavlin.music.playback.audio.ReverbAudioProcessor,
-        dolbyProcessor: com.wavlin.music.playback.audio.DolbyAtmosAudioProcessor,
+        reverbProcessor: com.wavlin.music.sound.processors.ReverbAudioProcessor,
+        dolbyProcessor: com.wavlin.music.sound.processors.DolbyAtmosAudioProcessor,
         silenceProcessor: SilenceDetectorAudioProcessor,
         useAudioTrackPlaybackParams: Boolean,
     ) = object : DefaultRenderersFactory(this) {
@@ -4248,10 +4262,10 @@ class MusicService :
 
     override fun onDestroy() {
         isRunning = false
-        com.wavlin.music.audio.dolby.DolbyAtmosManager.release()
-        com.wavlin.music.audio.dolby.DolbyAtmosV2Manager.release()
-        com.wavlin.music.audio.xiaomi.XiaomiSoundManager.release()
-        com.wavlin.music.audio.dts.DtsSoundManager.release()
+        com.wavlin.music.sound.effects.dolby.DolbyAtmosManager.release()
+        com.wavlin.music.sound.effects.dolby.DolbyAtmosV2Manager.release()
+        com.wavlin.music.sound.effects.xiaomi.XiaomiSoundManager.release()
+        com.wavlin.music.sound.effects.dts.DtsSoundManager.release()
 
         if (!::player.isInitialized) {
             try {
@@ -4750,7 +4764,7 @@ class MusicService :
      * Initialize Google Cast support
      */
     private fun initializeCast() {
-        if (dataStore.get(com.wavlin.music.constants.EnableGoogleCastKey, true)) {
+        if (dataStore.get(com.wavlin.music.core.config.EnableGoogleCastKey, true)) {
             try {
                 castConnectionHandler = CastConnectionHandler(this, scope, this)
                 castConnectionHandler?.initialize()

@@ -18,7 +18,7 @@ import android.view.View
 import android.widget.RemoteViews
 import com.wavlin.music.MainActivity
 import com.wavlin.music.R
-import com.wavlin.music.recognition.MusicRecognitionService
+import com.wavlin.music.integration.identify.MusicRecognitionService
 import com.wavlin.music.widget.MusicRecognizerWidgetService.Companion.ALBUM_ART_CACHE_FILE
 import com.wavlin.music.widget.MusicRecognizerWidgetService.Companion.PREF_ARTIST_NAME
 import com.wavlin.music.widget.MusicRecognizerWidgetService.Companion.PREF_COVER_ART_PATH

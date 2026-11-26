@@ -1,0 +1,18 @@
+/**
+ * Wavlin Project (C) 2026
+ * Licensed under GPL-3.0 | See git history for contributors
+ */
+
+package com.wavlin.music.ui.support
+
+import androidx.navigation.NavController
+import com.wavlin.music.ui.pages.nav.Screens
+fun NavController.backToMain() {
+    val mainRoutes = Screens.MainScreens.map { it.route }
+
+    while (previousBackStackEntry != null &&
+        currentBackStackEntry?.destination?.route !in mainRoutes
+    ) {
+        popBackStack()
+    }
+}

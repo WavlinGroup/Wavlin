@@ -5,11 +5,11 @@
 
 package com.wavlin.music
 
-import com.wavlin.music.ui.component.appleGlassSupported
-import com.wavlin.music.ui.component.LocalGlassBackdrop
-import com.wavlin.music.ui.component.LocalInterfaceAppleMusic
-import com.wavlin.music.constants.InterfaceStyleKey
-import com.wavlin.music.constants.InterfaceStyle
+import com.wavlin.music.ui.kit.appleGlassSupported
+import com.wavlin.music.ui.kit.LocalGlassBackdrop
+import com.wavlin.music.ui.kit.LocalInterfaceAppleMusic
+import com.wavlin.music.core.config.InterfaceStyleKey
+import com.wavlin.music.core.config.InterfaceStyle
 import com.kyant.backdrop.backdrops.rememberLayerBackdrop
 import com.kyant.backdrop.backdrops.layerBackdrop
 import android.Manifest
@@ -133,7 +133,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
-import com.wavlin.music.ui.component.TopBarActions
+import com.wavlin.music.ui.kit.TopBarActions
 import coil3.imageLoader
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
@@ -143,86 +143,86 @@ import coil3.toBitmap
 import com.wavlin.innertube.YouTube
 import com.wavlin.innertube.models.SongItem
 import com.wavlin.innertube.models.WatchEndpoint
-import com.wavlin.music.constants.AppBarHeight
-import com.wavlin.music.constants.AppLanguageKey
-import com.wavlin.music.constants.CheckForUpdatesKey
-import com.wavlin.music.constants.DarkModeKey
-import com.wavlin.music.constants.DefaultOpenTabKey
-import com.wavlin.music.constants.DisableScreenshotKey
-import com.wavlin.music.constants.DynamicThemeKey
-import com.wavlin.music.constants.EnableHighRefreshRateKey
-import com.wavlin.music.constants.EnableLandscapeScalingKey
-import com.wavlin.music.constants.ExperimentalLyricsKey
-import com.wavlin.music.constants.LastSeenVersionKey
-import com.wavlin.music.constants.ListenTogetherInTopBarKey
-import com.wavlin.music.constants.ListenTogetherUsernameKey
-import com.wavlin.music.constants.LyricsProviderOrderKey
-import com.wavlin.music.constants.MiniPlayerBottomSpacing
-import com.wavlin.music.constants.MiniPlayerHeight
-import com.wavlin.music.constants.NavigationBarAnimationSpec
-import com.wavlin.music.constants.NavigationBarHeight
-import com.wavlin.music.constants.PauseSearchHistoryKey
-import com.wavlin.music.constants.PreferredLyricsProvider
-import com.wavlin.music.constants.PreferredLyricsProviderKey
-import com.wavlin.music.constants.PureBlackKey
-import com.wavlin.music.constants.ReduceGlassKey
-import com.wavlin.music.constants.SYSTEM_DEFAULT
-import com.wavlin.music.constants.SelectedThemeColorKey
-import com.wavlin.music.constants.SimpMusicMigrationDoneKey
-import com.wavlin.music.constants.SlimNavBarHeight
-import com.wavlin.music.constants.SlimNavBarKey
-import com.wavlin.music.constants.StopMusicOnTaskClearKey
-import com.wavlin.music.constants.UpdateNotificationsEnabledKey
+import com.wavlin.music.core.config.AppBarHeight
+import com.wavlin.music.core.config.AppLanguageKey
+import com.wavlin.music.core.config.CheckForUpdatesKey
+import com.wavlin.music.core.config.DarkModeKey
+import com.wavlin.music.core.config.DefaultOpenTabKey
+import com.wavlin.music.core.config.DisableScreenshotKey
+import com.wavlin.music.core.config.DynamicThemeKey
+import com.wavlin.music.core.config.EnableHighRefreshRateKey
+import com.wavlin.music.core.config.EnableLandscapeScalingKey
+import com.wavlin.music.core.config.ExperimentalLyricsKey
+import com.wavlin.music.core.config.LastSeenVersionKey
+import com.wavlin.music.core.config.ListenTogetherInTopBarKey
+import com.wavlin.music.core.config.ListenTogetherUsernameKey
+import com.wavlin.music.core.config.LyricsProviderOrderKey
+import com.wavlin.music.core.config.MiniPlayerBottomSpacing
+import com.wavlin.music.core.config.MiniPlayerHeight
+import com.wavlin.music.core.config.NavigationBarAnimationSpec
+import com.wavlin.music.core.config.NavigationBarHeight
+import com.wavlin.music.core.config.PauseSearchHistoryKey
+import com.wavlin.music.core.config.PreferredLyricsProvider
+import com.wavlin.music.core.config.PreferredLyricsProviderKey
+import com.wavlin.music.core.config.PureBlackKey
+import com.wavlin.music.core.config.ReduceGlassKey
+import com.wavlin.music.core.config.SYSTEM_DEFAULT
+import com.wavlin.music.core.config.SelectedThemeColorKey
+import com.wavlin.music.core.config.SimpMusicMigrationDoneKey
+import com.wavlin.music.core.config.SlimNavBarHeight
+import com.wavlin.music.core.config.SlimNavBarKey
+import com.wavlin.music.core.config.StopMusicOnTaskClearKey
+import com.wavlin.music.core.config.UpdateNotificationsEnabledKey
 import com.wavlin.music.db.MusicDatabase
 import com.wavlin.music.db.entities.SearchHistory
-import com.wavlin.music.extensions.toEnum
-import com.wavlin.music.lyrics.LyricsProviderRegistry
+import com.wavlin.music.core.ext.toEnum
+import com.wavlin.music.integration.lyrics.LyricsProviderRegistry
 import com.wavlin.music.models.toMediaMetadata
-import com.wavlin.music.playback.DownloadUtil
+import com.wavlin.music.media.download.DownloadUtil
 import com.wavlin.music.playback.MusicService
 import com.wavlin.music.playback.MusicService.MusicBinder
-import com.wavlin.music.playback.PlayerConnection
-import com.wavlin.music.playback.queues.YouTubeQueue
-import com.wavlin.music.ui.component.AccountDrawerContent
-import com.wavlin.music.ui.component.AccountDrawerHost
-import com.wavlin.music.ui.component.AppNavigationBar
-import com.wavlin.music.ui.component.LocalHazeState
-import com.wavlin.music.ui.component.LilyDiscBox
-import com.wavlin.music.ui.component.LocalPinkLilyTheme
+import com.wavlin.music.media.session.PlayerConnection
+import com.wavlin.music.media.queue.YouTubeQueue
+import com.wavlin.music.ui.kit.AccountDrawerContent
+import com.wavlin.music.ui.kit.AccountDrawerHost
+import com.wavlin.music.ui.kit.AppNavigationBar
+import com.wavlin.music.ui.kit.LocalHazeState
+import com.wavlin.music.ui.kit.LilyDiscBox
+import com.wavlin.music.ui.kit.LocalPinkLilyTheme
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
-import com.wavlin.music.ui.component.AppNavigationRail
-import com.wavlin.music.ui.component.BottomSheetMenu
-import com.wavlin.music.ui.component.BottomSheetPage
-import com.wavlin.music.ui.component.LocalBottomSheetPageState
-import com.wavlin.music.ui.component.LocalMenuState
-import com.wavlin.music.ui.component.rememberBottomSheetState
-import com.wavlin.music.ui.component.shimmer.ShimmerTheme
-import com.wavlin.music.ui.menu.YouTubeSongMenu
-import com.wavlin.music.ui.player.BottomSheetPlayer
-import com.wavlin.music.ui.screens.Screens
-import com.wavlin.music.ui.screens.navigationBuilder
-import com.wavlin.music.ui.screens.settings.ChangelogScreen
-import com.wavlin.music.ui.screens.settings.DarkMode
-import com.wavlin.music.ui.screens.settings.NavigationTab
-import com.wavlin.music.ui.theme.ColorSaver
-import com.wavlin.music.ui.theme.DefaultThemeColor
-import com.wavlin.music.ui.theme.SecretPinkThemeColor
-import com.wavlin.music.ui.theme.WavlinTheme
-import com.wavlin.music.ui.theme.extractThemeColor
-import com.wavlin.music.ui.utils.appBarScrollBehavior
-import com.wavlin.music.ui.utils.resetHeightOffset
-import com.wavlin.music.utils.SearchRoutes
-import com.wavlin.music.utils.SyncUtils
-import com.wavlin.music.utils.Updater
-import com.wavlin.music.utils.dataStore
-import com.wavlin.music.utils.safeDataStoreEdit
-import com.wavlin.music.utils.get
-import com.wavlin.music.utils.rememberEnumPreference
-import com.wavlin.music.utils.rememberPreference
-import com.wavlin.music.utils.reportException
-import com.wavlin.music.utils.setAppLocale
-import com.wavlin.music.viewmodels.HomeViewModel
+import com.wavlin.music.ui.kit.AppNavigationRail
+import com.wavlin.music.ui.kit.BottomSheetMenu
+import com.wavlin.music.ui.kit.BottomSheetPage
+import com.wavlin.music.ui.kit.LocalBottomSheetPageState
+import com.wavlin.music.ui.kit.LocalMenuState
+import com.wavlin.music.ui.kit.rememberBottomSheetState
+import com.wavlin.music.ui.kit.shimmer.ShimmerTheme
+import com.wavlin.music.ui.sheets.YouTubeSongMenu
+import com.wavlin.music.ui.nowplaying.BottomSheetPlayer
+import com.wavlin.music.ui.pages.nav.Screens
+import com.wavlin.music.ui.pages.nav.navigationBuilder
+import com.wavlin.music.ui.pages.settings.ChangelogScreen
+import com.wavlin.music.ui.pages.settings.DarkMode
+import com.wavlin.music.ui.pages.settings.NavigationTab
+import com.wavlin.music.ui.style.ColorSaver
+import com.wavlin.music.ui.style.DefaultThemeColor
+import com.wavlin.music.ui.style.SecretPinkThemeColor
+import com.wavlin.music.ui.style.WavlinTheme
+import com.wavlin.music.ui.style.extractThemeColor
+import com.wavlin.music.ui.support.appBarScrollBehavior
+import com.wavlin.music.ui.support.resetHeightOffset
+import com.wavlin.music.core.util.SearchRoutes
+import com.wavlin.music.core.util.SyncUtils
+import com.wavlin.music.core.util.Updater
+import com.wavlin.music.core.util.dataStore
+import com.wavlin.music.core.util.safeDataStoreEdit
+import com.wavlin.music.core.util.get
+import com.wavlin.music.core.util.rememberEnumPreference
+import com.wavlin.music.core.util.rememberPreference
+import com.wavlin.music.core.util.reportException
+import com.wavlin.music.core.util.setAppLocale
+import com.wavlin.music.ui.state.HomeViewModel
 import com.wavlin.music.widget.PlaylistWidgetReceiver
 import com.valentinilk.shimmer.LocalShimmerTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -268,7 +268,7 @@ class MainActivity : ComponentActivity() {
     lateinit var syncUtils: SyncUtils
 
     @Inject
-    lateinit var listenTogetherManager: com.wavlin.music.listentogether.ListenTogetherManager
+    lateinit var listenTogetherManager: com.wavlin.music.integration.together.ListenTogetherManager
 
     private lateinit var navController: NavHostController
     private var pendingIntent: Intent? = null
@@ -359,7 +359,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private val cpuBoost by lazy { com.wavlin.music.utils.CpuBoost(this) }
+    private val cpuBoost by lazy { com.wavlin.music.core.util.CpuBoost(this) }
 
     override fun onResume() {
         super.onResume()
@@ -561,7 +561,7 @@ class MainActivity : ComponentActivity() {
 
         val enableDynamicTheme by rememberPreference(DynamicThemeKey, defaultValue = true)
         val enableHighRefreshRate by rememberPreference(EnableHighRefreshRateKey, defaultValue = true)
-        val cropAlbumArtPref by rememberPreference(com.wavlin.music.constants.CropAlbumArtKey, defaultValue = false)
+        val cropAlbumArtPref by rememberPreference(com.wavlin.music.core.config.CropAlbumArtKey, defaultValue = false)
         val reduceGlassPref by rememberPreference(ReduceGlassKey, defaultValue = false)
 
         LaunchedEffect(enableHighRefreshRate) {
@@ -1044,7 +1044,7 @@ class MainActivity : ComponentActivity() {
                     appleStyle && appleGlassSupported() && !webViewRoute && !pinkWallpaper &&
                         visibleEntries.isNotEmpty() &&
                         visibleEntries.all { it.destination.route == Screens.Home.route }
-                val glassOverlayHost = remember { com.wavlin.music.ui.component.GlassOverlayHostState() }
+                val glassOverlayHost = remember { com.wavlin.music.ui.kit.GlassOverlayHostState() }
                 val glassBackdrop = rememberLayerBackdrop {
                     drawRect(baseBg)
                     drawContent()
@@ -1057,9 +1057,9 @@ class MainActivity : ComponentActivity() {
 
                 CompositionLocalProvider(
                     LocalInterfaceAppleMusic provides appleStyle,
-                    com.wavlin.music.ui.component.LocalPlayerGlassBackdrop provides (if (appleStyle && appleGlassSupported()) playerGlassBackdrop else null),
+                    com.wavlin.music.ui.kit.LocalPlayerGlassBackdrop provides (if (appleStyle && appleGlassSupported()) playerGlassBackdrop else null),
                     LocalGlassBackdrop provides (if (appleStyle && appleGlassSupported() && !webViewRoute) glassBackdrop else null),
-                    com.wavlin.music.ui.component.LocalGlassOverlayHost provides (if (appleStyle && appleGlassSupported() && !webViewRoute) glassOverlayHost else null),
+                    com.wavlin.music.ui.kit.LocalGlassOverlayHost provides (if (appleStyle && appleGlassSupported() && !webViewRoute) glassOverlayHost else null),
                     LocalDatabase provides database,
                     LocalNavController provides navController,
                     LocalContentColor provides if (pureBlack) Color.White else contentColorFor(MaterialTheme.colorScheme.surface),
@@ -1071,11 +1071,11 @@ class MainActivity : ComponentActivity() {
                     LocalListenTogetherManager provides listenTogetherManager,
                     LocalChangelogState provides showChangelog,
                     LocalHazeState provides hazeState,
-                    com.wavlin.music.ui.component.LocalHazeSourceActive provides !skipHazeSource,
+                    com.wavlin.music.ui.kit.LocalHazeSourceActive provides !skipHazeSource,
                     LocalPinkLilyTheme provides pinkWallpaper,
-                    com.wavlin.music.ui.component.LocalReduceGlass provides reduceGlassPref,
-                    com.wavlin.music.ui.component.LocalLensEnabled provides !reduceGlassPref,
-                    com.wavlin.music.ui.component.LocalCropAlbumArt provides cropAlbumArtPref,
+                    com.wavlin.music.ui.kit.LocalReduceGlass provides reduceGlassPref,
+                    com.wavlin.music.ui.kit.LocalLensEnabled provides !reduceGlassPref,
+                    com.wavlin.music.ui.kit.LocalCropAlbumArt provides cropAlbumArtPref,
                 ) {
                     if (showChangelog.value) {
                         ChangelogScreen(onDismiss = { showChangelog.value = false })
@@ -1143,7 +1143,7 @@ class MainActivity : ComponentActivity() {
                                                 label = "topBarTitle",
                                             ) { titleRes ->
                                                 if (pinkWallpaper) {
-                                                    com.wavlin.music.ui.component.ScriptTitle(
+                                                    com.wavlin.music.ui.kit.ScriptTitle(
                                                         text = titleRes?.let { stringResource(it) } ?: "",
                                                     )
                                                 } else {
@@ -1190,6 +1190,7 @@ class MainActivity : ComponentActivity() {
                                                 )
                                             }
                                         },
+                                        expandedHeight = if (pinkWallpaper) 64.dp else 52.dp,
                                         scrollBehavior = topAppBarScrollBehavior,
                                         colors =
                                             TopAppBarDefaults.topAppBarColors(
@@ -1538,7 +1539,7 @@ class MainActivity : ComponentActivity() {
                             }
                             }
                         }
-                        com.wavlin.music.ui.component.GlassOverlayHost(glassOverlayHost)
+                        com.wavlin.music.ui.kit.GlassOverlayHost(glassOverlayHost)
                         }
                     }
                     }
@@ -1667,7 +1668,7 @@ class MainActivity : ComponentActivity() {
         val route =
             when {
                 uri.scheme == "wavlin" -> uri.host
-                uri.host == SHARE_PAGE_HOST ->
+                uri.host == SHARE_PAGE_HOST || uri.host == LEGACY_SHARE_PAGE_HOST ->
                     when {
                         uri.getQueryParameter("ids") != null -> "shared"
                         uri.getQueryParameter("list") != null -> "playlist"
@@ -1794,7 +1795,8 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-private const val SHARE_PAGE_HOST = "wavlin-share.dvaustria741.workers.dev"
+private const val SHARE_PAGE_HOST = "wavlinsite.dvaustria741.workers.dev"
+private const val LEGACY_SHARE_PAGE_HOST = "wavlin-share.dvaustria741.workers.dev"
 
 val LocalDatabase = staticCompositionLocalOf<MusicDatabase> { error("No database provided") }
 val LocalNavController = staticCompositionLocalOf<NavController> { error("No NavController provided") }
@@ -1802,6 +1804,6 @@ val LocalPlayerConnection = staticCompositionLocalOf<PlayerConnection?> { error(
 val LocalPlayerAwareWindowInsets = compositionLocalOf<WindowInsets> { error("No WindowInsets provided") }
 val LocalDownloadUtil = staticCompositionLocalOf<DownloadUtil> { error("No DownloadUtil provided") }
 val LocalSyncUtils = staticCompositionLocalOf<SyncUtils> { error("No SyncUtils provided") }
-val LocalListenTogetherManager = staticCompositionLocalOf<com.wavlin.music.listentogether.ListenTogetherManager?> { null }
+val LocalListenTogetherManager = staticCompositionLocalOf<com.wavlin.music.integration.together.ListenTogetherManager?> { null }
 val LocalChangelogState = staticCompositionLocalOf<MutableState<Boolean>> { error("No LocalChangelogState provided") }
 val LocalIsPlayerExpanded = compositionLocalOf { false }

@@ -43,7 +43,7 @@ import com.wavlin.music.db.entities.SongEntity
 import com.wavlin.music.db.entities.SortedSongAlbumMap
 import com.wavlin.music.db.entities.SortedSongArtistMap
 import com.wavlin.music.db.entities.SpeedDialItem
-import com.wavlin.music.extensions.toSQLiteQuery
+import com.wavlin.music.core.ext.toSQLiteQuery
 import timber.log.Timber
 import java.io.File
 import java.text.SimpleDateFormat

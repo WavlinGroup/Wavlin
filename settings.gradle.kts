@@ -16,6 +16,17 @@ dependencyResolutionManagement {
         mavenCentral()
         maven { setUrl("https://jitpack.io") }
         maven { setUrl("https://maven.aliyun.com/repository/public") }
+
+        // Flutter add-to-app: the AAR repo is produced by `flutter build aar` in
+        // flutter/wavlin_visuals. When it is absent the app builds without Flutter.
+        val flutterVisualsRepo = rootDir.resolve("flutter/wavlin_visuals/build/host/outputs/repo")
+        if (flutterVisualsRepo.isDirectory) {
+            maven { setUrl(flutterVisualsRepo.toURI()) }
+            maven {
+                setUrl("https://storage.googleapis.com/download.flutter.io")
+                content { includeGroup("io.flutter") }
+            }
+        }
     }
 }
 

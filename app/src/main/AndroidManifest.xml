@@ -110,6 +110,7 @@
 
                 <data android:scheme="https" />
                 <data android:host="wavlin-share.dvaustria741.workers.dev" />
+                <data android:host="wavlinsite.dvaustria741.workers.dev" />
                 <data android:pathPrefix="/" />
             </intent-filter>
 
@@ -268,9 +269,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="wavlindiscord" />
-                <data android:host="oauth2" />
-                <data android:pathPrefix="/callback" />
+                <data android:scheme="${discordRedirectScheme}" />
+                <data android:host="${discordRedirectHost}" />
+                <data android:pathPrefix="${discordRedirectPath}" />
             </intent-filter>
         </activity>
 
