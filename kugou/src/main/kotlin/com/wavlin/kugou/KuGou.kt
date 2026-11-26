@@ -64,12 +64,10 @@ object KuGou {
         title: String, artist: String, duration: Int, album: String? = null, callback: (String) -> Unit
     ) {
         val keyword = generateKeyword(title, artist, album)
-        searchSongs(keyword).data.info.forEach {
-            if (duration == -1 || abs(it.duration - duration) <= DURATION_TOLERANCE) {
-                searchLyricsByHash(it.hash).candidates.firstOrNull()?.let { candidate ->
-                    Base64.Default.decode(downloadLyrics(candidate.id, candidate.accesskey).content).decodeToString()
-                        .normalize().let(callback)
-                }
+        closestSongs(searchSongs(keyword).data.info, duration).forEach {
+            searchLyricsByHash(it.hash).candidates.firstOrNull()?.let { candidate ->
+                Base64.Default.decode(downloadLyrics(candidate.id, candidate.accesskey).content).decodeToString()
+                    .normalize().let(callback)
             }
         }
         searchLyricsByKeyword(keyword, duration).candidates.forEach { candidate ->
@@ -81,14 +79,22 @@ object KuGou {
     suspend fun getLyricsCandidate(
         keyword: Keyword, duration: Int
     ): SearchLyricsResponse.Candidate? {
-        searchSongs(keyword).data.info.forEach { song ->
-            if (duration == -1 || abs(song.duration - duration) <= DURATION_TOLERANCE) { // if duration == -1, we don't care duration
-                val candidate = searchLyricsByHash(song.hash).candidates.firstOrNull()
-                if (candidate != null) return candidate
-            }
+        // Closest length first: a version with a different intro has shifted timestamps.
+        closestSongs(searchSongs(keyword).data.info, duration).forEach { song ->
+            val candidate = searchLyricsByHash(song.hash).candidates.firstOrNull()
+            if (candidate != null) return candidate
         }
         return searchLyricsByKeyword(keyword, duration).candidates.firstOrNull()
     }
+
+    /** Songs within the tolerance, closest duration first. Duration -1 means any length, in search order. */
+    private fun closestSongs(
+        songs: List<SearchSongResponse.Data.Info>,
+        duration: Int,
+    ): List<SearchSongResponse.Data.Info> =
+        if (duration == -1) songs
+        else songs.filter { abs(it.duration - duration) <= DURATION_TOLERANCE }
+            .sortedBy { abs(it.duration - duration) }
 
     suspend fun searchSongs(keyword: Keyword) =
         client.get("https://mobileservice.kugou.com/api/v3/search/song") {
@@ -165,7 +171,13 @@ object KuGou {
     fun generateKeyword(title: String, artist: String, album: String? = null) =
         Keyword(normalizeTitle(title), normalizeArtist(artist), album)
 
-    private fun String.normalize(): String =
+    private fun String.normalize(): String {
+        val offsetLine = lines().firstOrNull { it.trim().matches(OFFSET_REGEX) }?.trim()
+        val body = normalizeBody()
+        return if (offsetLine != null) offsetLine + "\n" + body else body
+    }
+
+    private fun String.normalizeBody(): String =
         lines().filter { line -> line.matches(ACCEPTED_REGEX) }
             .let { lines ->
                 // Remove useless information such as singer, writer, composer, guitar, etc.
@@ -192,6 +204,7 @@ object KuGou {
 
     @Suppress("RegExpRedundantEscape")
     private val ACCEPTED_REGEX = "\\[(\\d\\d):(\\d\\d)\\.(\\d{2,3})\\].*".toRegex()
+    private val OFFSET_REGEX = "\\[offset:\\s*[+-]?\\d{1,6}\\s*]".toRegex(RegexOption.IGNORE_CASE)
     private val BANNED_REGEX = ".+].+[:：].+".toRegex()
 
     private const val DURATION_TOLERANCE = 8
