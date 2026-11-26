@@ -413,7 +413,8 @@ object LyricsUtils {
 
     fun parseLyrics(lyrics: String): List<LyricsEntry> {
         if (lyrics.isBlank()) return emptyList()
-        return NativeLyrics.parse(lyrics) ?: parseLyricsKotlin(lyrics)
+        val parsed = NativeLyrics.parse(lyrics) ?: parseLyricsKotlin(lyrics)
+        return WordTimingEstimator.estimate(parsed)
     }
 
     private fun parseLyricsKotlin(lyrics: String): List<LyricsEntry> {
