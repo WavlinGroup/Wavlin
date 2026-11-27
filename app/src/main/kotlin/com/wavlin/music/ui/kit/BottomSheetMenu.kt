@@ -170,7 +170,8 @@ fun BottomSheetMenu(
         AppleGlassMenuSheet(state = state, backdrop = playerGlassBackdrop)
         return
     }
-    val sheetShape = RoundedCornerShape(topStart = if (appleSheet) 22.dp else 28.dp, topEnd = if (appleSheet) 22.dp else 28.dp)
+    val sheetCorner = if (com.wavlin.music.ui.style.LocalWavlinLayout.current) 30.dp else if (appleSheet) 22.dp else 28.dp
+    val sheetShape = RoundedCornerShape(topStart = sheetCorner, topEnd = sheetCorner)
 
     AnimatedBottomSheet(
         isVisible = state.isVisible,

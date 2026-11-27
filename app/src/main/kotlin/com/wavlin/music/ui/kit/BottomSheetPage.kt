@@ -84,7 +84,7 @@ fun BottomSheetPage(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = if (com.wavlin.music.ui.style.LocalWavlinLayout.current) com.wavlin.music.ui.style.WavlinSpace.Gutter else 16.dp)
                 .padding(bottom = 16.dp)
         ) {
             state.content(this)
