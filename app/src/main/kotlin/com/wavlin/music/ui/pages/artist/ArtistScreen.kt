@@ -296,6 +296,7 @@ fun ArtistScreen(
                 }
             } else {
                 item(key = "header") {
+                    val wavlinLayout = com.wavlin.music.ui.style.LocalWavlinLayout.current
                     val thumbnail = artistPage?.artist?.thumbnail ?: libraryArtist?.artist?.thumbnailUrl
                     val artistName = artistPage?.artist?.title ?: libraryArtist?.artist?.name
 
@@ -350,7 +351,9 @@ fun ArtistScreen(
                                 modifier =
                                     Modifier
                                         .fillMaxWidth()
-                                        .padding(horizontal = 16.dp),
+                                        .padding(
+                                            horizontal = if (wavlinLayout) com.wavlin.music.ui.style.WavlinSpace.Gutter else 16.dp,
+                                        ),
                             ) {
                                 // Artist Name
                                 Text(
@@ -359,8 +362,9 @@ fun ArtistScreen(
                                     fontWeight = FontWeight.Bold,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
-                                    fontSize = 32.sp,
-                                    modifier = Modifier.padding(bottom = 16.dp),
+                                    fontSize = if (wavlinLayout) 38.sp else 32.sp,
+                                    letterSpacing = if (wavlinLayout) (-0.8).sp else androidx.compose.ui.unit.TextUnit.Unspecified,
+                                    modifier = Modifier.padding(bottom = if (wavlinLayout) 20.dp else 16.dp),
                                 )
 
                                 // Buttons Row
@@ -391,6 +395,11 @@ fun ArtistScreen(
                                                         Color.Transparent
                                                     },
                                             ),
+                                        border = if (wavlinLayout) {
+                                            androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+                                        } else {
+                                            ButtonDefaults.outlinedButtonBorder(enabled = true)
+                                        },
                                         shape = RoundedCornerShape(50),
                                         modifier = Modifier.height(40.dp),
                                     ) {
