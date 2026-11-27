@@ -85,6 +85,7 @@ import com.wavlin.music.core.config.SeekExtraSeconds
 import com.wavlin.music.core.config.SwipeThumbnailKey
 import com.wavlin.music.core.config.ThumbnailCornerRadius
 import com.wavlin.music.integration.together.RoomRole
+import com.wavlin.music.playback.CrossfadeState
 import com.wavlin.music.ui.kit.ArtworkCurveShape
 import com.wavlin.music.ui.kit.CastButton
 import com.wavlin.music.core.util.rememberEnumPreference
@@ -236,6 +237,17 @@ fun Thumbnail(
     
 
 
+    // The service switches to the incoming track when a crossfade starts. The pager stays on the
+    // outgoing cover until the fade is half done, in step with the title shown by the player.
+    val crossfade = playerConnection.service.crossfadeState.collectAsState()
+    val isFading by remember { derivedStateOf { crossfade.value is CrossfadeState.Fading } }
+    val holdOutgoing by remember {
+        derivedStateOf {
+            val fade = crossfade.value as? CrossfadeState.Fading
+            fade != null && fade.progress < 0.5f && fade.incomingMediaId == mediaMetadata?.id
+        }
+    }
+
     // Grid state
     val thumbnailLazyGridState = rememberLazyGridState()
     
@@ -244,10 +256,12 @@ fun Thumbnail(
         playerConnection.player.currentMediaItemIndex,
         playerConnection.player.shuffleModeEnabled,
         swipeThumbnail,
-        mediaMetadata
+        mediaMetadata,
+        isFading
     ) {
         derivedStateOf {
-            getMediaItems(playerConnection.player, swipeThumbnail)
+            // The outgoing cover has to stay in the list during a fade, even with swiping turned off.
+            getMediaItems(playerConnection.player, swipeThumbnail || isFading)
         }
     }
     
@@ -281,7 +295,8 @@ fun Thumbnail(
     }
 
     // Update position when song changes
-    LaunchedEffect(mediaMetadata, canSkipPrevious, canSkipNext) {
+    LaunchedEffect(mediaMetadata, canSkipPrevious, canSkipNext, holdOutgoing) {
+        if (holdOutgoing) return@LaunchedEffect
         val index = maxOf(0, currentMediaIndex)
         if (index >= 0 && index < mediaItems.size) {
             try {
@@ -292,7 +307,9 @@ fun Thumbnail(
         }
     }
 
+    // Not keyed on holdOutgoing: when the hold ends, the effect above animates and this one must not snap.
     LaunchedEffect(playerConnection.player.currentMediaItemIndex) {
+        if (holdOutgoing) return@LaunchedEffect
         val index = mediaItemsData.currentIndex
         if (index >= 0 && index != currentItem) {
             thumbnailLazyGridState.scrollToItem(index)
@@ -411,7 +428,7 @@ fun Thumbnail(
                         state = thumbnailLazyGridState,
                         rows = GridCells.Fixed(1),
                         flingBehavior = rememberSnapFlingBehavior(thumbnailSnapLayoutInfoProvider),
-                        userScrollEnabled = isScrollEnabled,
+                        userScrollEnabled = isScrollEnabled && !holdOutgoing,
                         modifier = if (isLandscape) {
                             Modifier.size(dimensions.thumbnailSize + (PlayerHorizontalPadding * 2))
                         } else {

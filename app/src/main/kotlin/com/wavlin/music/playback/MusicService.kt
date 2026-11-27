@@ -4914,6 +4914,11 @@ class MusicService :
             timber.log.Timber.e(e, "Failed to swap player in MediaSession")
         }
 
+        // Publish the fade before the track change reaches the UI, so it can keep showing the outgoing track.
+        val outgoingId = fadingPlayer?.currentMediaItem?.mediaId
+        val incomingId = player.currentMediaItem?.mediaId
+        _crossfadeState.value = CrossfadeState.Fading(outgoingId, incomingId, 0f)
+
         // secondaryPlayer was playing this item silently in the background without
         // `this` attached as a listener, so its real transition into this item never
         // reached onMediaItemTransition. Re-fire it manually now that the swap is done
@@ -4923,9 +4928,6 @@ class MusicService :
         val previousAudioSessionId = fadingPlayer?.audioSessionId ?: C.AUDIO_SESSION_ID_UNSET
 
         openAudioEffectSession()
-
-        val outgoingId = fadingPlayer?.currentMediaItem?.mediaId
-        val incomingId = player.currentMediaItem?.mediaId
 
         crossfadeJob =
             scope.launch {
