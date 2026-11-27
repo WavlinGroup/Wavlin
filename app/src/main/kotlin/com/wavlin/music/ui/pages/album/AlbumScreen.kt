@@ -192,6 +192,15 @@ fun AlbumScreen(
         val albumWithSongs = albumWithSongs
         if (albumWithSongs != null && albumWithSongs.songs.isNotEmpty()) {
             item(key = "album_header") {
+                val wavlinLayout = com.wavlin.music.ui.style.LocalWavlinLayout.current
+                val pinkLily = com.wavlin.music.ui.kit.LocalPinkLilyTheme.current
+                val appleStyle = com.wavlin.music.ui.kit.LocalInterfaceAppleMusic.current && !pinkLily
+                val coverShape: androidx.compose.ui.graphics.Shape = when {
+                    !wavlinLayout -> RoundedCornerShape(3.dp)
+                    appleStyle -> com.wavlin.music.ui.kit.artworkShape()
+                    else -> com.wavlin.music.ui.style.WavlinShapes.large
+                }
+                val coverGlow = if (pinkLily) androidx.compose.ui.graphics.Color(0xFFD9779B) else MaterialTheme.colorScheme.primary
                 Column(
                     modifier =
                         Modifier
@@ -203,13 +212,13 @@ fun AlbumScreen(
                     Surface(
                         modifier =
                             Modifier
-                                .size(240.dp)
+                                .size(if (wavlinLayout) 264.dp else 240.dp)
                                 .shadow(
-                                    elevation = 24.dp,
-                                    shape = RoundedCornerShape(3.dp),
-                                    spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                                    elevation = if (wavlinLayout) 20.dp else 24.dp,
+                                    shape = coverShape,
+                                    spotColor = coverGlow.copy(alpha = if (wavlinLayout) 0.22f else 0.3f),
                                 ),
-                        shape = RoundedCornerShape(3.dp),
+                        shape = coverShape,
                     ) {
                         AsyncImage(
                             model = albumWithSongs.album.thumbnailUrl?.resize(1080, 1080),
@@ -219,12 +228,12 @@ fun AlbumScreen(
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(if (wavlinLayout) 24.dp else 20.dp))
 
                     // Album Name
                     Text(
                         text = albumWithSongs.album.title,
-                        style = MaterialTheme.typography.headlineSmall,
+                        style = if (wavlinLayout) MaterialTheme.typography.headlineMedium else MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
                         maxLines = 2,
@@ -241,7 +250,7 @@ fun AlbumScreen(
                             fontWeight = FontWeight.Normal,
                             textAlign = TextAlign.Center,
                         ),
-                        color = MaterialTheme.colorScheme.secondary,
+                        color = if (wavlinLayout) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary,
                         maxLines = Int.MAX_VALUE,
                         modifier = Modifier.fillMaxWidth(),
                     )
@@ -255,7 +264,7 @@ fun AlbumScreen(
                         verticalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
                         // Year
-                        if (albumWithSongs.album.year != null) {
+                        if (albumWithSongs.album.year != null && !wavlinLayout) {
                             Text(
                                 text = albumWithSongs.album.year.toString(),
                                 style = MaterialTheme.typography.bodyMedium,
@@ -267,6 +276,10 @@ fun AlbumScreen(
                         Text(
                             text =
                                 buildString {
+                                    if (wavlinLayout && albumWithSongs.album.year != null) {
+                                        append(albumWithSongs.album.year.toString())
+                                        append(" · ")
+                                    }
                                     append(
                                         pluralStringResource(
                                             R.plurals.n_song,
@@ -275,7 +288,7 @@ fun AlbumScreen(
                                         ),
                                     )
                                     if (totalDuration > 0) {
-                                        append(" ")
+                                        append(if (wavlinLayout) " · " else " ")
                                         append(makeTimeString(totalDuration * 1000L))
                                     }
                                 },

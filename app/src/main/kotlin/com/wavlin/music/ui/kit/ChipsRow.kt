@@ -55,6 +55,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wavlin.music.R
 import com.wavlin.music.ui.pages.activity.OptionStats
+import com.wavlin.music.ui.style.LocalWavlinLayout
+import com.wavlin.music.ui.style.WavlinSpace
+
+@Composable
+private fun wavlinChipColors() = FilterChipDefaults.filterChipColors(
+    containerColor = Color.Transparent,
+    labelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+    selectedContainerColor = MaterialTheme.colorScheme.onSurface,
+    selectedLabelColor = MaterialTheme.colorScheme.surface,
+)
+
 @Composable
 fun <E> ChipsRow(
     chips: List<Pair<E, String>>,
@@ -64,6 +75,7 @@ fun <E> ChipsRow(
     containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
 ) {
     val pinkLily = LocalPinkLilyTheme.current
+    val wavlinLayout = LocalWavlinLayout.current
     Row(
         modifier =
         modifier
@@ -71,18 +83,22 @@ fun <E> ChipsRow(
             .horizontalScroll(rememberScrollState())
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)),
     ) {
-        Spacer(Modifier.width(12.dp))
+        Spacer(Modifier.width(if (wavlinLayout) WavlinSpace.Gutter else 12.dp))
 
         chips.forEach { (value, label) ->
             if (pinkLily) LilyChip(label = label, selected = currentValue == value) { onValueUpdate(value) } else FilterChip(
                 label = { Text(label) },
                 selected = currentValue == value,
-                colors = FilterChipDefaults.filterChipColors(
+                colors = if (wavlinLayout) wavlinChipColors() else FilterChipDefaults.filterChipColors(
                     containerColor = containerColor,
                 ),
                 onClick = { onValueUpdate(value) },
-                shape = RoundedCornerShape(16.dp),
-                border = BorderStroke(1.dp, glassStrokeBrush())
+                shape = if (wavlinLayout) RoundedCornerShape(percent = 50) else RoundedCornerShape(16.dp),
+                border = if (wavlinLayout) {
+                    BorderStroke(1.dp, if (currentValue == value) Color.Transparent else MaterialTheme.colorScheme.outlineVariant)
+                } else {
+                    BorderStroke(1.dp, glassStrokeBrush())
+                }
             )
 
             Spacer(Modifier.width(8.dp))
@@ -103,6 +119,7 @@ fun <Int> ChoiceChipsRow(
     containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
 ) {
     val pinkLily = LocalPinkLilyTheme.current
+    val wavlinLayout = LocalWavlinLayout.current
     var expandIconDegree by remember { mutableFloatStateOf(0f) }
     val rotationAnimation by animateFloatAsState(
         targetValue = expandIconDegree,
@@ -196,12 +213,16 @@ fun <Int> ChoiceChipsRow(
                     if (pinkLily) LilyChip(label = label, selected = currentValue == value) { onValueUpdate(value) } else FilterChip(
                         label = { Text(label) },
                         selected = currentValue == value,
-                        colors = FilterChipDefaults.filterChipColors(
+                        colors = if (wavlinLayout) wavlinChipColors() else FilterChipDefaults.filterChipColors(
                             containerColor = containerColor,
                         ),
                         onClick = { onValueUpdate(value) },
-                        shape = RoundedCornerShape(16.dp),
-                        border = BorderStroke(1.dp, glassStrokeBrush())
+                        shape = if (wavlinLayout) RoundedCornerShape(percent = 50) else RoundedCornerShape(16.dp),
+                        border = if (wavlinLayout) {
+                            BorderStroke(1.dp, if (currentValue == value) Color.Transparent else MaterialTheme.colorScheme.outlineVariant)
+                        } else {
+                            BorderStroke(1.dp, glassStrokeBrush())
+                        }
                     )
                 }
             }
