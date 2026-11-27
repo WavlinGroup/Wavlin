@@ -890,6 +890,8 @@ fun BottomSheetPlayer(
                             ArtworkAuraBackground(
                                 palette = artworkPalette,
                                 modifier = Modifier.fillMaxSize().alpha(backgroundAlpha),
+                                crossfade = playerConnection.service.crossfadeState,
+                                outgoingPalette = { id -> id?.let { artworkPaletteCache[it] } },
                             )
                         }
                         AnimatedContent(

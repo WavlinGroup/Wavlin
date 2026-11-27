@@ -10,6 +10,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,19 +20,26 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import kotlinx.coroutines.flow.StateFlow
+import com.wavlin.music.playback.CrossfadeState
 import com.wavlin.music.ui.style.ArtworkPalette
 import com.wavlin.music.ui.style.WavlinMotion
 
 /**
  * Player background built from an [ArtworkPalette]: a two-tone vertical wash plus one soft accent
  * light near the top. When the palette changes it blends from what is on screen to the new palette.
+ * While a crossfade is running and the outgoing track's palette is known, the blend follows the real
+ * fade progress instead of a timer, so the colors move with the audio overlap.
  * Colors are read in the draw phase, so the blend redraws this layer only and never recomposes.
  */
 @Composable
 fun ArtworkAuraBackground(
     palette: ArtworkPalette?,
     modifier: Modifier = Modifier,
+    crossfade: StateFlow<CrossfadeState>? = null,
+    outgoingPalette: (String?) -> ArtworkPalette? = { null },
 ) {
+    val crossfadeState = crossfade?.collectAsState()
     var from by remember { mutableStateOf<ArtworkPalette?>(null) }
     var to by remember { mutableStateOf<ArtworkPalette?>(null) }
     val progress = remember { Animatable(1f) }
@@ -55,7 +63,14 @@ fun ArtworkAuraBackground(
         modifier.drawBehind {
             val start = from ?: return@drawBehind
             val end = to ?: return@drawBehind
-            val p = start.lerpTo(end, progress.value)
+            val fade = crossfadeState?.value as? CrossfadeState.Fading
+            val outgoing = fade?.let { outgoingPalette(it.outgoingMediaId) }
+            val p =
+                if (fade != null && outgoing != null) {
+                    outgoing.lerpTo(palette ?: end, WavlinMotion.Standard.transform(fade.progress))
+                } else {
+                    start.lerpTo(end, progress.value)
+                }
             drawRect(Brush.verticalGradient(listOf(p.background, p.backgroundDeep)))
             drawRect(
                 Brush.radialGradient(
