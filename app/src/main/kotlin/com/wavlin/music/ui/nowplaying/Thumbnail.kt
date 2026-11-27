@@ -620,9 +620,11 @@ private fun ThumbnailItem(
             modifier = Modifier.size(side),
             contentAlignment = Alignment.Center,
         ) {
+        val morph = LocalPlayerMorph.current
         Box(
             modifier = Modifier
                 .size(side)
+                .playerMorphEnd(if (item.mediaId == currentMediaId) morph else null, mini = false)
                 .clip(
                     if (com.wavlin.music.ui.style.LocalWavlinDesign.current && !hidePlayerThumbnail) {
                         ArtworkCurveShape

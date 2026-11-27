@@ -64,6 +64,8 @@ fun BottomSheet(
     onDismiss: (() -> Unit)? = null,
     collapsedContent: @Composable BoxScope.() -> Unit,
     isExpandable: Boolean = true,
+    /** Drawn above both the collapsed and the expanded content, without their fades. */
+    overlay: @Composable BoxScope.() -> Unit = {},
     content: @Composable BoxScope.() -> Unit,
 ) {
     val density = LocalDensity.current
@@ -159,6 +161,8 @@ fun BottomSheet(
                 content = collapsedContent,
             )
         }
+
+        overlay()
     }
 }
 

@@ -125,6 +125,7 @@ import com.wavlin.music.ui.kit.Icon as MIcon
 import com.wavlin.music.core.config.MiniPlayerBackgroundStyle
 import com.wavlin.music.core.config.MiniPlayerBackgroundStyleKey
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.palette.graphics.Palette
@@ -468,6 +469,8 @@ private fun NewMiniPlayer(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp, vertical = 8.dp),
             ) {
+                val morph = LocalPlayerMorph.current
+
                 // Play button with progress - isolated composable
                 NewMiniPlayerPlayButton(
                     progressState = progressState,
@@ -488,7 +491,12 @@ private fun NewMiniPlayer(
                     mediaMetadata = mediaMetadata,
                     onSurfaceColor = onSurfaceColor,
                     errorColor = errorColor,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .graphicsLayer {
+                            // The title leaves before the growing cover can reach it.
+                            alpha = if (morph?.active == true) (1f - morph.fraction * 10f).coerceAtLeast(0f) else 1f
+                        },
                 )
 
                 Spacer(modifier = Modifier.width(12.dp))
@@ -607,6 +615,9 @@ private fun NewMiniPlayerPlayButton(
         }
     }
 
+    val morph = LocalPlayerMorph.current
+    SideEffect { morph?.miniRotation = { discRotation.value } }
+
     Box(
         contentAlignment = Alignment.Center,
         modifier =
@@ -650,6 +661,7 @@ private fun NewMiniPlayerPlayButton(
             modifier =
                 Modifier
                     .size(40.dp)
+                    .playerMorphEnd(morph, mini = true)
                     .clip(CircleShape)
                     .border(1.dp, outlineColor.copy(alpha = 0.3f), CircleShape)
                     .clickable {

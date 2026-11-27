@@ -93,6 +93,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -853,6 +854,14 @@ fun BottomSheetPlayer(
 
     val backgroundAlpha = state.progress.coerceIn(0f, 1f)
 
+    val sheetState by rememberUpdatedState(state)
+    val morphState = remember { PlayerMorphState { sheetState.progress } }
+    val morph = morphState.takeIf { wavlinPlayer }
+    SideEffect {
+        // The cover only flies when the full player actually shows one.
+        morphState.enabled = wavlinPlayer && !showInlineLyrics && !hidePlayerThumbnail && videoCanvasUrl == null
+    }
+
     BottomSheet(
         state = state,
         modifier = modifier,
@@ -998,17 +1007,25 @@ fun BottomSheetPlayer(
             } else {
                 null
             },
+        overlay = {
+            if (morph != null) {
+                PlayerMorphOverlay(morph = morph, artworkUrl = mediaMetadata?.thumbnailUrl)
+            }
+        },
         collapsedContent = {
-            MiniPlayer(
-                positionState = positionState,
-                durationState = durationState,
-                onClick = { state.expandSoft() },
-            )
+            CompositionLocalProvider(LocalPlayerMorph provides morph) {
+                MiniPlayer(
+                    positionState = positionState,
+                    durationState = durationState,
+                    onClick = { state.expandSoft() },
+                )
+            }
         },
     ) {
         CompositionLocalProvider(
             com.wavlin.music.ui.kit.LocalGlassBackdrop provides
                 (com.wavlin.music.ui.kit.LocalPlayerGlassBackdrop.current ?: com.wavlin.music.ui.kit.LocalGlassBackdrop.current),
+            LocalPlayerMorph provides morph,
         ) {
         val controlsContent: @Composable ColumnScope.(MediaMetadata) -> Unit = { mediaMetadata ->
             val playPauseRoundness by animateDpAsState(
