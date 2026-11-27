@@ -87,7 +87,7 @@ fun DefaultDialog(
                     .let { base ->
                         if (pinkLily) base.pinkGlassPanel(pinkDialogShape()) else base
                     },
-            shape = if (pinkLily) pinkDialogShape() else AlertDialogDefaults.shape,
+            shape = if (pinkLily) pinkDialogShape() else if (com.wavlin.music.ui.style.LocalWavlinLayout.current) com.wavlin.music.ui.style.WavlinShapes.extraLarge else AlertDialogDefaults.shape,
             color = if (pinkLily) Color.Transparent else AlertDialogDefaults.containerColor,
             tonalElevation = if (pinkLily) 0.dp else AlertDialogDefaults.TonalElevation,
         ) {
@@ -224,7 +224,7 @@ fun ListDialog(
                         base.border(1.dp, glassStrokeBrush(), AlertDialogDefaults.shape)
                     }
                 },
-            shape = if (pinkLily) pinkDialogShape() else AlertDialogDefaults.shape,
+            shape = if (pinkLily) pinkDialogShape() else if (com.wavlin.music.ui.style.LocalWavlinLayout.current) com.wavlin.music.ui.style.WavlinShapes.extraLarge else AlertDialogDefaults.shape,
             color = if (pinkLily) Color.Transparent else AlertDialogDefaults.containerColor.copy(alpha = 0.85f),
             tonalElevation = if (pinkLily) 0.dp else AlertDialogDefaults.TonalElevation,
         ) {

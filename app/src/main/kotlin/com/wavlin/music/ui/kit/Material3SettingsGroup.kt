@@ -96,14 +96,20 @@ private fun ClearSettingsGroup(
     items: List<Material3SettingsItem>,
     useLowContrast: Boolean,
 ) {
-    val shape = RoundedCornerShape(28.dp)
+    val wavlinLayout = com.wavlin.music.ui.style.LocalWavlinLayout.current
+    val shape = if (wavlinLayout) com.wavlin.music.ui.style.WavlinShapes.large else RoundedCornerShape(28.dp)
     Column(modifier = Modifier.fillMaxWidth()) {
         title?.let {
             Text(
                 text = it,
-                style = MaterialTheme.typography.titleSmall,
+                style = if (wavlinLayout) MaterialTheme.typography.titleMedium else MaterialTheme.typography.titleSmall,
+                fontWeight = if (wavlinLayout) FontWeight.Bold else null,
                 color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(start = 16.dp, top = 12.dp, bottom = 8.dp),
+                modifier = Modifier.padding(
+                    start = if (wavlinLayout) 20.dp else 16.dp,
+                    top = if (wavlinLayout) 20.dp else 12.dp,
+                    bottom = 8.dp,
+                ),
             )
         }
         val pinkLily = LocalPinkLilyTheme.current
@@ -155,14 +161,19 @@ private fun AppleSettingsGroup(
     title: String?,
     items: List<Material3SettingsItem>,
 ) {
-    val shape = RoundedCornerShape(14.dp)
+    val wavlinLayout = com.wavlin.music.ui.style.LocalWavlinLayout.current
+    val shape = RoundedCornerShape(if (wavlinLayout) 18.dp else 14.dp)
     Column(modifier = Modifier.fillMaxWidth()) {
         title?.let {
             Text(
                 text = it.uppercase(),
                 style = MaterialTheme.typography.labelMedium.copy(fontSize = 12.sp, letterSpacing = 0.6.sp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(start = 16.dp, top = 18.dp, bottom = 7.dp),
+                modifier = Modifier.padding(
+                    start = if (wavlinLayout) 20.dp else 16.dp,
+                    top = if (wavlinLayout) 24.dp else 18.dp,
+                    bottom = 7.dp,
+                ),
             )
         }
         val pinkLily = LocalPinkLilyTheme.current
