@@ -67,11 +67,12 @@ fun LibraryCategoryGrid(
     modifier: Modifier = Modifier,
 ) {
     val appleMusic = LocalInterfaceAppleMusic.current
+    val wavlinLayout = com.wavlin.music.ui.style.LocalWavlinLayout.current
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = if (wavlinLayout) com.wavlin.music.ui.style.WavlinSpace.Gutter else 16.dp, vertical = 8.dp),
     ) {
         categories.chunked(CATEGORY_COLUMNS).forEach { rowItems ->
             Row(
@@ -102,12 +103,13 @@ private fun LibraryCategoryTile(
     modifier: Modifier = Modifier,
 ) {
     val colors = MaterialTheme.colorScheme
-    val shape = RoundedCornerShape(if (appleMusic) 20.dp else 28.dp)
+    val wavlinLayout = com.wavlin.music.ui.style.LocalWavlinLayout.current
+    val shape = if (wavlinLayout) com.wavlin.music.ui.style.WavlinShapes.large else RoundedCornerShape(if (appleMusic) 20.dp else 28.dp)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = modifier
-            .height(88.dp)
+            .height(if (wavlinLayout) 96.dp else 88.dp)
             .clip(shape)
             .background(if (appleMusic) colors.surfaceContainer else colors.surfaceContainerHigh)
             .then(
@@ -152,15 +154,21 @@ fun LibraryCollectionsRow(
     modifier: Modifier = Modifier,
 ) {
     val appleMusic = LocalInterfaceAppleMusic.current
+    val wavlinLayout = com.wavlin.music.ui.style.LocalWavlinLayout.current
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
             text = stringResource(R.string.library_collections_title),
-            style = MaterialTheme.typography.titleMedium,
+            style = if (wavlinLayout) MaterialTheme.typography.titleLarge else MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 20.dp, end = 16.dp, top = 12.dp, bottom = 8.dp),
+            modifier = Modifier.padding(
+                start = if (wavlinLayout) com.wavlin.music.ui.style.WavlinSpace.Gutter else 20.dp,
+                end = 16.dp,
+                top = 12.dp,
+                bottom = 8.dp,
+            ),
         )
         LazyRow(
-            contentPadding = PaddingValues(horizontal = 16.dp),
+            contentPadding = PaddingValues(horizontal = if (wavlinLayout) com.wavlin.music.ui.style.WavlinSpace.Gutter else 16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             items(collections, key = { it.key }) { collection ->
@@ -182,7 +190,7 @@ private fun LibraryCollectionCard(
     onClick: () -> Unit,
 ) {
     val colors = MaterialTheme.colorScheme
-    val shape = RoundedCornerShape(if (appleMusic) 22.dp else 26.dp)
+    val shape = if (com.wavlin.music.ui.style.LocalWavlinLayout.current) com.wavlin.music.ui.style.WavlinShapes.large else RoundedCornerShape(if (appleMusic) 22.dp else 26.dp)
     val (start, end) = when (collection.colorSlot % 3) {
         0 -> colors.primaryContainer to colors.tertiaryContainer
         1 -> colors.secondaryContainer to colors.primaryContainer
@@ -231,13 +239,19 @@ fun LibrarySectionHeader(
     content: (@Composable () -> Unit)? = null,
 ) {
     val appleMusic = LocalInterfaceAppleMusic.current
+    val wavlinLayout = com.wavlin.music.ui.style.LocalWavlinLayout.current
     val colors = MaterialTheme.colorScheme
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 6.dp),
+                .padding(
+                    start = if (wavlinLayout) com.wavlin.music.ui.style.WavlinSpace.Gutter else 16.dp,
+                    end = if (wavlinLayout) com.wavlin.music.ui.style.WavlinSpace.Gutter else 16.dp,
+                    top = 4.dp,
+                    bottom = 6.dp,
+                ),
         ) {
             Box(
                 contentAlignment = Alignment.Center,
@@ -257,7 +271,7 @@ fun LibrarySectionHeader(
             Spacer(Modifier.width(12.dp))
             Text(
                 text = title,
-                style = MaterialTheme.typography.headlineSmall,
+                style = if (wavlinLayout) MaterialTheme.typography.headlineMedium else MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -277,8 +291,8 @@ fun <T> LibrarySegmentedFilter(
 ) {
     val appleMusic = LocalInterfaceAppleMusic.current
     val colors = MaterialTheme.colorScheme
-    val trackShape = RoundedCornerShape(if (appleMusic) 50 else 18)
-    val thumbShape = RoundedCornerShape(if (appleMusic) 50 else 14)
+    val trackShape = if (com.wavlin.music.ui.style.LocalWavlinLayout.current) RoundedCornerShape(50) else RoundedCornerShape(if (appleMusic) 50 else 18)
+    val thumbShape = if (com.wavlin.music.ui.style.LocalWavlinLayout.current) RoundedCornerShape(50) else RoundedCornerShape(if (appleMusic) 50 else 14)
     Row(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         modifier = modifier
