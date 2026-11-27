@@ -158,6 +158,7 @@ import com.wavlin.music.LocalDownloadUtil
 import com.wavlin.music.LocalListenTogetherManager
 import com.wavlin.music.LocalPlayerConnection
 import com.wavlin.music.R
+import com.wavlin.music.core.config.ArtworkAuraKey
 import com.wavlin.music.core.config.CropAlbumArtKey
 import com.wavlin.music.core.config.DarkModeKey
 import com.wavlin.music.core.config.HidePlayerThumbnailKey
@@ -199,7 +200,10 @@ import com.wavlin.music.ui.kit.WavySlider
 import com.wavlin.music.ui.kit.rememberBottomSheetState
 import com.wavlin.music.ui.sheets.PlayerMenu
 import com.wavlin.music.ui.pages.settings.DarkMode
+import com.wavlin.music.ui.style.ArtworkPalette
 import com.wavlin.music.ui.style.PlayerColorExtractor
+import com.wavlin.music.ui.style.WeightedColor
+import com.wavlin.music.ui.style.buildArtworkPalette
 import com.wavlin.music.ui.style.PlayerSliderColors
 import com.wavlin.music.ui.support.ShowMediaInfo
 import com.wavlin.music.ui.support.ShowOffsetDialog
@@ -244,6 +248,7 @@ fun BottomSheetPlayer(
     val (hidePlayerThumbnail, onHidePlayerThumbnailChange) = rememberPreference(HidePlayerThumbnailKey, false)
     val (hideStatusBarOnFullscreen) = rememberPreference(HideStatusBarOnFullscreenKey, false)
     val cropAlbumArt by rememberPreference(CropAlbumArtKey, false)
+    val artworkAura by rememberPreference(ArtworkAuraKey, false)
 
     var showInlineLyrics by rememberSaveable {
         mutableStateOf(false)
@@ -436,6 +441,8 @@ fun BottomSheetPlayer(
         mutableStateOf<List<Color>>(emptyList())
     }
     val gradientColorsCache = remember { mutableMapOf<String, List<Color>>() }
+    var artworkPalette by remember { mutableStateOf<ArtworkPalette?>(null) }
+    val artworkPaletteCache = remember { mutableMapOf<String, ArtworkPalette>() }
 
     if (!canSkipNext && automix.isNotEmpty()) {
         playerConnection.service.addToQueueAutomix(automix[0], 0)
@@ -475,13 +482,14 @@ fun BottomSheetPlayer(
         }
     }
 
-    LaunchedEffect(mediaMetadata?.id, playerBackground) {
+    LaunchedEffect(mediaMetadata?.id, playerBackground, artworkAura) {
         if (playerBackground == PlayerBackgroundStyle.GRADIENT) {
             val currentMetadata = mediaMetadata
             if (currentMetadata != null && currentMetadata.thumbnailUrl != null) {
                 val cachedColors = gradientColorsCache[currentMetadata.id]
-                if (cachedColors != null) {
+                if (cachedColors != null && (!artworkAura || artworkPaletteCache.containsKey(currentMetadata.id))) {
                     gradientColors = cachedColors
+                    artworkPalette = artworkPaletteCache[currentMetadata.id]
                     return@LaunchedEffect
                 }
                 withContext(Dispatchers.IO) {
@@ -502,7 +510,7 @@ fun BottomSheetPlayer(
                                 withContext(Dispatchers.Default) {
                                     Palette
                                         .from(bitmap)
-                                        .maximumColorCount(8)
+                                        .maximumColorCount(if (artworkAura) 16 else 8)
                                         .resizeBitmapArea(100 * 100)
                                         .generate()
                                 }
@@ -512,13 +520,27 @@ fun BottomSheetPlayer(
                                     fallbackColor = fallbackColor,
                                 )
                             gradientColorsCache[currentMetadata.id] = extractedColors
-                            withContext(Dispatchers.Main) { gradientColors = extractedColors }
+                            val builtPalette =
+                                if (artworkAura) {
+                                    buildArtworkPalette(
+                                        swatches = palette.swatches.map { WeightedColor(it.rgb, it.population) },
+                                        dark = true,
+                                    )
+                                } else {
+                                    null
+                                }
+                            if (builtPalette != null) artworkPaletteCache[currentMetadata.id] = builtPalette
+                            withContext(Dispatchers.Main) {
+                                gradientColors = extractedColors
+                                artworkPalette = builtPalette
+                            }
                         }
                     }
                 }
             }
         } else {
             gradientColors = emptyList()
+            artworkPalette = null
         }
     }
 
@@ -864,8 +886,14 @@ fun BottomSheetPlayer(
                     }
 
                     PlayerBackgroundStyle.GRADIENT -> {
+                        if (artworkAura) {
+                            ArtworkAuraBackground(
+                                palette = artworkPalette,
+                                modifier = Modifier.fillMaxSize().alpha(backgroundAlpha),
+                            )
+                        }
                         AnimatedContent(
-                            targetState = gradientColors,
+                            targetState = if (artworkAura) emptyList<Color>() else gradientColors,
                             transitionSpec = {
                                 fadeIn(tween(800)).togetherWith(fadeOut(tween(800)))
                             },

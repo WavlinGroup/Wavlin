@@ -126,6 +126,8 @@
     <string name="player_background_solid">Solid</string>
     <string name="follow_theme">Follow theme</string>
     <string name="gradient">Gradient</string>
+    <string name="artwork_aura">Artwork aura</string>
+    <string name="artwork_aura_desc">Gradient player background built from several colors of the artwork. Applies when the player background is Gradient.</string>
     <string name="new_player_design">New player design</string>
     <string name="new_mini_player_design">New mini-player design</string>
     <string name="player_background_blur">Blur</string>

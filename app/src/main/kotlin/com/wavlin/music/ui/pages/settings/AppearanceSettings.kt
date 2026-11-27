@@ -60,6 +60,7 @@ import androidx.navigation.NavController
 import com.wavlin.music.LocalPlayerAwareWindowInsets
 import com.wavlin.music.R
 import com.wavlin.music.core.config.ChipSortTypeKey
+import com.wavlin.music.core.config.ArtworkAuraKey
 import com.wavlin.music.core.config.CropAlbumArtKey
 import com.wavlin.music.core.config.VideoCanvasEnabledKey
 import com.wavlin.music.core.config.DefaultOpenTabKey
@@ -187,6 +188,11 @@ fun AppearanceSettings(
         rememberEnumPreference(
             PlayerBackgroundStyleKey,
             defaultValue = PlayerBackgroundStyle.DEFAULT,
+        )
+    val (artworkAura, onArtworkAuraChange) =
+        rememberPreference(
+            ArtworkAuraKey,
+            defaultValue = false,
         )
 
     val (defaultOpenTab, onDefaultOpenTabChange) =
@@ -1156,6 +1162,28 @@ fun AppearanceSettings(
                             )
                         },
                         onClick = { showPlayerBackgroundDialog = true },
+                    ),
+                    Material3SettingsItem(
+                        icon = painterResource(R.drawable.gradient),
+                        title = { Text(stringResource(R.string.artwork_aura)) },
+                        description = { Text(stringResource(R.string.artwork_aura_desc)) },
+                        trailingContent = {
+                            Switch(
+                                checked = artworkAura,
+                                onCheckedChange = onArtworkAuraChange,
+                                thumbContent = {
+                                    Icon(
+                                        painter =
+                                            painterResource(
+                                                id = if (artworkAura) R.drawable.check else R.drawable.close,
+                                            ),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(SwitchDefaults.IconSize),
+                                    )
+                                },
+                            )
+                        },
+                        onClick = { onArtworkAuraChange(!artworkAura) },
                     ),
                     Material3SettingsItem(
                         icon = painterResource(R.drawable.hide_image),
