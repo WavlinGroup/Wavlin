@@ -640,8 +640,8 @@ private fun homeShelfPadding(): PaddingValues {
     if (!com.wavlin.music.ui.style.LocalWavlinLayout.current) return bars
     val direction = androidx.compose.ui.platform.LocalLayoutDirection.current
     return PaddingValues(
-        start = bars.calculateStartPadding(direction) + 10.dp,
-        end = bars.calculateEndPadding(direction) + 10.dp,
+        start = bars.calculateLeftPadding(direction) + 10.dp,
+        end = bars.calculateRightPadding(direction) + 10.dp,
     )
 }
 
