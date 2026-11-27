@@ -1154,6 +1154,10 @@ class MainActivity : ComponentActivity() {
                                                     com.wavlin.music.ui.kit.ScriptTitle(
                                                         text = titleRes?.let { stringResource(it) } ?: "",
                                                     )
+                                                } else if (wavlinShell) {
+                                                    com.wavlin.music.ui.kit.WavlinTitle(
+                                                        text = titleRes?.let { stringResource(it) } ?: "",
+                                                    )
                                                 } else {
                                                     Text(
                                                         text = titleRes?.let { stringResource(it) } ?: "",
@@ -1198,7 +1202,7 @@ class MainActivity : ComponentActivity() {
                                                 )
                                             }
                                         },
-                                        expandedHeight = if (pinkWallpaper) 64.dp else 52.dp,
+                                        expandedHeight = if (pinkWallpaper || wavlinShell) AppBarHeight else 52.dp,
                                         scrollBehavior = topAppBarScrollBehavior,
                                         colors =
                                             TopAppBarDefaults.topAppBarColors(
@@ -1207,6 +1211,8 @@ class MainActivity : ComponentActivity() {
                                                         Color.Transparent
                                                     } else if (pureBlack) {
                                                         Color.Black
+                                                    } else if (wavlinShell) {
+                                                        MaterialTheme.colorScheme.surface
                                                     } else if (appleStyle) {
                                                         MaterialTheme.colorScheme.background
                                                     } else {
@@ -1217,6 +1223,8 @@ class MainActivity : ComponentActivity() {
                                                         Color.Transparent
                                                     } else if (pureBlack) {
                                                         Color.Black
+                                                    } else if (wavlinShell) {
+                                                        MaterialTheme.colorScheme.surfaceContainer
                                                     } else if (appleStyle) {
                                                         MaterialTheme.colorScheme.background
                                                     } else {
