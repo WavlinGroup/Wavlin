@@ -114,6 +114,7 @@ import com.wavlin.music.media.cast.CastConnectionHandler
 import com.wavlin.music.media.session.PlayerConnection
 import com.wavlin.music.ui.pages.settings.DarkMode
 import com.wavlin.music.ui.support.resize
+import com.wavlin.music.ui.kit.DownscaledBlurBox
 import com.wavlin.music.core.util.joinToArtistString
 import com.wavlin.music.core.util.rememberEnumPreference
 import com.wavlin.music.core.util.rememberPreference
@@ -121,7 +122,6 @@ import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 import com.wavlin.music.ui.kit.Icon as MIcon
-import androidx.compose.ui.draw.blur
 import com.wavlin.music.core.config.MiniPlayerBackgroundStyle
 import com.wavlin.music.core.config.MiniPlayerBackgroundStyleKey
 import androidx.compose.runtime.LaunchedEffect
@@ -427,14 +427,15 @@ private fun NewMiniPlayer(
                 MiniPlayerBackgroundStyle.BLUR -> {
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                         mediaMetadata?.thumbnailUrl?.let { url ->
-                            AsyncImage(
-                                model = url,
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .blur(60.dp),
-                            )
+                            // Blurred as a small copy: same look, far fewer pixels shaded per frame.
+                            DownscaledBlurBox(radius = 60.dp, modifier = Modifier.fillMaxSize()) {
+                                AsyncImage(
+                                    model = url,
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier.fillMaxSize(),
+                                )
+                            }
                             Box(
                                 Modifier
                                     .fillMaxSize()
