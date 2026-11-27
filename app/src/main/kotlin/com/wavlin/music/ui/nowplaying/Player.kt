@@ -950,6 +950,20 @@ fun BottomSheetPlayer(
                         PlayerBackgroundStyle.DEFAULT
                     }
                 }
+                // Keeps white titles and controls readable when the artwork behind them is very bright.
+                if (wavlinPlayer && playerBackground != PlayerBackgroundStyle.DEFAULT && videoCanvasUrl == null) {
+                    Box(
+                        Modifier
+                            .fillMaxSize()
+                            .alpha(backgroundAlpha)
+                            .background(
+                                Brush.verticalGradient(
+                                    0.4f to Color.Transparent,
+                                    1f to Color.Black.copy(alpha = 0.45f),
+                                ),
+                            ),
+                    )
+                }
                 val canvasBackdropUrl = videoCanvasUrl
                 if (canvasBackdropUrl != null && state.isExpanded) {
                     VideoCanvasPlayer(
