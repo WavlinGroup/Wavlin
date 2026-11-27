@@ -6,6 +6,7 @@
 package com.wavlin.music.ui.pages.settings
 
 import com.wavlin.music.core.config.InterfaceStyleKey
+import com.wavlin.music.core.config.WavlinDesignKey
 import com.wavlin.music.core.config.InterfaceStyle
 import com.wavlin.music.ui.kit.pinkTopBarColors
 import android.app.Activity
@@ -188,6 +189,11 @@ fun AppearanceSettings(
         rememberEnumPreference(
             PlayerBackgroundStyleKey,
             defaultValue = PlayerBackgroundStyle.DEFAULT,
+        )
+    val (wavlinDesign, onWavlinDesignChange) =
+        rememberPreference(
+            WavlinDesignKey,
+            defaultValue = false,
         )
     val (artworkAura, onArtworkAuraChange) =
         rememberPreference(
@@ -1075,6 +1081,30 @@ fun AppearanceSettings(
                                 )
                             },
                             onClick = { showInterfaceStyleDialog = true },
+                        ),
+                    )
+                    add(
+                        Material3SettingsItem(
+                            icon = painterResource(R.drawable.palette),
+                            title = { Text(stringResource(R.string.wavlin_design)) },
+                            description = { Text(stringResource(R.string.wavlin_design_desc)) },
+                            trailingContent = {
+                                Switch(
+                                    checked = wavlinDesign,
+                                    onCheckedChange = onWavlinDesignChange,
+                                    thumbContent = {
+                                        Icon(
+                                            painter =
+                                                painterResource(
+                                                    id = if (wavlinDesign) R.drawable.check else R.drawable.close,
+                                                ),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(SwitchDefaults.IconSize),
+                                        )
+                                    },
+                                )
+                            },
+                            onClick = { onWavlinDesignChange(!wavlinDesign) },
                         ),
                     )
                     add(

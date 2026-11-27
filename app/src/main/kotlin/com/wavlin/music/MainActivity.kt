@@ -9,6 +9,7 @@ import com.wavlin.music.ui.kit.appleGlassSupported
 import com.wavlin.music.ui.kit.LocalGlassBackdrop
 import com.wavlin.music.ui.kit.LocalInterfaceAppleMusic
 import com.wavlin.music.core.config.InterfaceStyleKey
+import com.wavlin.music.core.config.WavlinDesignKey
 import com.wavlin.music.core.config.InterfaceStyle
 import com.kyant.backdrop.backdrops.rememberLayerBackdrop
 import com.kyant.backdrop.backdrops.layerBackdrop
@@ -685,11 +686,13 @@ class MainActivity : ComponentActivity() {
         }
 
         val themeInterfaceStyle by rememberEnumPreference(InterfaceStyleKey, defaultValue = InterfaceStyle.MATERIAL)
+        val themeWavlinDesign by rememberPreference(WavlinDesignKey, defaultValue = false)
         WavlinTheme(
             darkTheme = useDarkTheme,
             pureBlack = pureBlack,
             themeColor = themeColor,
             appleMusic = themeInterfaceStyle == InterfaceStyle.APPLE_MUSIC,
+            wavlinDesign = themeWavlinDesign,
         ) {
             val currentDensity = LocalDensity.current
             val windowInfo = LocalWindowInfo.current
@@ -1057,6 +1060,7 @@ class MainActivity : ComponentActivity() {
 
                 CompositionLocalProvider(
                     LocalInterfaceAppleMusic provides appleStyle,
+                    com.wavlin.music.ui.style.LocalWavlinDesign provides (themeWavlinDesign && !appleStyle),
                     com.wavlin.music.ui.kit.LocalPlayerGlassBackdrop provides (if (appleStyle && appleGlassSupported()) playerGlassBackdrop else null),
                     LocalGlassBackdrop provides (if (appleStyle && appleGlassSupported() && !webViewRoute) glassBackdrop else null),
                     com.wavlin.music.ui.kit.LocalGlassOverlayHost provides (if (appleStyle && appleGlassSupported() && !webViewRoute) glassOverlayHost else null),

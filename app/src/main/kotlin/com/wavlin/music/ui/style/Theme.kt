@@ -53,6 +53,7 @@ fun WavlinTheme(
     pureBlack: Boolean = false,
     themeColor: Color = DefaultThemeColor,
     appleMusic: Boolean = false,
+    wavlinDesign: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
@@ -85,8 +86,8 @@ fun WavlinTheme(
     // Use standard MaterialTheme instead of MaterialExpressiveTheme
     MaterialTheme(
         colorScheme = animateWavlinColorScheme(colorScheme),
-        typography = if (appleMusic) AppleMusicTypography else AppTypography,
-        shapes = if (appleMusic) AppleMusicShapes else Shapes(),
+        typography = if (appleMusic) AppleMusicTypography else if (wavlinDesign) WavlinTypography else AppTypography,
+        shapes = if (appleMusic) AppleMusicShapes else if (wavlinDesign) WavlinShapes else Shapes(),
         content = content
     )
 }
