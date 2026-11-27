@@ -121,6 +121,8 @@ internal fun PlaylistHeroHeader(
             val urls = coverUrls.distinct().take(4)
             if (urls.size in 2..3) List(4) { urls[it % urls.size] } else urls
         }
+    val wavlinLayout = com.wavlin.music.ui.style.LocalWavlinLayout.current
+    val gutter = if (wavlinLayout) com.wavlin.music.ui.style.WavlinSpace.Gutter else 16.dp
     val heroBase = heroFadeColor()
     val heroText = heroTitleColor(heroBase)
 
@@ -189,15 +191,15 @@ internal fun PlaylistHeroHeader(
                 Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
-                    .padding(horizontal = 56.dp)
+                    .padding(horizontal = if (wavlinLayout) gutter else 56.dp)
                     .padding(bottom = 12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = if (wavlinLayout) Alignment.Start else Alignment.CenterHorizontally,
             ) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.headlineMedium,
+                    style = if (wavlinLayout) MaterialTheme.typography.headlineLarge else MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
+                    textAlign = if (wavlinLayout) TextAlign.Start else TextAlign.Center,
                     color = heroText,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
@@ -206,14 +208,14 @@ internal fun PlaylistHeroHeader(
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
+                    textAlign = if (wavlinLayout) TextAlign.Start else TextAlign.Center,
                     color = heroText.copy(alpha = 0.75f),
                 )
             }
         }
 
         Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(top = 12.dp, bottom = 20.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = gutter).padding(top = 12.dp, bottom = 20.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
