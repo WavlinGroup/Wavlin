@@ -10,13 +10,18 @@ package com.wavlin.music.ui.kit
 
 import android.os.Build
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import com.wavlin.music.core.config.ThumbnailCornerRadius
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.unit.dp
@@ -67,6 +72,7 @@ fun Modifier.appleGlass(
         return this
             .legacyGlassPanel(shape = shape, style = fallbackStyle)
             .background(tintColor.copy(alpha = tint), shape)
+            .then(if (pink) Modifier else Modifier.border(1.dp, glassRimBrush(isDark), shape))
     }
     return this.drawBackdrop(
         backdrop = backdrop,
@@ -86,7 +92,7 @@ fun Modifier.appleGlass(
         onDrawBackdrop = { drawBackdrop -> drawBackdrop() },
         onDrawSurface = {
             drawRect(tintColor.copy(alpha = tint))
-            if (pink) drawRect(Color.White.copy(alpha = 0.12f))
+            if (pink) drawRect(Color.White.copy(alpha = 0.12f)) else drawGlassEdge(shape, isDark)
         },
     )
 }
@@ -95,3 +101,34 @@ fun Modifier.appleGlass(
 @Composable
 fun artworkShape(): RoundedCornerShape =
     RoundedCornerShape(if (LocalInterfaceAppleMusic.current) 8.dp else ThumbnailCornerRadius)
+
+/** Rim light: bright where a top-left light would catch the edge, nearly gone along the sides, a faint return at the bottom right. */
+private fun glassRimBrush(isDark: Boolean, end: Offset = Offset(600f, 600f)): Brush {
+    val bright = Color.White.copy(alpha = if (isDark) 0.5f else 0.8f)
+    val dim = Color.White.copy(alpha = if (isDark) 0.05f else 0.18f)
+    return Brush.linearGradient(
+        0f to bright,
+        0.42f to dim,
+        0.58f to dim,
+        1f to bright.copy(alpha = bright.alpha * 0.45f),
+        start = Offset.Zero,
+        end = end,
+    )
+}
+
+/** Edge treatment for the lens path: a 1.5 dp rim light plus a soft sheen over the upper half, so the surface reads as a thick pane. */
+private fun DrawScope.drawGlassEdge(shape: Shape, isDark: Boolean) {
+    val outline = shape.createOutline(size, layoutDirection, this)
+    drawOutline(
+        outline = outline,
+        brush = glassRimBrush(isDark, Offset(size.width, size.height)),
+        style = Stroke(width = 1.5.dp.toPx()),
+    )
+    drawOutline(
+        outline = outline,
+        brush = Brush.verticalGradient(
+            colors = listOf(Color.White.copy(alpha = if (isDark) 0.09f else 0.2f), Color.Transparent),
+            endY = size.height * 0.55f,
+        ),
+    )
+}
