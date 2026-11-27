@@ -1329,6 +1329,8 @@ class MainActivity : ComponentActivity() {
                                         pureBlack = pureBlack,
                                         slimNav = slimNav,
                                         onSearchLongClick = onSearchLongClick,
+                                        compact = dockScroll.compact,
+                                        onExpand = dockScroll::expand,
                                         modifier =
                                             Modifier
                                                 .align(Alignment.BottomCenter)
@@ -1337,8 +1339,6 @@ class MainActivity : ComponentActivity() {
                                                 // graphicsLayer runs during draw phase, not composition phase
                                                 .graphicsLayer {
                                                     val navBarHeightPx = navigationBarHeight.toPx()
-                                        compact = dockScroll.compact,
-                                        onExpand = dockScroll::expand,
                                                     val totalHeightPx = navBarTotalHeight.toPx()
 
                                                     translationY =
@@ -1487,7 +1487,15 @@ class MainActivity : ComponentActivity() {
                                         val currentRouteIndex = routeIndexMap[targetState.destination.route] ?: -1
                                         val previousRouteIndex = routeIndexMap[initialState.destination.route] ?: -1
 
-                                        if (currentRouteIndex != -1 && previousRouteIndex != -1) {
+                                        if (wavlinShell) {
+                                            if (previousRouteIndex != -1 && currentRouteIndex != -1) {
+                                                com.wavlin.music.ui.style.WavlinTransitions.tabEnter(if (currentRouteIndex > previousRouteIndex) 1 else -1)
+                                            } else if (currentRouteIndex != -1) {
+                                                com.wavlin.music.ui.style.WavlinTransitions.popEnter()
+                                            } else {
+                                                com.wavlin.music.ui.style.WavlinTransitions.pushEnter()
+                                            }
+                                        } else if (currentRouteIndex != -1 && previousRouteIndex != -1) {
                                             // Tab to tab: the new tab glides in from the side of the tab that was tapped.
                                             val dir = if (currentRouteIndex > previousRouteIndex) 1 else -1
                                             slideInHorizontally(
@@ -1504,7 +1512,15 @@ class MainActivity : ComponentActivity() {
                                         val currentRouteIndex = routeIndexMap[initialState.destination.route] ?: -1
                                         val targetRouteIndex = routeIndexMap[targetState.destination.route] ?: -1
 
-                                        if (currentRouteIndex != -1 && targetRouteIndex != -1) {
+                                        if (wavlinShell) {
+                                            if (currentRouteIndex != -1 && targetRouteIndex != -1) {
+                                                com.wavlin.music.ui.style.WavlinTransitions.tabExit(if (targetRouteIndex > currentRouteIndex) 1 else -1)
+                                            } else if (targetRouteIndex != -1) {
+                                                com.wavlin.music.ui.style.WavlinTransitions.popExit()
+                                            } else {
+                                                com.wavlin.music.ui.style.WavlinTransitions.pushExit()
+                                            }
+                                        } else if (currentRouteIndex != -1 && targetRouteIndex != -1) {
                                             val dir = if (targetRouteIndex > currentRouteIndex) 1 else -1
                                             slideOutHorizontally(
                                                 TabSlideSpec,
@@ -1520,7 +1536,13 @@ class MainActivity : ComponentActivity() {
                                         val currentRouteIndex = routeIndexMap[targetState.destination.route] ?: -1
                                         val previousRouteIndex = routeIndexMap[initialState.destination.route] ?: -1
 
-                                        if (currentRouteIndex != -1 && previousRouteIndex != -1) {
+                                        if (wavlinShell) {
+                                            if (previousRouteIndex != -1 && currentRouteIndex != -1) {
+                                                com.wavlin.music.ui.style.WavlinTransitions.tabEnter(if (currentRouteIndex > previousRouteIndex) 1 else -1)
+                                            } else {
+                                                com.wavlin.music.ui.style.WavlinTransitions.popEnter()
+                                            }
+                                        } else if (currentRouteIndex != -1 && previousRouteIndex != -1) {
                                             val dir = if (currentRouteIndex > previousRouteIndex) 1 else -1
                                             slideInHorizontally(
                                                 TabSlideSpec,
@@ -1536,7 +1558,13 @@ class MainActivity : ComponentActivity() {
                                         val currentRouteIndex = routeIndexMap[initialState.destination.route] ?: -1
                                         val targetRouteIndex = routeIndexMap[targetState.destination.route] ?: -1
 
-                                        if (currentRouteIndex != -1 && targetRouteIndex != -1) {
+                                        if (wavlinShell) {
+                                            if (currentRouteIndex != -1 && targetRouteIndex != -1) {
+                                                com.wavlin.music.ui.style.WavlinTransitions.tabExit(if (targetRouteIndex > currentRouteIndex) 1 else -1)
+                                            } else {
+                                                com.wavlin.music.ui.style.WavlinTransitions.popExit()
+                                            }
+                                        } else if (currentRouteIndex != -1 && targetRouteIndex != -1) {
                                             val dir = if (targetRouteIndex > currentRouteIndex) 1 else -1
                                             slideOutHorizontally(
                                                 TabSlideSpec,
