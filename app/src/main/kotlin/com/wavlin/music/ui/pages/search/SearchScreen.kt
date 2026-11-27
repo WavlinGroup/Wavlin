@@ -480,6 +480,10 @@ fun SearchScreen(
                                                 Brush.linearGradient(listOf(Color.White, Color(0xFFF4B6CB))),
                                                 CircleShape,
                                             ).padding(start = 18.dp)
+                                    } else if (com.wavlin.music.ui.style.LocalWavlinLayout.current) {
+                                        base
+                                            .background(MaterialTheme.colorScheme.surfaceContainerHigh, CircleShape)
+                                            .padding(start = 18.dp)
                                     } else {
                                         base
                                     }
