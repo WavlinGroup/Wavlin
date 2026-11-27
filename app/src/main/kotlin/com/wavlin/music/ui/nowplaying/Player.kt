@@ -186,6 +186,7 @@ import com.wavlin.music.core.ext.togglePlayPause
 import com.wavlin.music.core.ext.toggleRepeatMode
 import com.wavlin.music.integration.together.RoomRole
 import com.wavlin.music.models.MediaMetadata
+import com.wavlin.music.playback.CrossfadeState
 import com.wavlin.music.ui.kit.BottomSheet
 import com.wavlin.music.ui.kit.BottomSheetState
 import com.wavlin.music.ui.kit.LocalBottomSheetPageState
@@ -357,6 +358,21 @@ fun BottomSheetPlayer(
 
     val playbackState by playerConnection.playbackState.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
+
+    // During a crossfade the service already points at the incoming track. Keep the outgoing track's
+    // title, artists and artwork on screen until the fade is half done, which is where the audio
+    // overlap is balanced. The derived flag changes once, so progress ticks do not recompose the player.
+    val metadataHistory = remember { MetadataHistory() }
+    mediaMetadata?.let { metadataHistory.track(it) }
+    val crossfadeProgress = playerConnection.service.crossfadeState.collectAsState()
+    val holdOutgoingMetadata by remember {
+        derivedStateOf {
+            val fade = crossfadeProgress.value as? CrossfadeState.Fading
+            fade != null && fade.progress < 0.5f && fade.outgoingMediaId == metadataHistory.previous?.id
+        }
+    }
+    val displayedMetadata: MediaMetadata? =
+        if (holdOutgoingMetadata) metadataHistory.previous ?: mediaMetadata else mediaMetadata
     val currentSong by playerConnection.currentSong.collectAsStateWithLifecycle(initialValue = null)
     val automix by playerConnection.service.automixItems.collectAsStateWithLifecycle()
     val repeatMode by playerConnection.repeatMode.collectAsStateWithLifecycle()
@@ -849,7 +865,7 @@ fun BottomSheetPlayer(
                 when (playerBackground) {
                     PlayerBackgroundStyle.BLUR -> {
                         AnimatedContent(
-                            targetState = mediaMetadata?.thumbnailUrl,
+                            targetState = displayedMetadata?.thumbnailUrl,
                             transitionSpec = {
                                 fadeIn(tween(800)).togetherWith(fadeOut(tween(800)))
                             },
@@ -2076,7 +2092,7 @@ fun BottomSheetPlayer(
                         Spacer(Modifier.weight(1f))
 
                         mediaMetadata?.let {
-                            controlsContent(it)
+                            controlsContent(displayedMetadata ?: it)
                         }
 
                         Spacer(Modifier.weight(1f))
@@ -2140,7 +2156,7 @@ fun BottomSheetPlayer(
                     }
 
                     mediaMetadata?.let {
-                        controlsContent(it)
+                        controlsContent(displayedMetadata ?: it)
                     }
 
                     Spacer(Modifier.height(30.dp))
