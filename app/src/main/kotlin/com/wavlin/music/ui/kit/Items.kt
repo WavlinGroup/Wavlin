@@ -60,6 +60,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -299,29 +303,38 @@ inline fun ListItem(
     isActive: Boolean = false,
     isAvailable: Boolean = true,
 ) {
+    val wavlinLayout = com.wavlin.music.ui.style.LocalWavlinLayout.current
+    val accent = MaterialTheme.colorScheme.primary
+    val rowShape = if (wavlinLayout) com.wavlin.music.ui.style.WavlinShapes.medium else RoundedCornerShape(8.dp)
+    val highlight: Color? = when {
+        isActive && isSelected == true -> accent.copy(alpha = 0.4f)
+        isActive -> if (wavlinLayout) accent.copy(alpha = 0.14f) else MaterialTheme.colorScheme.secondaryContainer
+        isSelected == true -> MaterialTheme.colorScheme.inversePrimary.copy(alpha = 0.4f)
+        else -> null
+    }
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = if (isActive) {
-            modifier // playing highlight
-                .height(ListItemHeight)
-                .padding(horizontal = 8.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(
-                    color = // selected active
-                        if (isSelected == true) MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
-                        else MaterialTheme.colorScheme.secondaryContainer
-                )
-        } else if (isSelected == true) {
-            modifier // inactive selected
-                .height(ListItemHeight)
-                .padding(horizontal = 8.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(color = MaterialTheme.colorScheme.inversePrimary.copy(alpha = 0.4f))
-        } else {
-            modifier // default
-                .height(ListItemHeight)
-                .padding(horizontal = 8.dp)
-        }
+        modifier = modifier
+            .height(ListItemHeight)
+            .padding(horizontal = 8.dp)
+            .then(
+                if (highlight != null) Modifier.clip(rowShape).background(highlight) else Modifier
+            )
+            .then(
+                if (wavlinLayout && isActive) {
+                    Modifier.drawBehind {
+                        val barWidth = 3.dp.toPx()
+                        drawRoundRect(
+                            color = accent,
+                            topLeft = Offset(0f, size.height * 0.28f),
+                            size = Size(barWidth, size.height * 0.44f),
+                            cornerRadius = CornerRadius(barWidth / 2f),
+                        )
+                    }
+                } else {
+                    Modifier
+                }
+            )
     ) {
         Box(
             modifier = Modifier.padding(6.dp),
@@ -357,8 +370,8 @@ inline fun ListItem(
         ) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold,
+                style = if (wavlinLayout) MaterialTheme.typography.titleSmall else MaterialTheme.typography.bodyMedium,
+                fontWeight = if (wavlinLayout) FontWeight.SemiBold else FontWeight.Bold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

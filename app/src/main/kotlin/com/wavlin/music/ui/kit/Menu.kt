@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.ui.draw.clip
 import com.wavlin.music.R
+import com.wavlin.music.ui.style.LocalWavlinLayout
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -34,16 +35,19 @@ fun Material3MenuGroup(
     items: List<Material3MenuItemData>
 ) {
     val pinkLily = LocalPinkLilyTheme.current
+    val wavlinLayout = LocalWavlinLayout.current
+    val outer = if (wavlinLayout) 20.dp else 24.dp
+    val inner = if (wavlinLayout) 4.dp else 6.dp
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(if (pinkLily) 8.dp else 4.dp)
+        verticalArrangement = Arrangement.spacedBy(if (pinkLily) 8.dp else if (wavlinLayout) 2.dp else 4.dp)
     ) {
         items.forEachIndexed { index, item ->
             val shape = when {
-                items.size == 1 -> RoundedCornerShape(24.dp)
-                index == 0 -> RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp, bottomStart = 6.dp, bottomEnd = 6.dp)
-                index == items.size - 1 -> RoundedCornerShape(topStart = 6.dp, topEnd = 6.dp, bottomStart = 24.dp, bottomEnd = 24.dp)
-                else -> RoundedCornerShape(6.dp)
+                items.size == 1 -> RoundedCornerShape(outer)
+                index == 0 -> RoundedCornerShape(topStart = outer, topEnd = outer, bottomStart = inner, bottomEnd = inner)
+                index == items.size - 1 -> RoundedCornerShape(topStart = inner, topEnd = inner, bottomStart = outer, bottomEnd = outer)
+                else -> RoundedCornerShape(inner)
             }
 
             if (pinkLily && item.cardColors == null) {
@@ -63,7 +67,11 @@ fun Material3MenuGroup(
                         .animateContentSize(),
                     shape = shape,
                     colors = item.cardColors ?: CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+                        containerColor = if (wavlinLayout) {
+                            MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.6f)
+                        } else {
+                            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+                        }
                     ),
                     elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                 ) {

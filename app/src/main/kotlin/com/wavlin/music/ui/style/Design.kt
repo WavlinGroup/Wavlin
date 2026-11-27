@@ -16,6 +16,12 @@ import androidx.compose.ui.unit.sp
 /** True when the Wavlin design (preview) is on. Apple Music style keeps its own look and ignores it. */
 val LocalWavlinDesign = staticCompositionLocalOf { false }
 
+/**
+ * True when the Wavlin design (preview) is on, in every interface style (Material, Apple Music, Secret Pink).
+ * Layout, spacing and hierarchy follow it; each style still draws its own surfaces.
+ */
+val LocalWavlinLayout = staticCompositionLocalOf { false }
+
 /** 4 dp grid. Screens use these instead of loose numbers so spacing stays consistent. */
 object WavlinSpace {
     val Hair = 2.dp

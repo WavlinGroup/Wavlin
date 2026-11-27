@@ -1065,6 +1065,7 @@ class MainActivity : ComponentActivity() {
                 CompositionLocalProvider(
                     LocalInterfaceAppleMusic provides appleStyle,
                     com.wavlin.music.ui.style.LocalWavlinDesign provides wavlinShell,
+                    com.wavlin.music.ui.style.LocalWavlinLayout provides themeWavlinDesign,
                     com.wavlin.music.ui.kit.LocalPlayerGlassBackdrop provides (if (appleStyle && appleGlassSupported()) playerGlassBackdrop else null),
                     LocalGlassBackdrop provides (if (appleStyle && appleGlassSupported() && !webViewRoute) glassBackdrop else null),
                     com.wavlin.music.ui.kit.LocalGlassOverlayHost provides (if (appleStyle && appleGlassSupported() && !webViewRoute) glassOverlayHost else null),

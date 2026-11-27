@@ -32,7 +32,10 @@ import androidx.compose.ui.Modifier
 import androidx.annotation.DrawableRes
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.graphics.Color
+import com.wavlin.music.ui.style.LocalWavlinLayout
 import com.wavlin.music.ui.style.PinkInk
+import com.wavlin.music.ui.style.WavlinSpace
 import com.wavlin.music.ui.style.playball
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -52,6 +55,7 @@ fun NavigationTitle(
 ) {
     val pinkLily = LocalPinkLilyTheme.current
     val appleMusic = LocalInterfaceAppleMusic.current && !pinkLily
+    val wavlinLayout = LocalWavlinLayout.current
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -61,7 +65,10 @@ fun NavigationTitle(
             .clickable(enabled = onClick != null) {
                 onClick?.invoke()
             }
-            .padding(horizontal = 12.dp, vertical = 12.dp)
+            .padding(
+                horizontal = if (wavlinLayout) WavlinSpace.Gutter else 12.dp,
+                vertical = if (wavlinLayout) WavlinSpace.M else 12.dp,
+            )
     ) {
         if (pinkLily && leadingIconRes != null) {
             Icon(
@@ -79,8 +86,9 @@ fun NavigationTitle(
         ) {
             label?.let { label ->
                 Text(
-                    text = label,
-                    style = MaterialTheme.typography.labelLarge,
+                    text = if (wavlinLayout) label.uppercase() else label,
+                    style = if (wavlinLayout) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelLarge,
+                    color = if (wavlinLayout) MaterialTheme.colorScheme.onSurfaceVariant else Color.Unspecified,
                     overflow = TextOverflow.Ellipsis,
                 )
             }
@@ -98,9 +106,9 @@ fun NavigationTitle(
             } else {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleLarge,
+                    style = if (wavlinLayout) MaterialTheme.typography.headlineSmall else MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
-                    color = if (appleMusic) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.primary,
+                    color = if (appleMusic || wavlinLayout) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.primary,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
                 )
@@ -117,7 +125,7 @@ fun NavigationTitle(
                 ),
                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 2.dp),
                 modifier = Modifier
-                    .height(24.dp)
+                    .height(if (wavlinLayout) 32.dp else 24.dp)
             ) {
                 Text(
                     text = stringResource(R.string.play_all),
