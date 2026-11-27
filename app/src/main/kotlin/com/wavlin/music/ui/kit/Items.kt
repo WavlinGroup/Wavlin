@@ -461,14 +461,16 @@ fun GridItem(
     fillMaxWidth: Boolean = false,
 ) {
     val gridHeight = currentGridThumbnailHeight()
+    val wavlinLayout = com.wavlin.music.ui.style.LocalWavlinLayout.current
+    val itemPadding = if (wavlinLayout) 10.dp else 12.dp
     Column(
         modifier = if (fillMaxWidth) {
             modifier
-                .padding(12.dp)
+                .padding(itemPadding)
                 .fillMaxWidth()
         } else {
             modifier
-                .padding(12.dp)
+                .padding(itemPadding)
                 .width(gridHeight * thumbnailRatio)
         }
     ) {
@@ -484,7 +486,7 @@ fun GridItem(
             thumbnailContent()
         }
 
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(modifier = Modifier.height(if (wavlinLayout) 10.dp else 6.dp))
 
         title()
 
@@ -510,7 +512,7 @@ fun GridItem(
     title = {
         Text(
             text = title,
-            style = MaterialTheme.typography.bodyLarge,
+            style = if (com.wavlin.music.ui.style.LocalWavlinLayout.current) MaterialTheme.typography.titleSmall else MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -1281,7 +1283,7 @@ fun YouTubeGridItem(
     title = {
         Text(
             text = item.title,
-            style = MaterialTheme.typography.bodyLarge,
+            style = if (com.wavlin.music.ui.style.LocalWavlinLayout.current) MaterialTheme.typography.titleSmall else MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
