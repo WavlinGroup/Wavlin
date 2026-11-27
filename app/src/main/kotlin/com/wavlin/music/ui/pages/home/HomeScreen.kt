@@ -633,6 +633,18 @@ fun DailyDiscoverCard(
     }
 }
 
+/** Side padding for Home shelves: system bars, plus the half gutter that grid items do not carry in the Wavlin layout. */
+@Composable
+private fun homeShelfPadding(): PaddingValues {
+    val bars = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).asPaddingValues()
+    if (!com.wavlin.music.ui.style.LocalWavlinLayout.current) return bars
+    val direction = androidx.compose.ui.platform.LocalLayoutDirection.current
+    return PaddingValues(
+        start = bars.calculateStartPadding(direction) + 10.dp,
+        end = bars.calculateEndPadding(direction) + 10.dp,
+    )
+}
+
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun HomeScreen(
@@ -1205,10 +1217,7 @@ fun HomeScreen(
 
                         scrollFxItem(scrollFx, key = "00_your_shows_list", contentType = "row") {
                             LazyRow(
-                                contentPadding =
-                                    WindowInsets.systemBars
-                                        .only(WindowInsetsSides.Horizontal)
-                                        .asPaddingValues(),
+                                contentPadding = homeShelfPadding(),
                             ) {
                                 items(savedPodcastShows.distinctBy { it.id }, key = { "home_saved_podcast_${it.id}" }) { podcast ->
                                     ytGridItem(podcast)
@@ -1230,10 +1239,7 @@ fun HomeScreen(
 
                         scrollFxItem(scrollFx, key = "00_episodes_for_later_list", contentType = "row") {
                             LazyRow(
-                                contentPadding =
-                                    WindowInsets.systemBars
-                                        .only(WindowInsetsSides.Horizontal)
-                                        .asPaddingValues(),
+                                contentPadding = homeShelfPadding(),
                             ) {
                                 items(episodesForLater.distinctBy { it.id }, key = { "home_episode_later_${it.id}" }) { episode ->
                                     ytGridItem(episode)
@@ -1253,10 +1259,7 @@ fun HomeScreen(
 
                         scrollFxItem(scrollFx, key = "0_podcast_channels_list", contentType = "row") {
                             LazyRow(
-                                contentPadding =
-                                    WindowInsets.systemBars
-                                        .only(WindowInsetsSides.Horizontal)
-                                        .asPaddingValues(),
+                                contentPadding = homeShelfPadding(),
                             ) {
                                 items(featuredPodcasts.distinctBy { it.id }, key = { "home_featured_podcast_${it.id}" }) { podcast ->
                                     ytGridItem(podcast)
@@ -1335,10 +1338,7 @@ fun HomeScreen(
 
                             scrollFxItem(scrollFx, key = "1_chip_section_list_${section.index}", contentType = "row") {
                                 LazyRow(
-                                    contentPadding =
-                                        WindowInsets.systemBars
-                                            .only(WindowInsetsSides.Horizontal)
-                                            .asPaddingValues(),
+                                    contentPadding = homeShelfPadding(),
                                 ) {
                                     items(sectionData.items.distinctBy { it.id }, key = { "home_chip_section_${it.id}" }, contentType = { it::class }) { item ->
                                         ytGridItem(item)
@@ -1449,7 +1449,7 @@ fun HomeScreen(
                                     ) {
                                         HorizontalPager(
                                             state = pagerState,
-                                            contentPadding = PaddingValues(horizontal = 16.dp),
+                                            contentPadding = PaddingValues(horizontal = if (com.wavlin.music.ui.style.LocalWavlinLayout.current) com.wavlin.music.ui.style.WavlinSpace.Gutter else 16.dp),
                                             pageSpacing = 16.dp,
                                             modifier =
                                                 Modifier
@@ -1766,10 +1766,7 @@ fun HomeScreen(
                                         state = quickPicksLazyGridState,
                                         rows = GridCells.Fixed(4),
                                         flingBehavior = rememberSnapFlingBehavior(quickPicksSnapLayoutInfoProvider),
-                                        contentPadding =
-                                            WindowInsets.systemBars
-                                                .only(WindowInsetsSides.Horizontal)
-                                                .asPaddingValues(),
+                                        contentPadding = homeShelfPadding(),
                                         modifier =
                                             Modifier
                                                 .fillMaxWidth()
@@ -1973,10 +1970,7 @@ fun HomeScreen(
                                     LazyHorizontalGrid(
                                         state = remember("keep_listening_grid") { LazyGridState() },
                                         rows = GridCells.Fixed(rows),
-                                        contentPadding =
-                                            WindowInsets.systemBars
-                                                .only(WindowInsetsSides.Horizontal)
-                                                .asPaddingValues(),
+                                        contentPadding = homeShelfPadding(),
                                         modifier =
                                             Modifier
                                                 .fillMaxWidth()
@@ -2042,10 +2036,7 @@ fun HomeScreen(
 
                                 scrollFxItem(scrollFx, key = "account_playlists_list", contentType = "row") {
                                     LazyRow(
-                                        contentPadding =
-                                            WindowInsets.systemBars
-                                                .only(WindowInsetsSides.Horizontal)
-                                                .asPaddingValues(),
+                                        contentPadding = homeShelfPadding(),
                                     ) {
                                         items(
                                             items = accountPlaylists.distinctBy { it.id },
@@ -2109,10 +2100,7 @@ fun HomeScreen(
 
                                 scrollFxItem(scrollFx, key = "similar_to_list_${section.index}", contentType = "row") {
                                     LazyRow(
-                                        contentPadding =
-                                            WindowInsets.systemBars
-                                                .only(WindowInsetsSides.Horizontal)
-                                                .asPaddingValues(),
+                                        contentPadding = homeShelfPadding(),
                                     ) {
                                         items(recommendation.items.distinctBy { it.id }, key = { "home_similar_${it.id}" }, contentType = { it::class }) { item ->
                                             ytGridItem(item)
@@ -2211,10 +2199,7 @@ fun HomeScreen(
                                         LazyHorizontalGrid(
                                             state = remember("section_${section.index}_grid") { LazyGridState() },
                                             rows = GridCells.Fixed(4),
-                                            contentPadding =
-                                                WindowInsets.systemBars
-                                                    .only(WindowInsetsSides.Horizontal)
-                                                    .asPaddingValues(),
+                                            contentPadding = homeShelfPadding(),
                                             modifier =
                                                 Modifier
                                                     .fillMaxWidth()
@@ -2286,10 +2271,7 @@ fun HomeScreen(
                                     // Render mixed content as horizontal grid items (albums, playlists, artists, etc.)
                                     scrollFxItem(scrollFx, key = "home_section_list_${section.index}", contentType = "row") {
                                         LazyRow(
-                                            contentPadding =
-                                                WindowInsets.systemBars
-                                                    .only(WindowInsetsSides.Horizontal)
-                                                    .asPaddingValues(),
+                                            contentPadding = homeShelfPadding(),
                                         ) {
                                             items(
                                                 items = sectionData.items.distinctBy { it.id },
@@ -2375,10 +2357,7 @@ fun HomeScreen(
                                             .width(250.dp),
                                 )
                                 LazyRow(
-                                    contentPadding =
-                                        WindowInsets.systemBars
-                                            .only(WindowInsetsSides.Horizontal)
-                                            .asPaddingValues(),
+                                    contentPadding = homeShelfPadding(),
                                 ) {
                                     items(4) {
                                         GridItemPlaceHolder()
