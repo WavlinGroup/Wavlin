@@ -202,6 +202,8 @@ import com.wavlin.music.ui.kit.rememberBottomSheetState
 import com.wavlin.music.ui.sheets.PlayerMenu
 import com.wavlin.music.ui.pages.settings.DarkMode
 import com.wavlin.music.ui.style.ArtworkPalette
+import com.wavlin.music.ui.style.LocalWavlinDesign
+import com.wavlin.music.ui.kit.RulerSeekBar
 import com.wavlin.music.ui.style.PlayerColorExtractor
 import com.wavlin.music.ui.style.WeightedColor
 import com.wavlin.music.ui.style.buildArtworkPalette
@@ -246,6 +248,7 @@ fun BottomSheetPlayer(
             defaultValue = true,
         )
     val appleMusicPlayer = LocalInterfaceAppleMusic.current
+    val wavlinPlayer = LocalWavlinDesign.current
     val (hidePlayerThumbnail, onHidePlayerThumbnailChange) = rememberPreference(HidePlayerThumbnailKey, false)
     val (hideStatusBarOnFullscreen) = rememberPreference(HideStatusBarOnFullscreenKey, false)
     val cropAlbumArt by rememberPreference(CropAlbumArtKey, false)
@@ -1425,7 +1428,35 @@ fun BottomSheetPlayer(
             Spacer(Modifier.height(12.dp))
 
             RecompositionBoundary {
-                when (if (appleMusicPlayer) SliderStyle.SLIM else sliderStyle) {
+                if (wavlinPlayer) {
+                    RulerSeekBar(
+                        value = (sliderPosition ?: effectivePosition).toFloat(),
+                        duration = if (duration == C.TIME_UNSET) 0f else duration.toFloat(),
+                        onValueChange = {
+                            if (!isListenTogetherGuest) {
+                                sliderPosition = it.toLong()
+                            }
+                        },
+                        onValueChangeFinished = {
+                            if (!isListenTogetherGuest) {
+                                sliderPosition?.let {
+                                    if (isCasting) {
+                                        castHandler?.seekTo(it)
+                                        lastManualSeekTime = System.currentTimeMillis()
+                                    } else {
+                                        playerConnection.player.seekTo(it)
+                                    }
+                                    position = it
+                                }
+                                sliderPosition = null
+                            }
+                        },
+                        color = TextBackgroundColor,
+                        needleColor = textButtonColor,
+                        enabled = !isListenTogetherGuest,
+                        modifier = Modifier.padding(horizontal = PlayerHorizontalPadding),
+                    )
+                } else when (if (appleMusicPlayer) SliderStyle.SLIM else sliderStyle) {
                     SliderStyle.DEFAULT -> {
                         Slider(
                             value = (sliderPosition ?: effectivePosition).toFloat(),
@@ -1770,13 +1801,16 @@ fun BottomSheetPlayer(
                                     ),
                                 modifier =
                                     Modifier
-                                        .height(if (appleMusicPlayer) 80.dp else 68.dp)
+                                        .height(if (appleMusicPlayer || wavlinPlayer) 80.dp else 68.dp)
                                         .weight(if (appleMusicPlayer) 1f else backButtonWeight),
                             ) {
                                 Icon(
                                     painter = painterResource(R.drawable.skip_previous),
                                     contentDescription = null,
-                                    modifier = Modifier.size(if (appleMusicPlayer) 44.dp else 32.dp),
+                                    modifier =
+                                        Modifier.size(
+                                            if (appleMusicPlayer) 44.dp else if (wavlinPlayer) 40.dp else 32.dp,
+                                        ),
                                 )
                             }
 
@@ -1810,7 +1844,7 @@ fun BottomSheetPlayer(
                                     ),
                                 modifier =
                                     Modifier
-                                        .height(if (appleMusicPlayer) 80.dp else 68.dp)
+                                        .height(if (appleMusicPlayer || wavlinPlayer) 80.dp else 68.dp)
                                         .weight(if (appleMusicPlayer) 1f else playPauseWeight)
                                         .focusRequester(focusRequester),
                             ) {
@@ -1833,9 +1867,13 @@ fun BottomSheetPlayer(
                                             } else {
                                                 if (effectiveIsPlaying) stringResource(R.string.pause) else stringResource(R.string.play)
                                             },
-                                        modifier = Modifier.size(if (appleMusicPlayer) 64.dp else 32.dp),
+                                        modifier =
+                                            Modifier.size(
+                                                if (appleMusicPlayer) 64.dp else if (wavlinPlayer) 44.dp else 32.dp,
+                                            ),
                                     )
-                                    if (appleMusicPlayer) return@Row
+                                    // Icon only: the large glyph says play or pause without a word beside it.
+                                    if (appleMusicPlayer || wavlinPlayer) return@Row
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(
                                         text =
@@ -1864,13 +1902,16 @@ fun BottomSheetPlayer(
                                     ),
                                 modifier =
                                     Modifier
-                                        .height(if (appleMusicPlayer) 80.dp else 68.dp)
+                                        .height(if (appleMusicPlayer || wavlinPlayer) 80.dp else 68.dp)
                                         .weight(if (appleMusicPlayer) 1f else nextButtonWeight),
                             ) {
                                 Icon(
                                     painter = painterResource(R.drawable.skip_next),
                                     contentDescription = null,
-                                    modifier = Modifier.size(if (appleMusicPlayer) 44.dp else 32.dp),
+                                    modifier =
+                                        Modifier.size(
+                                            if (appleMusicPlayer) 44.dp else if (wavlinPlayer) 40.dp else 32.dp,
+                                        ),
                                 )
                             }
                         }
