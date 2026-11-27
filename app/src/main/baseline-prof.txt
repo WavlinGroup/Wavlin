@@ -4,3 +4,8 @@ HSPLcom/wavlin/music/ui/pages/home/**->**(**)**
 HSPLcom/wavlin/music/ui/nowplaying/**->**(**)**
 HSPLcom/wavlin/music/ui/kit/**->**(**)**
 HSPLcom/wavlin/music/ui/style/**->**(**)**
+HSPLcom/wavlin/music/ui/pages/collection/**->**(**)**
+HSPLcom/wavlin/music/ui/pages/search/**->**(**)**
+HSPLcom/wavlin/music/ui/pages/album/**->**(**)**
+HSPLcom/wavlin/music/ui/pages/artist/**->**(**)**
+HSPLcom/wavlin/music/ui/pages/playlist/**->**(**)**
