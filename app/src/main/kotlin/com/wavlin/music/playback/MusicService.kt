@@ -442,6 +442,8 @@ class MusicService :
     private var fadingPlayer: ExoPlayer? = null
     private var isCrossfading = false
     private var crossfadeJob: Job? = null
+    private val _crossfadeState = MutableStateFlow<CrossfadeState>(CrossfadeState.Idle)
+    val crossfadeState: kotlinx.coroutines.flow.StateFlow<CrossfadeState> = _crossfadeState.asStateFlow()
     private var isRunning = false
     private var mediaSession: MediaLibrarySession? = null
     private var controllerFuture: com.google.common.util.concurrent.ListenableFuture<MediaController>? = null
@@ -4922,10 +4924,13 @@ class MusicService :
 
         openAudioEffectSession()
 
+        val outgoingId = fadingPlayer?.currentMediaItem?.mediaId
+        val incomingId = player.currentMediaItem?.mediaId
+
         crossfadeJob =
             scope.launch {
                 val duration = crossfadeDuration.toLong()
-                val steps = 20
+                val steps = (duration / 100L).toInt().coerceIn(20, 100)
                 val stepTime = duration / steps
                 val startVolume =
                     try {
@@ -4941,6 +4946,7 @@ class MusicService :
                     }
 
                     val progress = i / steps.toFloat()
+                    _crossfadeState.value = CrossfadeState.Fading(outgoingId, incomingId, progress)
                     val fadeIn = 1.0f - (1.0f - progress) * (1.0f - progress)
                     val fadeOut = (1.0f - progress) * (1.0f - progress)
 
@@ -4973,6 +4979,7 @@ class MusicService :
         fadingPlayer?.release()
         fadingPlayer = null
         isCrossfading = false
+        _crossfadeState.value = CrossfadeState.Idle
         applyEffectiveVolume()
         sleepTimer?.notifySongTransition()
 
