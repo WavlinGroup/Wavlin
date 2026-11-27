@@ -78,6 +78,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.wavlin.music.ui.pages.nav.Screens
+import com.wavlin.music.ui.style.LocalWavlinDesign
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.HazeMaterials
@@ -91,7 +92,7 @@ private data class NavItemState(
 )
 
 @Stable
-private fun isRouteSelected(currentRoute: String?, screenRoute: String, navigationItems: List<Screens>): Boolean {
+internal fun isRouteSelected(currentRoute: String?, screenRoute: String, navigationItems: List<Screens>): Boolean {
     if (currentRoute == null) return false
     if (currentRoute == screenRoute) return true
     if (navigationItems.any { it.route == screenRoute } &&
@@ -193,7 +194,10 @@ fun AppNavigationBar(
     modifier: Modifier = Modifier,
     pureBlack: Boolean = false,
     slimNav: Boolean = false,
-    onSearchLongClick: (() -> Unit)? = null
+    onSearchLongClick: (() -> Unit)? = null,
+    /** Wavlin design only: true while the dock is shrunk to its pill. */
+    compact: Boolean = false,
+    onExpand: () -> Unit = {},
 ) {
     // Pure black is an explicit OLED preference - keep a heavy black tint, but still blur
     // through it rather than falling back to a flat, zero-variation fill.
@@ -207,6 +211,21 @@ fun AppNavigationBar(
             onItemClick = onItemClick,
             modifier = modifier,
             slimNav = slimNav,
+            onSearchLongClick = onSearchLongClick,
+        )
+        return
+    }
+
+    if (LocalWavlinDesign.current) {
+        WavlinDock(
+            navigationItems = navigationItems,
+            currentRoute = currentRoute,
+            onItemClick = onItemClick,
+            modifier = modifier,
+            pureBlack = pureBlack,
+            slimNav = slimNav,
+            compact = compact,
+            onExpand = onExpand,
             onSearchLongClick = onSearchLongClick,
         )
         return
@@ -247,7 +266,7 @@ fun AppNavigationBar(
  * spring stiffness, so the page glides together with the pill.
  */
 @Stable
-private class TabGlide(
+internal class TabGlide(
     val pillPos: Animatable<Float, AnimationVector1D>,
     val targetIndex: Int,
     private val onTap: (Int, () -> Unit) -> Unit,
@@ -256,7 +275,7 @@ private class TabGlide(
 }
 
 @Composable
-private fun rememberTabGlide(foundIndex: Int): TabGlide {
+internal fun rememberTabGlide(foundIndex: Int): TabGlide {
     val scope = rememberCoroutineScope()
     val lastIndex = remember { IntArray(1) }
     if (foundIndex >= 0) lastIndex[0] = foundIndex

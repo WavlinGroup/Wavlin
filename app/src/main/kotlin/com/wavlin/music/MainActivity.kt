@@ -1031,10 +1031,14 @@ class MainActivity : ComponentActivity() {
 
                 var showAccountDialog by remember { mutableStateOf(false) }
 
+                val dockScroll = com.wavlin.music.ui.kit.rememberDockScrollState()
+                LaunchedEffect(navBackStackEntry) { dockScroll.expand() }
+
                 val baseBg = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
                 val hazeState = remember { HazeState() }
                 val interfaceStyle by rememberEnumPreference(InterfaceStyleKey, defaultValue = InterfaceStyle.MATERIAL)
                 val appleStyle = interfaceStyle == InterfaceStyle.APPLE_MUSIC
+                val wavlinShell = themeWavlinDesign && !appleStyle
                 // A WebView can't be recorded into the glass backdrop layer (it crashes the page or the app),
                 // so the screens that host one run without the liquid-glass backdrop.
                 val webViewRoute = currentRoute == "login" || currentRoute == "spotify_signin"
@@ -1060,7 +1064,7 @@ class MainActivity : ComponentActivity() {
 
                 CompositionLocalProvider(
                     LocalInterfaceAppleMusic provides appleStyle,
-                    com.wavlin.music.ui.style.LocalWavlinDesign provides (themeWavlinDesign && !appleStyle),
+                    com.wavlin.music.ui.style.LocalWavlinDesign provides wavlinShell,
                     com.wavlin.music.ui.kit.LocalPlayerGlassBackdrop provides (if (appleStyle && appleGlassSupported()) playerGlassBackdrop else null),
                     LocalGlassBackdrop provides (if (appleStyle && appleGlassSupported() && !webViewRoute) glassBackdrop else null),
                     com.wavlin.music.ui.kit.LocalGlassOverlayHost provides (if (appleStyle && appleGlassSupported() && !webViewRoute) glassOverlayHost else null),
@@ -1325,6 +1329,8 @@ class MainActivity : ComponentActivity() {
                                                 // graphicsLayer runs during draw phase, not composition phase
                                                 .graphicsLayer {
                                                     val navBarHeightPx = navigationBarHeight.toPx()
+                                        compact = dockScroll.compact,
+                                        onExpand = dockScroll::expand,
                                                     val totalHeightPx = navBarTotalHeight.toPx()
 
                                                     translationY =
@@ -1392,7 +1398,11 @@ class MainActivity : ComponentActivity() {
                                 .fillMaxSize()
                                 .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
                     ) {
-                        Box(Modifier.fillMaxSize()) {
+                        Box(
+                            Modifier
+                                .fillMaxSize()
+                                .then(if (wavlinShell) Modifier.nestedScroll(dockScroll.connection) else Modifier),
+                        ) {
                         Row(
                             Modifier
                                 .fillMaxSize()
