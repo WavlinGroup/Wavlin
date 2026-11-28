@@ -777,7 +777,7 @@ fun Queue(
             }
         }
 
-        val floatingShape = RoundedCornerShape(if (LocalInterfaceAppleMusic.current) 24.dp else 28.dp)
+        val floatingShape = RoundedCornerShape(if (com.wavlin.music.ui.style.LocalWavlinLayout.current) 22.dp else if (LocalInterfaceAppleMusic.current) 24.dp else 28.dp)
 
         Column(
             modifier =
@@ -803,7 +803,7 @@ fun Queue(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = queueTitle.orEmpty(),
-                        style = MaterialTheme.typography.titleLarge,
+                        style = if (com.wavlin.music.ui.style.LocalWavlinLayout.current) MaterialTheme.typography.headlineSmall else MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -1183,11 +1183,12 @@ private fun QueueSongRow(
 ) {
     val colors = MaterialTheme.colorScheme
     val apple = LocalInterfaceAppleMusic.current
-    val shape = RoundedCornerShape(if (apple) 14.dp else 20.dp)
+    val wavlin = com.wavlin.music.ui.style.LocalWavlinLayout.current
+    val shape = RoundedCornerShape(if (apple || wavlin) 14.dp else 20.dp)
     val background =
         when {
             isSelected -> colors.primary.copy(alpha = 0.18f)
-            isActive -> if (apple) colors.onSurface.copy(alpha = 0.10f) else colors.secondaryContainer.copy(alpha = 0.85f)
+            isActive -> if (wavlin) colors.primary.copy(alpha = 0.10f) else if (apple) colors.onSurface.copy(alpha = 0.10f) else colors.secondaryContainer.copy(alpha = 0.85f)
             else -> Color.Transparent
         }
     val andText = stringResource(R.string.and)
