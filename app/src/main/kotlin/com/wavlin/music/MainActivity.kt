@@ -91,7 +91,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -228,6 +227,7 @@ import com.wavlin.music.ui.state.HomeViewModel
 import com.wavlin.music.widget.PlaylistWidgetReceiver
 import com.valentinilk.shimmer.LocalShimmerTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -648,22 +648,28 @@ class MainActivity : ComponentActivity() {
             }
 
             playerConnection.service.currentMediaMetadata
-                .distinctUntilChanged { old, new -> old?.id == new?.id }
+                .distinctUntilChanged { old, new -> old?.id == new?.id && old?.thumbnailUrl == new?.thumbnailUrl }
                 .collectLatest { song ->
-                    if (song?.thumbnailUrl != null) {
-                        val cached = themeColorCache[song.thumbnailUrl]
-                        if (cached != null) {
-                            withFrameNanos { }
-                            themeColor = cached
-                            return@collectLatest
-                        }
+                    val url = song?.thumbnailUrl
+                    if (url == null) {
+                        themeColor = selectedThemeColor
+                        return@collectLatest
+                    }
+                    val cached = themeColorCache[url]
+                    if (cached != null) {
+                        themeColor = cached
+                        return@collectLatest
+                    }
+                    // A failed load keeps the colour that is showing and is not cached, so the next song or retry works.
+                    val extracted =
                         withContext(Dispatchers.IO) {
                             try {
                                 val result =
                                     imageLoader.execute(
                                         ImageRequest
                                             .Builder(this@MainActivity)
-                                            .data(song.thumbnailUrl)
+                                            .data(url)
+                                            .size(256, 256)
                                             .allowHardware(false)
                                             .memoryCachePolicy(CachePolicy.ENABLED)
                                             .diskCachePolicy(CachePolicy.ENABLED)
@@ -671,17 +677,16 @@ class MainActivity : ComponentActivity() {
                                             .crossfade(false)
                                             .build(),
                                     )
-                                val extractedColor = result.image?.toBitmap()?.extractThemeColor() ?: selectedThemeColor
-                                themeColorCache[song.thumbnailUrl] = extractedColor
-                                withFrameNanos { }
-                                themeColor = extractedColor
+                                result.image?.toBitmap()?.extractThemeColor()
+                            } catch (e: CancellationException) {
+                                throw e
                             } catch (e: Exception) {
-                                withFrameNanos { }
-                                themeColor = selectedThemeColor
+                                null
                             }
                         }
-                    } else {
-                        themeColor = selectedThemeColor
+                    if (extracted != null) {
+                        themeColorCache[url] = extracted
+                        themeColor = extracted
                     }
                 }
         }
@@ -1121,8 +1126,8 @@ class MainActivity : ComponentActivity() {
                                 enter = fadeIn(animationSpec = tween(durationMillis = 300)),
                                 exit = fadeOut(animationSpec = tween(durationMillis = 200)),
                             ) {
-                                // On Home the bar has no surface of its own; a scrim fades in as the page scrolls under it.
-                                val blendTopBar = wavlinAll && currentRoute == Screens.Home.route
+                                // On Home and over the moving backdrop the bar has no surface of its own; a scrim fades in as the page scrolls under it.
+                                val blendTopBar = wavlinAll && (currentRoute == Screens.Home.route || ambientBackdrop)
                                 val blendScrimColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.background
                                 Box(
                                     modifier =
@@ -1166,7 +1171,7 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                     // The scroll state is shared by every screen; stale offset from another page would paint the bar solid.
-                                    LaunchedEffect(blendTopBar) {
+                                    LaunchedEffect(blendTopBar, currentRoute) {
                                         if (blendTopBar) {
                                             topAppBarScrollBehavior.state.contentOffset = 0f
                                             topAppBarScrollBehavior.state.resetHeightOffset()
