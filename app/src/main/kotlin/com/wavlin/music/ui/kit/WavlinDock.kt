@@ -211,7 +211,7 @@ internal fun WavlinDock(
 }
 
 /** Reads the animation in the layout phase, so shrinking the dock does not recompose it every frame. */
-private fun Modifier.animatedDockWidth(progress: State<Float>, pillFraction: Float): Modifier =
+internal fun Modifier.animatedDockWidth(progress: State<Float>, pillFraction: Float): Modifier =
     layout { measurable, constraints ->
         val full = constraints.maxWidth
         val pill = (full * pillFraction.coerceIn(0f, 1f)).roundToInt()

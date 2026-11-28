@@ -5,6 +5,10 @@
 
 package com.wavlin.music.ui.kit
 
+import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.height
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.Dp
@@ -212,6 +216,8 @@ fun AppNavigationBar(
             modifier = modifier,
             slimNav = slimNav,
             onSearchLongClick = onSearchLongClick,
+            compact = compact,
+            onExpand = onExpand,
         )
         return
     }
@@ -424,87 +430,144 @@ private fun AppleFloatingTabBar(
     modifier: Modifier,
     slimNav: Boolean,
     onSearchLongClick: (() -> Unit)?,
+    compact: Boolean,
+    onExpand: () -> Unit,
 ) {
     val barHeight: Dp = if (slimNav) 52.dp else 60.dp
     val haptics = LocalHapticFeedback.current
     val foundIndex = navigationItems.indexOfFirst { isRouteSelected(currentRoute, it.route, navigationItems) }
     val glide = rememberTabGlide(foundIndex)
+    val progress = animateFloatAsState(
+        targetValue = if (compact) 1f else 0f,
+        animationSpec = com.wavlin.music.ui.style.WavlinMotion.settleSpring(),
+        label = "appleDockCompact",
+    )
+    val pillWidth = if (slimNav) 76.dp else 140.dp
 
-    Row(
+    BoxWithConstraints(
         modifier = modifier.padding(start = 16.dp, end = 16.dp, top = 6.dp),
+        contentAlignment = Alignment.TopCenter,
     ) {
-        BoxWithConstraints(
+        val fullWidth = maxWidth
+        Box(
             modifier = Modifier
-                .weight(1f)
+                .animatedDockWidth(progress, pillWidth.value / fullWidth.value)
                 .height(barHeight)
                 .let { base ->
                     if (LocalPinkLilyTheme.current) base.pinkGlass(CircleShape) else base.appleGlass(CircleShape, HazeMaterials.thin())
                 }
-                .padding(6.dp),
+                .clip(CircleShape),
+            contentAlignment = Alignment.Center,
         ) {
-            val tabWidth = maxWidth / navigationItems.size.coerceAtLeast(1)
-            val indicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.14f)
-
-            Box(
+            BoxWithConstraints(
                 modifier = Modifier
-                    .offset { IntOffset((glide.pillPos.value * tabWidth.toPx()).roundToInt(), 0) }
-                    .width(tabWidth)
+                    .requiredWidth(fullWidth)
                     .fillMaxHeight()
-                    .clip(CircleShape)
-                    .background(indicatorColor),
-            )
+                    .graphicsLayer { alpha = (1f - progress.value * 2.5f).coerceIn(0f, 1f) }
+                    .then(if (compact) Modifier.clearAndSetSemantics {} else Modifier)
+                    .padding(6.dp),
+            ) {
+                val tabWidth = maxWidth / navigationItems.size.coerceAtLeast(1)
+                val indicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.14f)
 
-            Row(modifier = Modifier.fillMaxSize()) {
-                navigationItems.forEachIndexed { index, screen ->
-                    val routeSelected = isRouteSelected(currentRoute, screen.route, navigationItems)
-                    val visuallySelected = index == glide.targetIndex
-                    val longClick = if (screen == Screens.Search) onSearchLongClick else null
-                    val tint by animateColorAsState(
-                        targetValue = if (visuallySelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                        animationSpec = tween(260),
-                        label = "tabTint",
-                    )
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight()
-                            .clip(CircleShape)
-                            .combinedClickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null,
-                                onClick = {
-                                    if (routeSelected) {
-                                        onItemClick(screen, true)
-                                    } else {
-                                        glide.tap(index) { onItemClick(screen, false) }
-                                    }
-                                },
-                                onLongClick = longClick?.let { cb ->
-                                    {
-                                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        cb()
-                                    }
-                                },
-                            ),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                    ) {
-                        Icon(
-                            painter = painterResource(id = if (visuallySelected) screen.iconIdActive else screen.iconIdInactive),
-                            contentDescription = stringResource(screen.titleId),
-                            modifier = Modifier.size(22.dp),
-                            tint = tint,
+                Box(
+                    modifier = Modifier
+                        .offset { IntOffset((glide.pillPos.value * tabWidth.toPx()).roundToInt(), 0) }
+                        .width(tabWidth)
+                        .fillMaxHeight()
+                        .clip(CircleShape)
+                        .background(indicatorColor),
+                )
+
+                Row(modifier = Modifier.fillMaxSize()) {
+                    navigationItems.forEachIndexed { index, screen ->
+                        val routeSelected = isRouteSelected(currentRoute, screen.route, navigationItems)
+                        val visuallySelected = index == glide.targetIndex
+                        val longClick = if (screen == Screens.Search) onSearchLongClick else null
+                        val tint by animateColorAsState(
+                            targetValue = if (visuallySelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                            animationSpec = tween(260),
+                            label = "tabTint",
                         )
-                        if (!slimNav) {
-                            Text(
-                                text = stringResource(screen.titleId),
-                                fontSize = 10.sp,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                color = tint,
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxHeight()
+                                .clip(CircleShape)
+                                .combinedClickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null,
+                                    onClick = {
+                                        if (routeSelected) {
+                                            onItemClick(screen, true)
+                                        } else {
+                                            glide.tap(index) { onItemClick(screen, false) }
+                                        }
+                                    },
+                                    onLongClick = longClick?.let { cb ->
+                                        {
+                                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            cb()
+                                        }
+                                    },
+                                ),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                        ) {
+                            Icon(
+                                painter = painterResource(id = if (visuallySelected) screen.iconIdActive else screen.iconIdInactive),
+                                contentDescription = stringResource(screen.titleId),
+                                modifier = Modifier.size(22.dp),
+                                tint = tint,
                             )
+                            if (!slimNav) {
+                                Text(
+                                    text = stringResource(screen.titleId),
+                                    fontSize = 10.sp,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    color = tint,
+                                )
+                            }
                         }
                     }
+                }
+            }
+
+            val current = navigationItems.getOrNull(glide.targetIndex)
+            if (current != null) {
+                Row(
+                    modifier = Modifier
+                        .requiredWidth(pillWidth)
+                        .graphicsLayer { alpha = ((progress.value - 0.6f) * 2.5f).coerceIn(0f, 1f) }
+                        .clearAndSetSemantics {},
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        painter = painterResource(current.iconIdActive),
+                        contentDescription = null,
+                        modifier = Modifier.size(22.dp),
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                    if (!slimNav) {
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            text = stringResource(current.titleId),
+                            fontSize = 12.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
+                }
+                if (compact) {
+                    val description = stringResource(current.titleId)
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .clickable(onClickLabel = description, role = androidx.compose.ui.semantics.Role.Button, onClick = onExpand),
+                    )
                 }
             }
         }

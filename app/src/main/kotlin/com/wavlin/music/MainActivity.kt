@@ -1039,6 +1039,8 @@ class MainActivity : ComponentActivity() {
                 val interfaceStyle by rememberEnumPreference(InterfaceStyleKey, defaultValue = InterfaceStyle.MATERIAL)
                 val appleStyle = interfaceStyle == InterfaceStyle.APPLE_MUSIC
                 val wavlinShell = themeWavlinDesign && !appleStyle
+                // Motion, large titles and the shrinking dock follow the Wavlin design in every style; colors stay per style.
+                val wavlinAll = themeWavlinDesign
                 // A WebView can't be recorded into the glass backdrop layer (it crashes the page or the app),
                 // so the screens that host one run without the liquid-glass backdrop.
                 val webViewRoute = currentRoute == "login" || currentRoute == "spotify_signin"
@@ -1155,7 +1157,7 @@ class MainActivity : ComponentActivity() {
                                                     com.wavlin.music.ui.kit.ScriptTitle(
                                                         text = titleRes?.let { stringResource(it) } ?: "",
                                                     )
-                                                } else if (wavlinShell) {
+                                                } else if (wavlinAll) {
                                                     com.wavlin.music.ui.kit.WavlinTitle(
                                                         text = titleRes?.let { stringResource(it) } ?: "",
                                                     )
@@ -1203,7 +1205,7 @@ class MainActivity : ComponentActivity() {
                                                 )
                                             }
                                         },
-                                        expandedHeight = if (pinkWallpaper || wavlinShell) AppBarHeight else 52.dp,
+                                        expandedHeight = if (pinkWallpaper || wavlinAll) AppBarHeight else 52.dp,
                                         scrollBehavior = topAppBarScrollBehavior,
                                         colors =
                                             TopAppBarDefaults.topAppBarColors(
@@ -1410,7 +1412,7 @@ class MainActivity : ComponentActivity() {
                         Box(
                             Modifier
                                 .fillMaxSize()
-                                .then(if (wavlinShell) Modifier.nestedScroll(dockScroll.connection) else Modifier),
+                                .then(if (wavlinAll) Modifier.nestedScroll(dockScroll.connection) else Modifier),
                         ) {
                         Row(
                             Modifier
@@ -1488,7 +1490,7 @@ class MainActivity : ComponentActivity() {
                                         val currentRouteIndex = routeIndexMap[targetState.destination.route] ?: -1
                                         val previousRouteIndex = routeIndexMap[initialState.destination.route] ?: -1
 
-                                        if (wavlinShell) {
+                                        if (wavlinAll) {
                                             if (previousRouteIndex != -1 && currentRouteIndex != -1) {
                                                 com.wavlin.music.ui.style.WavlinTransitions.tabEnter(if (currentRouteIndex > previousRouteIndex) 1 else -1)
                                             } else if (currentRouteIndex != -1) {
@@ -1513,7 +1515,7 @@ class MainActivity : ComponentActivity() {
                                         val currentRouteIndex = routeIndexMap[initialState.destination.route] ?: -1
                                         val targetRouteIndex = routeIndexMap[targetState.destination.route] ?: -1
 
-                                        if (wavlinShell) {
+                                        if (wavlinAll) {
                                             if (currentRouteIndex != -1 && targetRouteIndex != -1) {
                                                 com.wavlin.music.ui.style.WavlinTransitions.tabExit(if (targetRouteIndex > currentRouteIndex) 1 else -1)
                                             } else if (targetRouteIndex != -1) {
@@ -1537,7 +1539,7 @@ class MainActivity : ComponentActivity() {
                                         val currentRouteIndex = routeIndexMap[targetState.destination.route] ?: -1
                                         val previousRouteIndex = routeIndexMap[initialState.destination.route] ?: -1
 
-                                        if (wavlinShell) {
+                                        if (wavlinAll) {
                                             if (previousRouteIndex != -1 && currentRouteIndex != -1) {
                                                 com.wavlin.music.ui.style.WavlinTransitions.tabEnter(if (currentRouteIndex > previousRouteIndex) 1 else -1)
                                             } else {
@@ -1559,7 +1561,7 @@ class MainActivity : ComponentActivity() {
                                         val currentRouteIndex = routeIndexMap[initialState.destination.route] ?: -1
                                         val targetRouteIndex = routeIndexMap[targetState.destination.route] ?: -1
 
-                                        if (wavlinShell) {
+                                        if (wavlinAll) {
                                             if (currentRouteIndex != -1 && targetRouteIndex != -1) {
                                                 com.wavlin.music.ui.style.WavlinTransitions.tabExit(if (targetRouteIndex > currentRouteIndex) 1 else -1)
                                             } else {
