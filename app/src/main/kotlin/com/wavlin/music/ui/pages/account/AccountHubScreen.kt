@@ -5,6 +5,7 @@
 
 package com.wavlin.music.ui.pages.account
 
+import com.wavlin.music.ui.kit.wavlinPanel
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -540,8 +541,7 @@ private fun ServiceCard(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .clip(shape)
-                .background(color)
+                .wavlinPanel(shape, color)
                 .clickable(onClick = onClick)
                 .padding(start = 16.dp, top = 14.dp, bottom = 14.dp, end = 12.dp),
     ) {
@@ -594,8 +594,7 @@ private fun ToggleCard(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .clip(shape)
-                .background(color)
+                .wavlinPanel(shape, color)
                 .clickable(enabled = enabled) { onCheckedChange(!checked) }
                 .padding(horizontal = 20.dp, vertical = 14.dp),
     ) {

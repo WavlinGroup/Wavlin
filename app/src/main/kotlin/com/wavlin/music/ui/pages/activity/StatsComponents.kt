@@ -5,6 +5,8 @@
 
 package com.wavlin.music.ui.pages.activity
 
+import com.wavlin.music.ui.kit.pageGlass
+import com.wavlin.music.ui.kit.pageGlassAvailable
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -69,6 +71,7 @@ fun StatsSummaryCard(
     val appleMusic = LocalInterfaceAppleMusic.current
     val colors = MaterialTheme.colorScheme
     val shape = RoundedCornerShape(if (appleMusic) 24.dp else 28.dp)
+    val glass = pageGlassAvailable()
     val totalMinutes = totalTimeMs / 60_000
     val timeText =
         if (totalMinutes >= 60) {
@@ -82,10 +85,24 @@ fun StatsSummaryCard(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clip(shape)
-            .background(Brush.linearGradient(listOf(colors.primaryContainer, colors.tertiaryContainer)))
             .then(
-                if (appleMusic) {
+                if (glass) {
+                    Modifier
+                        .pageGlass(shape, 0.1f, lens = false)
+                        .clip(shape)
+                        .background(
+                            Brush.linearGradient(
+                                listOf(colors.primaryContainer.copy(alpha = 0.55f), colors.tertiaryContainer.copy(alpha = 0.45f)),
+                            ),
+                        )
+                } else {
+                    Modifier
+                        .clip(shape)
+                        .background(Brush.linearGradient(listOf(colors.primaryContainer, colors.tertiaryContainer)))
+                },
+            )
+            .then(
+                if (appleMusic && !glass) {
                     Modifier.border(BorderStroke(0.5.dp, colors.outlineVariant), shape)
                 } else {
                     Modifier

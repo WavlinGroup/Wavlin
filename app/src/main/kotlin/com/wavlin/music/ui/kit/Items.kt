@@ -324,7 +324,7 @@ inline fun ListItem(
                 if (highlight != null) {
                     Modifier.clip(rowShape).background(highlight)
                 } else if (glassRow) {
-                    Modifier.clip(rowShape).background(glassFill)
+                    Modifier.wavlinPanel(rowShape, glassFill, flat = true)
                 } else {
                     Modifier
                 }

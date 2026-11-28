@@ -6,6 +6,7 @@
 package com.wavlin.music.ui.pages.together
 
 import com.wavlin.music.ui.kit.pinkGlassPanel
+import com.wavlin.music.ui.kit.wavlinPanel
 import com.wavlin.music.ui.kit.pinkTopBarColors
 import com.wavlin.music.ui.kit.LocalPinkLilyTheme
 import com.wavlin.music.ui.kit.ScriptTitle
@@ -1511,6 +1512,13 @@ private fun Card(
         androidx.compose.material3.Card(
             modifier = modifier.pinkGlassPanel(RoundedCornerShape(28.dp)),
             shape = RoundedCornerShape(28.dp),
+            colors = CardDefaults.cardColors(containerColor = androidx.compose.ui.graphics.Color.Transparent),
+            content = content,
+        )
+    } else if (com.wavlin.music.ui.style.LocalWavlinLayout.current) {
+        androidx.compose.material3.Card(
+            modifier = modifier.wavlinPanel(shape, MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.62f)),
+            shape = shape,
             colors = CardDefaults.cardColors(containerColor = androidx.compose.ui.graphics.Color.Transparent),
             content = content,
         )
