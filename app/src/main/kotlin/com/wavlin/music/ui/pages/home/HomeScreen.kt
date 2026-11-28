@@ -1197,12 +1197,13 @@ fun HomeScreen(
 
             val scrollFx = rememberScrollFx(lazylistState)
 
+            val wavlinHome = com.wavlin.music.ui.style.LocalWavlinLayout.current
             LazyColumn(
                 state = lazylistState,
                 modifier = Modifier.scrollFxConnection(scrollFx),
                 contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
             ) {
-                if (com.wavlin.music.ui.style.LocalWavlinLayout.current) {
+                if (wavlinHome) {
                     item(key = "home_greeting", contentType = "greeting") {
                         HomeGreeting()
                     }
