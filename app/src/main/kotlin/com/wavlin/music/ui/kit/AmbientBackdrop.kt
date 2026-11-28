@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -24,6 +25,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.graphics.toArgb
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.max
@@ -32,7 +34,7 @@ import kotlin.math.sin
 /** True while the app draws the moving dynamic-theme backdrop, so screens skip their own static wash. */
 val LocalAmbientBackdrop = staticCompositionLocalOf { false }
 
-private const val DriftMillis = 16_000
+private const val DriftMillis = 24_000
 
 /**
  * Slowly drifting colour light behind the pages, built from the current colour scheme. With the dynamic theme on, that
@@ -43,8 +45,12 @@ private const val DriftMillis = 16_000
 fun AmbientBackdrop(modifier: Modifier = Modifier) {
     val scheme = MaterialTheme.colorScheme
     val first by animateColorAsState(scheme.primaryContainer, tween(900), label = "ambientFirst")
-    val second by animateColorAsState(scheme.tertiaryContainer, tween(900), label = "ambientSecond")
-    val third by animateColorAsState(scheme.secondaryContainer, tween(900), label = "ambientThird")
+    // Neighbouring hues of the same colour, so the pools read as different colours that flow into each other.
+    // A grey cover has no hue to shift, so it stays grey like the player background.
+    val secondTarget = remember(scheme.primaryContainer) { scheme.primaryContainer.shiftHue(42f) }
+    val thirdTarget = remember(scheme.primaryContainer) { scheme.primaryContainer.shiftHue(-42f) }
+    val second by animateColorAsState(secondTarget, tween(900), label = "ambientSecond")
+    val third by animateColorAsState(thirdTarget, tween(900), label = "ambientThird")
     val glow by animateColorAsState(scheme.primary, tween(900), label = "ambientGlow")
     val strength = if (scheme.background.luminance() < 0.5f) 1f else 0.7f
     val phase by rememberInfiniteTransition(label = "ambientDrift").animateFloat(
@@ -67,12 +73,20 @@ fun AmbientBackdrop(modifier: Modifier = Modifier) {
                         1f to Color.Transparent,
                     ),
                 )
-                drawLight(first, 0.6f * strength, Offset(size.width * (0.5f + 0.38f * sin(turn)), size.height * (0.20f + 0.16f * cos(turn))), reach)
-                drawLight(second, 0.55f * strength, Offset(size.width * (0.5f + 0.40f * cos(turn + 1.6f)), size.height * (0.52f + 0.20f * sin(turn * 2f))), reach * 0.9f)
-                drawLight(third, 0.5f * strength, Offset(size.width * (0.5f + 0.36f * sin(turn + 3.4f)), size.height * (0.85f + 0.10f * cos(turn))), reach)
-                drawLight(glow, 0.26f * strength, Offset(size.width * (0.5f + 0.44f * cos(turn * 2f + 0.8f)), size.height * (0.5f + 0.30f * sin(turn + 0.6f))), reach * 0.6f)
+                drawLight(first, 0.62f * strength, Offset(size.width * (0.5f + 0.40f * sin(turn)), size.height * (0.20f + 0.16f * sin(turn * 2f + 0.5f))), reach)
+                drawLight(second, 0.58f * strength, Offset(size.width * (0.5f + 0.42f * cos(turn + 1.3f)), size.height * (0.52f + 0.22f * sin(turn + 2.1f))), reach)
+                drawLight(third, 0.54f * strength, Offset(size.width * (0.5f + 0.38f * sin(turn * 2f + 2.5f)), size.height * (0.84f + 0.10f * cos(turn + 0.9f))), reach)
+                drawLight(glow, 0.24f * strength, Offset(size.width * (0.5f + 0.44f * cos(turn * 2f + 0.8f)), size.height * (0.5f + 0.30f * sin(turn + 0.6f))), reach * 0.65f)
             },
     )
+}
+
+private fun Color.shiftHue(degrees: Float): Color {
+    val hsv = FloatArray(3)
+    android.graphics.Color.colorToHSV(toArgb(), hsv)
+    hsv[0] = (hsv[0] + degrees + 360f) % 360f
+    hsv[1] = (hsv[1] * 1.15f).coerceAtMost(1f)
+    return Color(android.graphics.Color.HSVToColor(hsv))
 }
 
 private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawLight(
