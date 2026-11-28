@@ -1751,24 +1751,26 @@ fun PlaylistThumbnail(
 fun BoxScope.OverlayPlayButton(
     visible: Boolean
 ) {
+    val wavlin = com.wavlin.music.ui.style.LocalWavlinLayout.current
     AnimatedVisibility(
         visible = visible,
         enter = fadeIn(),
         exit = fadeOut(),
         modifier = Modifier
-            .align(Alignment.Center)
+            .align(if (wavlin) Alignment.BottomEnd else Alignment.Center)
+            .then(if (wavlin) Modifier.padding(10.dp) else Modifier)
     ) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .size(36.dp)
+                .size(if (wavlin) 40.dp else 36.dp)
                 .clip(CircleShape)
-                .background(Color.Black.copy(alpha = ActiveBoxAlpha))
+                .background(if (wavlin) MaterialTheme.colorScheme.primary else Color.Black.copy(alpha = ActiveBoxAlpha))
         ) {
             Icon(
                 painter = painterResource(R.drawable.play),
                 contentDescription = null,
-                tint = Color.White,
+                tint = if (wavlin) MaterialTheme.colorScheme.onPrimary else Color.White,
                 modifier = Modifier.size(20.dp)
             )
         }
@@ -1821,18 +1823,19 @@ fun BoxScope.AlbumPlayButton(
             .align(Alignment.BottomEnd)
             .padding(8.dp)
     ) {
+        val wavlin = com.wavlin.music.ui.style.LocalWavlinLayout.current
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .size(36.dp)
+                .size(if (wavlin) 40.dp else 36.dp)
                 .clip(CircleShape)
-                .background(Color.Black.copy(alpha = ActiveBoxAlpha))
+                .background(if (wavlin) MaterialTheme.colorScheme.primary else Color.Black.copy(alpha = ActiveBoxAlpha))
                 .clickable(onClick = onClick)
         ) {
             Icon(
                 painter = painterResource(R.drawable.play),
                 contentDescription = null,
-                tint = Color.White
+                tint = if (wavlin) MaterialTheme.colorScheme.onPrimary else Color.White
             )
         }
     }

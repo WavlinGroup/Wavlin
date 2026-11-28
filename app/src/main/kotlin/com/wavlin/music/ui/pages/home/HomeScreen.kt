@@ -5,6 +5,7 @@
 
 package com.wavlin.music.ui.pages.home
 
+import androidx.compose.ui.draw.drawBehind
 import com.wavlin.music.ui.state.MoodAndGenresViewModel
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
@@ -1198,9 +1199,27 @@ fun HomeScreen(
             val scrollFx = rememberScrollFx(lazylistState)
 
             val wavlinHome = com.wavlin.music.ui.style.LocalWavlinLayout.current
+            val homeWashColor = MaterialTheme.colorScheme.primary
+            val homeWashHeight = with(LocalDensity.current) { 420.dp.toPx() }
             LazyColumn(
                 state = lazylistState,
-                modifier = Modifier.scrollFxConnection(scrollFx),
+                modifier =
+                    Modifier
+                        .then(
+                            if (wavlinHome) {
+                                // One soft wash of the theme color behind the greeting; it stays put while the list scrolls.
+                                Modifier.drawBehind {
+                                    drawRect(
+                                        androidx.compose.ui.graphics.Brush.verticalGradient(
+                                            colors = listOf(homeWashColor.copy(alpha = 0.12f), androidx.compose.ui.graphics.Color.Transparent),
+                                            endY = homeWashHeight,
+                                        ),
+                                    )
+                                }
+                            } else {
+                                Modifier
+                            },
+                        ).scrollFxConnection(scrollFx),
                 contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
             ) {
                 if (wavlinHome) {
