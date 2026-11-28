@@ -10,7 +10,6 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.focusable
@@ -213,19 +212,19 @@ class BottomSheetState(
     }
 
     private fun collapse() {
-        collapse(SpringSpec())
+        collapse(spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = 420f))
     }
 
     private fun expand() {
-        expand(SpringSpec())
+        expand(spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = 420f))
     }
 
     fun collapseSoft() {
-        collapse(spring(stiffness = Spring.StiffnessMediumLow))
+        collapse(spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = 260f))
     }
 
     fun expandSoft() {
-        expand(spring(stiffness = Spring.StiffnessMediumLow))
+        expand(spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = 260f))
     }
 
     fun dismiss() {
