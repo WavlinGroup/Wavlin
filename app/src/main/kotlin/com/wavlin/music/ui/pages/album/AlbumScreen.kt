@@ -20,9 +20,17 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
+import com.wavlin.music.ui.kit.pageGlass
+import com.wavlin.music.ui.kit.pageGlassAvailable
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -201,6 +209,13 @@ fun AlbumScreen(
                     else -> com.wavlin.music.ui.style.WavlinShapes.large
                 }
                 val coverGlow = if (pinkLily) androidx.compose.ui.graphics.Color(0xFFD9779B) else MaterialTheme.colorScheme.primary
+                val glassActions = wavlinLayout && pageGlassAvailable()
+                val secondaryColor =
+                    if (glassActions) MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f) else MaterialTheme.colorScheme.surfaceVariant
+                val secondaryModifier =
+                    Modifier
+                        .size(if (wavlinLayout) 52.dp else 48.dp)
+                        .then(if (glassActions) Modifier.pageGlass(CircleShape, 0.1f) else Modifier)
                 Column(
                     modifier =
                         Modifier
@@ -208,6 +223,13 @@ fun AlbumScreen(
                             .padding(top = 8.dp, bottom = 20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
+                    if (wavlinLayout) {
+                        AlbumSleeve(
+                            thumbnailUrl = albumWithSongs.album.thumbnailUrl,
+                            coverShape = coverShape,
+                            glow = coverGlow,
+                        )
+                    } else {
                     // Album Thumbnail - Large centered with shadow
                     Surface(
                         modifier =
@@ -226,6 +248,8 @@ fun AlbumScreen(
                             contentScale = ContentScale.Crop,
                             modifier = Modifier.fillMaxSize(),
                         )
+                    }
+
                     }
 
                     Spacer(modifier = Modifier.height(if (wavlinLayout) 24.dp else 20.dp))
@@ -305,7 +329,8 @@ fun AlbumScreen(
                             Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 24.dp),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
+                        horizontalArrangement =
+                            if (wavlinLayout) Arrangement.spacedBy(12.dp) else Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         // Like Button - Smaller secondary button
@@ -316,8 +341,8 @@ fun AlbumScreen(
                                 }
                             },
                             shape = CircleShape,
-                            color = MaterialTheme.colorScheme.surfaceVariant,
-                            modifier = Modifier.size(48.dp),
+                            color = secondaryColor,
+                            modifier = secondaryModifier,
                         ) {
                             Box(
                                 modifier = Modifier.fillMaxSize(),
@@ -356,20 +381,50 @@ fun AlbumScreen(
                                     )
                                 }
                             },
-                            color = MaterialTheme.colorScheme.primary,
+                            color = if (glassActions) MaterialTheme.colorScheme.primary.copy(alpha = 0.72f) else MaterialTheme.colorScheme.primary,
                             shape = CircleShape,
-                            modifier = Modifier.size(72.dp),
+                            modifier =
+                                if (wavlinLayout) {
+                                    Modifier
+                                        .weight(1f)
+                                        .height(56.dp)
+                                        .then(if (glassActions) Modifier.pageGlass(CircleShape, 0.1f) else Modifier)
+                                } else {
+                                    Modifier.size(72.dp)
+                                },
                         ) {
-                            Box(
-                                contentAlignment = Alignment.Center,
-                                modifier = Modifier.fillMaxSize(),
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.play),
-                                    contentDescription = stringResource(R.string.play),
-                                    tint = MaterialTheme.colorScheme.onPrimary,
-                                    modifier = Modifier.size(32.dp),
-                                )
+                            if (wavlinLayout) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center,
+                                    modifier = Modifier.fillMaxSize(),
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.play),
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onPrimary,
+                                        modifier = Modifier.size(24.dp),
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = stringResource(R.string.play),
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onPrimary,
+                                    )
+                                }
+                            } else {
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier.fillMaxSize(),
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.play),
+                                        contentDescription = stringResource(R.string.play),
+                                        tint = MaterialTheme.colorScheme.onPrimary,
+                                        modifier = Modifier.size(32.dp),
+                                    )
+                                }
                             }
                         }
 
@@ -388,8 +443,8 @@ fun AlbumScreen(
                                 }
                             },
                             shape = CircleShape,
-                            color = MaterialTheme.colorScheme.surfaceVariant,
-                            modifier = Modifier.size(48.dp),
+                            color = secondaryColor,
+                            modifier = secondaryModifier,
                         ) {
                             Box(
                                 modifier = Modifier.fillMaxSize(),
@@ -604,4 +659,74 @@ fun AlbumScreen(
             }
         },
     )
+}
+
+/**
+ * Album cover as a record sleeve: a vinyl disc peeks out of the right edge behind the cover, the same motif as the
+ * Library collections. The pair is offset so the whole group stays centred on the screen.
+ */
+@Composable
+private fun AlbumSleeve(
+    thumbnailUrl: String?,
+    coverShape: androidx.compose.ui.graphics.Shape,
+    glow: Color,
+) {
+    val labelColor = MaterialTheme.colorScheme.primary
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxWidth().height(232.dp),
+    ) {
+        Box(
+            modifier =
+                Modifier
+                    .size(232.dp)
+                    .offset(x = 38.dp)
+                    .drawBehind {
+                        val vinyl = Color(0xFF111113)
+                        val radius = size.minDimension / 2f
+                        drawCircle(color = vinyl, radius = radius)
+                        listOf(0.94f, 0.86f, 0.78f, 0.7f, 0.62f, 0.54f, 0.46f).forEach { ring ->
+                            drawCircle(
+                                color = Color.White.copy(alpha = 0.05f),
+                                radius = radius * ring,
+                                style = Stroke(width = 1.dp.toPx()),
+                            )
+                        }
+                        drawCircle(
+                            brush =
+                                Brush.sweepGradient(
+                                    listOf(
+                                        Color.Transparent,
+                                        Color.White.copy(alpha = 0.1f),
+                                        Color.Transparent,
+                                        Color.White.copy(alpha = 0.1f),
+                                        Color.Transparent,
+                                    ),
+                                ),
+                            radius = radius,
+                        )
+                        drawCircle(color = labelColor, radius = radius * 0.3f)
+                        drawCircle(color = vinyl, radius = radius * 0.04f)
+                    },
+        )
+        Surface(
+            modifier =
+                Modifier
+                    .size(232.dp)
+                    .offset(x = (-38).dp)
+                    .shadow(
+                        elevation = 20.dp,
+                        shape = coverShape,
+                        spotColor = glow.copy(alpha = 0.3f),
+                    ),
+            shape = coverShape,
+        ) {
+            AsyncImage(
+                model = thumbnailUrl?.resize(1080, 1080),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
+    }
 }
