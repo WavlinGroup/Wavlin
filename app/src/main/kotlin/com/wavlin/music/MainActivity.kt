@@ -210,7 +210,7 @@ import com.wavlin.music.ui.style.ColorSaver
 import com.wavlin.music.ui.style.DefaultThemeColor
 import com.wavlin.music.ui.style.SecretPinkThemeColor
 import com.wavlin.music.ui.style.WavlinTheme
-import com.wavlin.music.ui.style.extractThemeColor
+import com.wavlin.music.ui.style.extractPlayerThemeColor
 import com.wavlin.music.ui.support.appBarScrollBehavior
 import com.wavlin.music.ui.support.resetHeightOffset
 import com.wavlin.music.core.util.SearchRoutes
@@ -669,7 +669,7 @@ class MainActivity : ComponentActivity() {
                                         ImageRequest
                                             .Builder(this@MainActivity)
                                             .data(url)
-                                            .size(256, 256)
+                                            .size(100, 100)
                                             .allowHardware(false)
                                             .memoryCachePolicy(CachePolicy.ENABLED)
                                             .diskCachePolicy(CachePolicy.ENABLED)
@@ -677,7 +677,7 @@ class MainActivity : ComponentActivity() {
                                             .crossfade(false)
                                             .build(),
                                     )
-                                result.image?.toBitmap()?.extractThemeColor()
+                                result.image?.toBitmap()?.extractPlayerThemeColor(selectedThemeColor.toArgb())
                             } catch (e: CancellationException) {
                                 throw e
                             } catch (e: Exception) {

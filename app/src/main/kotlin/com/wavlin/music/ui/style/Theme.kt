@@ -66,11 +66,14 @@ fun WavlinTheme(
         if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
     } else {
         // Use materialKolor only when a specific seed color is provided
+        // A grey cover gives a grey seed; TonalSpot would tint it, so low-saturation seeds use the neutral style.
+        val seedHsv = FloatArray(3).also { android.graphics.Color.colorToHSV(themeColor.toArgb(), it) }
+        val seedStyle = if (seedHsv[1] < 0.18f) PaletteStyle.Neutral else PaletteStyle.TonalSpot
         rememberDynamicColorScheme(
             seedColor = themeColor, // themeColor is guaranteed non-default here
             isDark = darkTheme,
             specVersion = ColorSpec.SpecVersion.SPEC_2025,
-            style = PaletteStyle.TonalSpot // Keep existing style
+            style = seedStyle
         )
     }
 
@@ -151,6 +154,15 @@ fun Bitmap.extractThemeColor(): Color {
         .associate { it.rgb to it.population }
     val rankedColors = Score.score(colorsToPopulation)
     return Color(rankedColors.first())
+}
+
+// Same picker the player gradient uses, so the app theme and the lyrics background always share a colour.
+suspend fun Bitmap.extractPlayerThemeColor(fallbackColor: Int): Color {
+    val palette = Palette.from(this)
+        .maximumColorCount(8)
+        .resizeBitmapArea(100 * 100)
+        .generate()
+    return PlayerColorExtractor.extractGradientColors(palette, fallbackColor).first()
 }
 
 fun Bitmap.extractGradientColors(): List<Color> {
