@@ -112,7 +112,7 @@ fun LocalSearchScreen(
         modifier =
             Modifier
                 .fillMaxSize()
-                .background(if (pureBlack) Color.Black else if (LocalPinkLilyTheme.current) Color.Transparent else MaterialTheme.colorScheme.background)
+                .background(if (pureBlack) Color.Black else if (LocalPinkLilyTheme.current || com.wavlin.music.ui.kit.LocalAmbientBackdrop.current) Color.Transparent else MaterialTheme.colorScheme.background)
                 .let { base ->
                     if (isLandscape) {
                         base.windowInsetsPadding(

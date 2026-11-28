@@ -462,6 +462,7 @@ fun SearchScreen(
 
     val onSearchFromSuggestion: (String) -> Unit = { searchQuery -> handleSearch(searchQuery) }
 
+    val ambientBackdrop = com.wavlin.music.ui.kit.LocalAmbientBackdrop.current
     Scaffold(
         topBar = {
             TopAppBar(
@@ -605,7 +606,7 @@ fun SearchScreen(
                         containerColor =
                             if (pureBlack) {
                                 Color.Black
-                            } else if (pinkLily) {
+                            } else if (pinkLily || ambientBackdrop) {
                                 Color.Transparent
                             } else {
                                 MaterialTheme.colorScheme.surfaceContainer
@@ -616,7 +617,7 @@ fun SearchScreen(
         containerColor =
             if (pureBlack) {
                 Color.Black
-            } else if (pinkLily) {
+            } else if (pinkLily || ambientBackdrop) {
                 Color.Transparent
             } else {
                 MaterialTheme.colorScheme.background

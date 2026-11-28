@@ -368,7 +368,7 @@ fun OnlineSearchResult(
         modifier =
             Modifier
                 .fillMaxSize()
-                .background(if (pureBlack) Color.Black else if (LocalPinkLilyTheme.current) Color.Transparent else MaterialTheme.colorScheme.background)
+                .background(if (pureBlack) Color.Black else if (LocalPinkLilyTheme.current || com.wavlin.music.ui.kit.LocalAmbientBackdrop.current) Color.Transparent else MaterialTheme.colorScheme.background)
                 .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top)),
     ) {
         // Google-style SearchBar with Material 3 design

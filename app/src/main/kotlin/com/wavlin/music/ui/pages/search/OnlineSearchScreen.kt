@@ -134,7 +134,7 @@ fun OnlineSearchScreen(
         modifier =
             Modifier
                 .fillMaxSize()
-                .background(if (pureBlack) Color.Black else pinkAwareFill(MaterialTheme.colorScheme.background)),
+                .background(if (pureBlack) Color.Black else searchFill(MaterialTheme.colorScheme.background)),
     ) {
         // Show parsed URL item at the top if present
         if (viewState.isUrlQuery && viewState.parsedUrlItem != null) {
@@ -365,7 +365,7 @@ fun OnlineSearchScreen(
                                         }
                                     }
                                 },
-                            ).background(if (pureBlack) Color.Black else pinkAwareFill(MaterialTheme.colorScheme.surface))
+                            ).background(if (pureBlack) Color.Black else searchFill(MaterialTheme.colorScheme.surface))
                             .animateItem(),
                 )
             }
@@ -739,7 +739,7 @@ fun OnlineSearchScreen(
                                     }
                                 }
                             },
-                        ).background(if (pureBlack) Color.Black else pinkAwareFill(MaterialTheme.colorScheme.surface))
+                        ).background(if (pureBlack) Color.Black else searchFill(MaterialTheme.colorScheme.surface))
                         .animateItem(),
             )
         }
@@ -762,7 +762,7 @@ fun SuggestionItem(
             modifier
                 .fillMaxWidth()
                 .height(SuggestionItemHeight)
-                .background(if (pureBlack) Color.Black else pinkAwareFill(MaterialTheme.colorScheme.surface))
+                .background(if (pureBlack) Color.Black else searchFill(MaterialTheme.colorScheme.surface))
                 .clickable(onClick = onClick)
                 .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)),
     ) {
@@ -802,3 +802,8 @@ fun SuggestionItem(
         }
     }
 }
+
+// Search lists let the moving theme backdrop show through instead of painting their own fill.
+@androidx.compose.runtime.Composable
+private fun searchFill(color: Color): Color =
+    if (com.wavlin.music.ui.kit.LocalAmbientBackdrop.current) Color.Transparent else pinkAwareFill(color)
