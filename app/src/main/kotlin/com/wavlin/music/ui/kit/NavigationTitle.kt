@@ -5,6 +5,10 @@
 
 package com.wavlin.music.ui.kit
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.background
+import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -76,6 +80,15 @@ fun NavigationTitle(
                 contentDescription = null,
                 tint = PinkInk,
                 modifier = Modifier.size(24.dp),
+            )
+        }
+        if (wavlinLayout && !pinkLily && thumbnail == null) {
+            Box(
+                Modifier
+                    .width(3.dp)
+                    .height(22.dp)
+                    .clip(RoundedCornerShape(2.dp))
+                    .background(MaterialTheme.colorScheme.primary),
             )
         }
         thumbnail?.invoke()

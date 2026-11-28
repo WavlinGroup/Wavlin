@@ -1202,6 +1202,12 @@ fun HomeScreen(
                 modifier = Modifier.scrollFxConnection(scrollFx),
                 contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
             ) {
+                if (com.wavlin.music.ui.style.LocalWavlinLayout.current) {
+                    item(key = "home_greeting", contentType = "greeting") {
+                        HomeGreeting()
+                    }
+                }
+
                 // Show podcast sections FIRST when podcast chip is selected (fixed at top)
                 if (selectedChip?.title?.contains("Podcast", ignoreCase = true) == true) {
                     // Show "Your Shows" section from official API
