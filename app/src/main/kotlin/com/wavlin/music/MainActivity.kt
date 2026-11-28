@@ -1067,6 +1067,8 @@ class MainActivity : ComponentActivity() {
                     drawContent()
                 }
 
+                val ambientLayer = rememberLayerBackdrop { drawContent() }
+
                 val playerGlassBackdrop = rememberLayerBackdrop {
                     drawRect(Color.Black)
                     drawContent()
@@ -1446,7 +1448,7 @@ class MainActivity : ComponentActivity() {
                                 .then(if (wavlinAll) Modifier.nestedScroll(dockScroll.connection) else Modifier),
                         ) {
                         if (ambientBackdrop) {
-                            com.wavlin.music.ui.kit.AmbientBackdrop(Modifier.matchParentSize())
+                            com.wavlin.music.ui.kit.AmbientBackdrop(Modifier.matchParentSize().layerBackdrop(ambientLayer))
                         }
                         Row(
                             Modifier
@@ -1470,6 +1472,7 @@ class MainActivity : ComponentActivity() {
                             CompositionLocalProvider(
                                 LocalGlassBackdrop provides null,
                                 com.wavlin.music.ui.kit.LocalAmbientBackdrop provides ambientBackdrop,
+                                com.wavlin.music.ui.kit.LocalAmbientLayer provides (if (ambientBackdrop && appleStyle) ambientLayer else null),
                             ) {
                             val onRailItemClick: (Screens, Boolean) -> Unit =
                                 remember(navController, coroutineScope, topAppBarScrollBehavior, playerBottomSheetState) {

@@ -51,6 +51,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.wavlin.music.core.config.LibraryFilter
+import com.wavlin.music.ui.kit.pageGlass
+import com.wavlin.music.ui.kit.pageGlassAvailable
 import com.wavlin.music.ui.style.WavlinSpace
 
 private const val HeroHeightDp = 164
@@ -159,6 +161,7 @@ private fun BentoTile(
         label = "bentoScale",
     )
     val shape = RoundedCornerShape(if (chip) 28.dp else if (appleMusic) 22.dp else 28.dp)
+    val glass = appleMusic && pageGlassAvailable()
 
     Box(
         modifier = modifier
@@ -166,10 +169,15 @@ private fun BentoTile(
                 scaleX = scale
                 scaleY = scale
             }
-            .clip(shape)
-            .background(container)
             .then(
-                if (appleMusic) {
+                if (glass) {
+                    Modifier.pageGlass(shape, 0.1f).clip(shape).background(container.copy(alpha = 0.34f))
+                } else {
+                    Modifier.clip(shape).background(container)
+                },
+            )
+            .then(
+                if (appleMusic && !glass) {
                     Modifier.border(BorderStroke(0.5.dp, MaterialTheme.colorScheme.outlineVariant), shape)
                 } else {
                     Modifier
@@ -270,6 +278,7 @@ fun LibrarySleeveCard(
         label = "sleeveSpin",
     )
     val shape = RoundedCornerShape(if (appleMusic) 22.dp else 28.dp)
+    val glass = appleMusic && pageGlassAvailable()
 
     Box(
         modifier = modifier
@@ -279,10 +288,15 @@ fun LibrarySleeveCard(
                 scaleX = scale
                 scaleY = scale
             }
-            .clip(shape)
-            .background(container)
             .then(
-                if (appleMusic) {
+                if (glass) {
+                    Modifier.pageGlass(shape, 0.1f).clip(shape).background(container.copy(alpha = 0.34f))
+                } else {
+                    Modifier.clip(shape).background(container)
+                },
+            )
+            .then(
+                if (appleMusic && !glass) {
                     Modifier.border(BorderStroke(0.5.dp, colors.outlineVariant), shape)
                 } else {
                     Modifier

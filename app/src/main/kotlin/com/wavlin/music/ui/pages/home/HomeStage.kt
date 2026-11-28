@@ -60,6 +60,8 @@ import com.wavlin.music.db.entities.LocalItem
 import com.wavlin.music.db.entities.Song
 import com.wavlin.music.ui.kit.LocalInterfaceAppleMusic
 import com.wavlin.music.ui.kit.appleGlass
+import com.wavlin.music.ui.kit.pageGlass
+import com.wavlin.music.ui.kit.pageGlassAvailable
 import com.wavlin.music.ui.kit.appleGlassSupported
 import com.wavlin.music.ui.style.WavlinSpace
 import com.wavlin.music.ui.support.resize
@@ -374,12 +376,14 @@ private fun HomeAction(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val glass = pageGlassAvailable()
+    // Apple Music style: the button is glass over the moving backdrop; the accent button keeps a strong accent tint.
     Surface(
         onClick = onClick,
         shape = CircleShape,
-        color = container,
+        color = if (glass) container.copy(alpha = if (container == MaterialTheme.colorScheme.primary) 0.72f else 0.18f) else container,
         contentColor = content,
-        modifier = modifier.height(52.dp),
+        modifier = modifier.height(52.dp).then(if (glass) Modifier.pageGlass(CircleShape, 0.1f) else Modifier),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

@@ -212,6 +212,11 @@ private fun AppleSettingsGroup(
                 .let { base ->
                     if (pinkLily) {
                         base.pinkGlass(shape, floating = false)
+                    } else if (wavlinLayout && pageGlassAvailable()) {
+                        base
+                            .pageGlass(shape, tintAlpha = 0.12f, lens = false)
+                            .clip(shape)
+                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.05f))
                     } else if (wavlinLayout) {
                         base.wavlinGlassGroup(shape, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f))
                     } else {
