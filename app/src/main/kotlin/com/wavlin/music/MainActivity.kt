@@ -686,7 +686,7 @@ class MainActivity : ComponentActivity() {
         }
 
         val themeInterfaceStyle by rememberEnumPreference(InterfaceStyleKey, defaultValue = InterfaceStyle.MATERIAL)
-        val themeWavlinDesign by rememberPreference(WavlinDesignKey, defaultValue = false)
+        val themeWavlinDesign = true
         WavlinTheme(
             darkTheme = useDarkTheme,
             pureBlack = pureBlack,

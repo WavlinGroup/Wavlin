@@ -56,7 +56,6 @@ import androidx.compose.material3.BadgedBox
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import com.wavlin.music.ui.style.LocalWavlinLayout
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
