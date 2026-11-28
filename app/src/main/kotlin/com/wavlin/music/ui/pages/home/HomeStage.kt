@@ -53,6 +53,9 @@ import com.wavlin.innertube.models.PodcastItem
 import com.wavlin.innertube.models.SongItem
 import com.wavlin.innertube.models.YTItem
 import com.wavlin.music.R
+import com.wavlin.music.db.entities.Album
+import com.wavlin.music.db.entities.LocalItem
+import com.wavlin.music.db.entities.Song
 import com.wavlin.music.ui.style.WavlinSpace
 import com.wavlin.music.ui.support.resize
 import kotlin.math.absoluteValue
@@ -77,7 +80,6 @@ fun YTItem.stageSubtitle(): String? =
     }?.takeIf { it.isNotBlank() }
 
 /** Home hero: one large cover per page with the neighbour peeking in. [lastPage] closes the row. */
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeStage(
     items: List<YTItem>,
@@ -88,10 +90,68 @@ fun HomeStage(
     lastPage: @Composable (Modifier) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    StagePager(
+        items = items,
+        title = { it.title },
+        subtitle = { it.stageSubtitle() },
+        thumbnailUrl = { it.thumbnail },
+        isActive = isActive,
+        isPlaying = isPlaying,
+        onClick = onClick,
+        onLongClick = onLongClick,
+        lastPage = lastPage,
+        modifier = modifier,
+    )
+}
+
+/** The same large-cover row for the user's own library items. */
+@Composable
+fun HomeLocalStage(
+    items: List<LocalItem>,
+    isActive: (LocalItem) -> Boolean,
+    isPlaying: Boolean,
+    onClick: (LocalItem) -> Unit,
+    onLongClick: (LocalItem) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    StagePager(
+        items = items,
+        title = { it.title },
+        subtitle = {
+            when (it) {
+                is Song -> it.artists.joinToString { artist -> artist.name }
+                is Album -> it.artists.joinToString { artist -> artist.name }
+                else -> null
+            }?.takeIf { text -> text.isNotBlank() }
+        },
+        thumbnailUrl = { it.thumbnailUrl },
+        isActive = isActive,
+        isPlaying = isPlaying,
+        onClick = onClick,
+        onLongClick = onLongClick,
+        lastPage = null,
+        modifier = modifier,
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun <T> StagePager(
+    items: List<T>,
+    title: (T) -> String,
+    subtitle: (T) -> String?,
+    thumbnailUrl: (T) -> String?,
+    isActive: (T) -> Boolean,
+    isPlaying: Boolean,
+    onClick: (T) -> Unit,
+    onLongClick: (T) -> Unit,
+    lastPage: (@Composable (Modifier) -> Unit)?,
+    modifier: Modifier = Modifier,
+) {
     BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
         val cardWidth = min(maxWidth - 64.dp, 380.dp)
         val cardHeight = cardWidth * 1.08f
-        val pagerState = rememberPagerState(pageCount = { items.size + 1 })
+        val pagerState = rememberPagerState(pageCount = { items.size + if (lastPage != null) 1 else 0 })
 
         HorizontalPager(
             state = pagerState,
@@ -114,10 +174,12 @@ fun HomeStage(
 
             val item = items.getOrNull(page)
             if (item == null) {
-                lastPage(settle)
+                lastPage?.invoke(settle)
             } else {
                 StageCard(
-                    item = item,
+                    title = title(item),
+                    subtitle = subtitle(item),
+                    thumbnailUrl = thumbnailUrl(item),
                     active = isActive(item),
                     isPlaying = isPlaying,
                     modifier =
@@ -133,14 +195,16 @@ fun HomeStage(
 
 @Composable
 private fun StageCard(
-    item: YTItem,
+    title: String,
+    subtitle: String?,
+    thumbnailUrl: String?,
     active: Boolean,
     isPlaying: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier.background(MaterialTheme.colorScheme.surfaceContainerHigh)) {
         AsyncImage(
-            model = item.thumbnail?.resize(720, 720),
+            model = thumbnailUrl?.resize(720, 720),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize(),
@@ -158,13 +222,13 @@ private fun StageCard(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = item.title,
+                    text = title,
                     style = MaterialTheme.typography.headlineSmall,
                     color = Color.White,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
-                item.stageSubtitle()?.let {
+                subtitle?.let {
                     Text(
                         text = it,
                         style = MaterialTheme.typography.bodyMedium,

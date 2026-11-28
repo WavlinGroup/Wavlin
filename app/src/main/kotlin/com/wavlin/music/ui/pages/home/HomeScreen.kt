@@ -1044,8 +1044,11 @@ fun HomeScreen(
             listOfNotNull(trendingNewSongs) + homePage?.sections.orEmpty()
         }
 
+    // The Wavlin layout shows one hero row, Keep listening, instead of a separate Speed dial.
+    val keepListeningLeads = com.wavlin.music.ui.style.LocalWavlinLayout.current
     val homeSections =
         remember(
+            keepListeningLeads,
             randomizeHomeOrder,
             randomSeed,
             selectedChip,
@@ -1063,7 +1066,7 @@ fun HomeScreen(
             val list = mutableListOf<HomeSection>()
             val chipActive = selectedChip != null
 
-            if (!chipActive && speedDialItems.isNotEmpty()) list.add(HomeSection.SpeedDial)
+            if (!chipActive && !keepListeningLeads && speedDialItems.isNotEmpty()) list.add(HomeSection.SpeedDial)
             if (!chipActive && quickPicks?.isNotEmpty() == true) list.add(HomeSection.QuickPicks)
             if (!chipActive && communityPlaylists?.isNotEmpty() == true) list.add(HomeSection.FromTheCommunity)
             if (!chipActive && dailyDiscover?.isNotEmpty() == true) list.add(HomeSection.DailyDiscover)
@@ -1142,7 +1145,7 @@ fun HomeScreen(
                         HomeSection.QuickPicks to 90,
                         HomeSection.FromTheCommunity to 80,
                         HomeSection.DailyDiscover to 70,
-                        HomeSection.KeepListening to 60,
+                        HomeSection.KeepListening to if (keepListeningLeads) 100 else 60,
                         HomeSection.AccountPlaylists to 50,
                         HomeSection.MoodAndGenres to 10,
                     )
@@ -2153,22 +2156,16 @@ fun HomeScreen(
 
                                 scrollFxItem(scrollFx, key = "keep_listening_list", contentType = "row") {
                                     if (wavlinHome) {
-                                        LazyRow(
-                                            contentPadding = PaddingValues(horizontal = com.wavlin.music.ui.style.WavlinSpace.Gutter),
-                                            horizontalArrangement = Arrangement.spacedBy(com.wavlin.music.ui.style.WavlinSpace.M),
-                                        ) {
-                                            items(keepListeningDistinct, key = { "home_keep_poster_${it.id}" }, contentType = { it::class }) { local ->
-                                                HomePoster(
-                                                    title = local.title,
-                                                    thumbnailUrl = local.thumbnailUrl,
-                                                    active =
-                                                        (local is Song && local.id == mediaMetadata?.id && queueGeneration == keepListeningPlayGeneration) ||
-                                                            (local is Album && local.id == mediaMetadata?.album?.id),
-                                                    onClick = { openLocalItem(local) },
-                                                    onLongClick = { localItemMenu(local) },
-                                                )
-                                            }
-                                        }
+                                        HomeLocalStage(
+                                            items = keepListeningDistinct,
+                                            isActive = { local ->
+                                                (local is Song && local.id == mediaMetadata?.id && queueGeneration == keepListeningPlayGeneration) ||
+                                                    (local is Album && local.id == mediaMetadata?.album?.id)
+                                            },
+                                            isPlaying = isPlaying,
+                                            onClick = openLocalItem,
+                                            onLongClick = localItemMenu,
+                                        )
                                     } else {
                                         val rows = if (keepListening.size > 6) 2 else 1
                                         LazyHorizontalGrid(
