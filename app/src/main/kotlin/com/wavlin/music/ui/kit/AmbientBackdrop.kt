@@ -23,6 +23,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.luminance
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.max
@@ -41,9 +42,10 @@ private const val DriftMillis = 38_000
 @Composable
 fun AmbientBackdrop(modifier: Modifier = Modifier) {
     val scheme = MaterialTheme.colorScheme
-    val first by animateColorAsState(scheme.primary, tween(900), label = "ambientFirst")
-    val second by animateColorAsState(scheme.tertiary, tween(900), label = "ambientSecond")
-    val third by animateColorAsState(scheme.secondary, tween(900), label = "ambientThird")
+    val first by animateColorAsState(scheme.primaryContainer, tween(900), label = "ambientFirst")
+    val second by animateColorAsState(scheme.tertiaryContainer, tween(900), label = "ambientSecond")
+    val third by animateColorAsState(scheme.secondaryContainer, tween(900), label = "ambientThird")
+    val strength = if (scheme.background.luminance() < 0.5f) 1f else 0.7f
     val phase by rememberInfiniteTransition(label = "ambientDrift").animateFloat(
         initialValue = 0f,
         targetValue = 1f,
@@ -56,10 +58,17 @@ fun AmbientBackdrop(modifier: Modifier = Modifier) {
             .graphicsLayer { }
             .drawBehind {
                 val turn = phase * 2f * PI.toFloat()
-                val reach = max(size.width, size.height) * 0.62f
-                drawLight(first, 0.30f, Offset(size.width * (0.22f + 0.16f * sin(turn)), size.height * (0.14f + 0.10f * cos(turn))), reach)
-                drawLight(second, 0.22f, Offset(size.width * (0.82f + 0.12f * cos(turn * 2f)), size.height * (0.46f + 0.14f * sin(turn))), reach * 0.9f)
-                drawLight(third, 0.20f, Offset(size.width * (0.30f + 0.18f * sin(turn + 2f)), size.height * (0.86f + 0.08f * cos(turn * 2f))), reach)
+                val reach = max(size.width, size.height) * 0.7f
+                drawRect(
+                    Brush.verticalGradient(
+                        0f to first.copy(alpha = 0.6f * strength),
+                        0.55f to first.copy(alpha = 0.22f * strength),
+                        1f to Color.Transparent,
+                    ),
+                )
+                drawLight(first, 0.55f * strength, Offset(size.width * (0.22f + 0.16f * sin(turn)), size.height * (0.14f + 0.10f * cos(turn))), reach)
+                drawLight(second, 0.45f * strength, Offset(size.width * (0.82f + 0.12f * cos(turn * 2f)), size.height * (0.46f + 0.14f * sin(turn))), reach * 0.9f)
+                drawLight(third, 0.4f * strength, Offset(size.width * (0.30f + 0.18f * sin(turn + 2f)), size.height * (0.86f + 0.08f * cos(turn * 2f))), reach)
             },
     )
 }
