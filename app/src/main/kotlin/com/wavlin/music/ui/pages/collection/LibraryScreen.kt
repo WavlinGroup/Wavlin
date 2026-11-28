@@ -42,6 +42,7 @@ fun LibraryScreen() {
             LibrarySectionHeader(
                 title = categories.firstOrNull { it.filter == filterType }?.label.orEmpty(),
                 onClose = { filterType = LibraryFilter.LIBRARY },
+                iconRes = categories.firstOrNull { it.filter == filterType }?.iconRes,
             )
         }
     }

@@ -99,7 +99,7 @@ fun LibraryArtistsScreen(
     val (ytmSync) = rememberPreference(YtmSyncKey, true)
 
     val filterContent = @Composable {
-        LibrarySectionHeader(title = stringResource(R.string.artists), onClose = onDeselect) {
+        LibrarySectionHeader(title = stringResource(R.string.artists), onClose = onDeselect, iconRes = R.drawable.artist) {
             LibrarySegmentedFilter(
                 options = listOf(
                     ArtistFilter.LIKED to stringResource(R.string.filter_liked),

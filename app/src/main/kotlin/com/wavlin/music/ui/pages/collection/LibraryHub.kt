@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -33,6 +34,9 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -248,11 +252,16 @@ fun LibrarySectionHeader(
     title: String,
     onClose: () -> Unit,
     modifier: Modifier = Modifier,
+    @DrawableRes iconRes: Int? = null,
     content: (@Composable () -> Unit)? = null,
 ) {
     val appleMusic = LocalInterfaceAppleMusic.current
     val wavlinLayout = com.wavlin.music.ui.style.LocalWavlinLayout.current
     val colors = MaterialTheme.colorScheme
+    if (wavlinLayout) {
+        SleeveSectionHeader(title, onClose, appleMusic, iconRes, modifier, content)
+        return
+    }
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -293,6 +302,103 @@ fun LibrarySectionHeader(
     }
 }
 
+/** Wavlin header for an opened section: a tinted sleeve with the section's ghost icon peeking out of the right edge. */
+@Composable
+private fun SleeveSectionHeader(
+    title: String,
+    onClose: () -> Unit,
+    appleMusic: Boolean,
+    @DrawableRes iconRes: Int?,
+    modifier: Modifier,
+    content: (@Composable () -> Unit)?,
+) {
+    val colors = MaterialTheme.colorScheme
+    val container = if (appleMusic) colors.surfaceContainerHigh else colors.primaryContainer
+    val onContainer = if (appleMusic) colors.onSurface else colors.onPrimaryContainer
+    val shape = RoundedCornerShape(if (appleMusic) 22.dp else 28.dp)
+    Column(modifier = modifier.fillMaxWidth()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = com.wavlin.music.ui.style.WavlinSpace.Gutter,
+                    end = com.wavlin.music.ui.style.WavlinSpace.Gutter,
+                    top = 4.dp,
+                    bottom = 8.dp,
+                )
+                .height(92.dp)
+                .clip(shape)
+                .background(container)
+                .then(
+                    if (appleMusic) Modifier.border(BorderStroke(0.5.dp, colors.outlineVariant), shape) else Modifier,
+                ),
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .offset(x = 52.dp)
+                    .size(132.dp)
+                    .drawBehind {
+                        val center = Offset(size.width / 2f, size.height / 2f)
+                        val radius = size.minDimension / 2f
+                        drawCircle(color = onContainer.copy(alpha = 0.1f), radius = radius, center = center)
+                        listOf(0.82f, 0.64f).forEach { ring ->
+                            drawCircle(
+                                color = onContainer.copy(alpha = 0.14f),
+                                radius = radius * ring,
+                                center = center,
+                                style = Stroke(width = 1.dp.toPx()),
+                            )
+                        }
+                        drawCircle(color = container, radius = radius * 0.3f, center = center)
+                    },
+            ) {
+                if (iconRes != null) {
+                    Icon(
+                        painter = painterResource(iconRes),
+                        contentDescription = null,
+                        tint = onContainer,
+                        modifier = Modifier.size(24.dp),
+                    )
+                }
+            }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(start = 16.dp, end = 72.dp),
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(onContainer.copy(alpha = 0.12f))
+                        .clickable(onClick = onClose),
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.close),
+                        contentDescription = stringResource(R.string.close_chip),
+                        tint = onContainer,
+                        modifier = Modifier.size(22.dp),
+                    )
+                }
+                Spacer(Modifier.width(14.dp))
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = onContainer,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+        }
+        content?.invoke()
+    }
+}
+
 /** Equal-width segmented control used for the inner Liked / Library / Uploaded style filters. */
 @Composable
 fun <T> LibrarySegmentedFilter(
@@ -311,7 +417,7 @@ fun <T> LibrarySegmentedFilter(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp)
             .clip(trackShape)
-            .background(colors.surfaceContainer)
+            .background(if (com.wavlin.music.ui.style.LocalWavlinLayout.current) colors.surfaceContainer.copy(alpha = 0.55f) else colors.surfaceContainer)
             .padding(4.dp),
     ) {
         options.forEach { (value, label) ->

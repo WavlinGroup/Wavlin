@@ -444,7 +444,7 @@ fun LibrarySongsScreen(
                         }
                     }
                 } else {
-                    LibrarySectionHeader(title = stringResource(R.string.songs), onClose = onDeselect) {
+                    LibrarySectionHeader(title = stringResource(R.string.songs), onClose = onDeselect, iconRes = R.drawable.music_note) {
             LibrarySegmentedFilter(
                 options = listOf(
                     SongFilter.LIKED to stringResource(R.string.filter_liked),

@@ -178,7 +178,7 @@ fun LibraryPodcastsScreen(
     ) {
         // Chip row header — same pattern as LibrarySongsScreen
         val chipsHeader = @Composable {
-            LibrarySectionHeader(title = stringResource(R.string.filter_podcasts), onClose = onDeselect) {
+            LibrarySectionHeader(title = stringResource(R.string.filter_podcasts), onClose = onDeselect, iconRes = R.drawable.mic) {
             LibrarySegmentedFilter(
                 options = listOf(
                     PodcastFilter.EPISODES to stringResource(R.string.filter_episodes),

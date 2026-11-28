@@ -111,7 +111,7 @@ fun LibraryAlbumsScreen(
     val hideExplicit by rememberPreference(key = HideExplicitKey, defaultValue = false)
 
     val filterContent = @Composable {
-        LibrarySectionHeader(title = stringResource(R.string.albums), onClose = onDeselect) {
+        LibrarySectionHeader(title = stringResource(R.string.albums), onClose = onDeselect, iconRes = R.drawable.album) {
             LibrarySegmentedFilter(
                 options = listOf(
                     AlbumFilter.LIKED to stringResource(R.string.filter_liked),
