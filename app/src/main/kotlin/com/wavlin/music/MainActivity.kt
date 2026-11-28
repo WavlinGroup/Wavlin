@@ -1049,6 +1049,10 @@ class MainActivity : ComponentActivity() {
                 val wavlinAll = themeWavlinDesign
                 // The moving dynamic-theme light replaces the flat page colour; Secret Pink and pure black keep their own look.
                 val ambientBackdrop = wavlinAll && enableDynamicTheme && !pinkWallpaper && !pureBlack
+                // Apple Music glass needs something to bend. With the dynamic theme off it bends a still, soft field of the
+                // chosen theme colour instead, so the glass does not depend on the moving backdrop.
+                val stillGlassBackdrop = wavlinAll && appleStyle && !enableDynamicTheme && !pinkWallpaper && !pureBlack
+                val backdropVisible = ambientBackdrop || stillGlassBackdrop
                 // A WebView can't be recorded into the glass backdrop layer (it crashes the page or the app),
                 // so the screens that host one run without the liquid-glass backdrop.
                 val webViewRoute = currentRoute == "login" || currentRoute == "spotify_signin"
@@ -1129,7 +1133,7 @@ class MainActivity : ComponentActivity() {
                                 exit = fadeOut(animationSpec = tween(durationMillis = 200)),
                             ) {
                                 // On Home and over the moving backdrop the bar has no surface of its own; a scrim fades in as the page scrolls under it.
-                                val blendTopBar = wavlinAll && (currentRoute == Screens.Home.route || ambientBackdrop)
+                                val blendTopBar = wavlinAll && (currentRoute == Screens.Home.route || backdropVisible)
                                 val blendScrimColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.background
                                 Box(
                                     modifier =
@@ -1447,8 +1451,11 @@ class MainActivity : ComponentActivity() {
                                 .fillMaxSize()
                                 .then(if (wavlinAll) Modifier.nestedScroll(dockScroll.connection) else Modifier),
                         ) {
-                        if (ambientBackdrop) {
-                            com.wavlin.music.ui.kit.AmbientBackdrop(Modifier.matchParentSize().layerBackdrop(ambientLayer))
+                        if (backdropVisible) {
+                            com.wavlin.music.ui.kit.AmbientBackdrop(
+                                modifier = Modifier.matchParentSize().layerBackdrop(ambientLayer),
+                                animated = !stillGlassBackdrop,
+                            )
                         }
                         Row(
                             Modifier
@@ -1471,8 +1478,8 @@ class MainActivity : ComponentActivity() {
                             // Glass inside the screens can't sample the layer it is drawn into, so use the lite look there.
                             CompositionLocalProvider(
                                 LocalGlassBackdrop provides null,
-                                com.wavlin.music.ui.kit.LocalAmbientBackdrop provides ambientBackdrop,
-                                com.wavlin.music.ui.kit.LocalAmbientLayer provides (if (ambientBackdrop && appleStyle) ambientLayer else null),
+                                com.wavlin.music.ui.kit.LocalAmbientBackdrop provides backdropVisible,
+                                com.wavlin.music.ui.kit.LocalAmbientLayer provides (if (backdropVisible && appleStyle) ambientLayer else null),
                             ) {
                             val onRailItemClick: (Screens, Boolean) -> Unit =
                                 remember(navController, coroutineScope, topAppBarScrollBehavior, playerBottomSheetState) {

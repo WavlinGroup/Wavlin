@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
@@ -42,7 +43,11 @@ private const val DriftMillis = 24_000
  * this layer and never the page above it; positions are read in the draw phase.
  */
 @Composable
-fun AmbientBackdrop(modifier: Modifier = Modifier) {
+fun AmbientBackdrop(
+    modifier: Modifier = Modifier,
+    /** False draws one still frame, softer, as the surface for glass when the dynamic theme is off. */
+    animated: Boolean = true,
+) {
     val scheme = MaterialTheme.colorScheme
     val first by animateColorAsState(scheme.primaryContainer, tween(900), label = "ambientFirst")
     // Neighbouring hues of the same colour, so the pools read as different colours that flow into each other.
@@ -52,13 +57,17 @@ fun AmbientBackdrop(modifier: Modifier = Modifier) {
     val second by animateColorAsState(secondTarget, tween(900), label = "ambientSecond")
     val third by animateColorAsState(thirdTarget, tween(900), label = "ambientThird")
     val glow by animateColorAsState(scheme.primary, tween(900), label = "ambientGlow")
-    val strength = if (scheme.background.luminance() < 0.5f) 1f else 0.7f
-    val phase by rememberInfiniteTransition(label = "ambientDrift").animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(DriftMillis, easing = LinearEasing), RepeatMode.Restart),
-        label = "ambientPhase",
-    )
+    val strength = (if (scheme.background.luminance() < 0.5f) 1f else 0.7f) * (if (animated) 1f else 0.55f)
+    val phase by if (animated) {
+        rememberInfiniteTransition(label = "ambientDrift").animateFloat(
+            initialValue = 0f,
+            targetValue = 1f,
+            animationSpec = infiniteRepeatable(tween(DriftMillis, easing = LinearEasing), RepeatMode.Restart),
+            label = "ambientPhase",
+        )
+    } else {
+        remember { mutableStateOf(0.3f) }
+    }
 
     Box(
         modifier
