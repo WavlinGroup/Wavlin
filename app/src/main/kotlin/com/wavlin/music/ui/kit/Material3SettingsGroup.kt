@@ -7,6 +7,9 @@ package com.wavlin.music.ui.kit
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -59,6 +62,17 @@ fun Material3SettingsGroup(
     }
 }
 
+/** Settings card of the Wavlin layout: soft glass fill with a light rim that is brighter on top, like a lit edge. */
+@Composable
+private fun Modifier.wavlinGlassGroup(shape: Shape, fill: Color): Modifier {
+    val onSurface = MaterialTheme.colorScheme.onSurface
+    val rim = Brush.verticalGradient(listOf(onSurface.copy(alpha = 0.2f), onSurface.copy(alpha = 0.04f)))
+    return this
+        .clip(shape)
+        .background(fill)
+        .border(0.75.dp, rim, shape)
+}
+
 /**
  * Data class for Material 3 settings item
  */
@@ -100,17 +114,25 @@ private fun ClearSettingsGroup(
     val shape = if (wavlinLayout) com.wavlin.music.ui.style.WavlinShapes.large else RoundedCornerShape(28.dp)
     Column(modifier = Modifier.fillMaxWidth()) {
         title?.let {
-            Text(
-                text = it,
-                style = if (wavlinLayout) MaterialTheme.typography.titleMedium else MaterialTheme.typography.titleSmall,
-                fontWeight = if (wavlinLayout) FontWeight.Bold else null,
-                color = MaterialTheme.colorScheme.primary,
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(
                     start = if (wavlinLayout) 20.dp else 16.dp,
                     top = if (wavlinLayout) 20.dp else 12.dp,
                     bottom = 8.dp,
                 ),
-            )
+            ) {
+                if (wavlinLayout) {
+                    Box(Modifier.size(7.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary))
+                    Spacer(Modifier.width(8.dp))
+                }
+                Text(
+                    text = it,
+                    style = if (wavlinLayout) MaterialTheme.typography.titleMedium else MaterialTheme.typography.titleSmall,
+                    fontWeight = if (wavlinLayout) FontWeight.Bold else null,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            }
         }
         val pinkLily = LocalPinkLilyTheme.current
         Column(
@@ -119,6 +141,13 @@ private fun ClearSettingsGroup(
                 .let { base ->
                     if (pinkLily) {
                         base.pinkGlass(shape, floating = false)
+                    } else if (wavlinLayout) {
+                        base.wavlinGlassGroup(
+                            shape,
+                            MaterialTheme.colorScheme.surfaceContainerHigh.copy(
+                                alpha = if (LocalAmbientBackdrop.current) 0.42f else 0.62f,
+                            ),
+                        )
                     } else {
                         base
                             .clip(shape)
@@ -183,6 +212,8 @@ private fun AppleSettingsGroup(
                 .let { base ->
                     if (pinkLily) {
                         base.pinkGlass(shape, floating = false)
+                    } else if (wavlinLayout) {
+                        base.wavlinGlassGroup(shape, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f))
                     } else {
                         base
                             .clip(shape)
@@ -217,6 +248,14 @@ private fun SettingsRow(
     apple: Boolean,
 ) {
     val disabledColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+    val wavlinLayout = com.wavlin.music.ui.style.LocalWavlinLayout.current
+    val scheme = MaterialTheme.colorScheme
+    // Wavlin layout: tile colours come from the live theme, so they follow the artwork instead of a fixed rainbow.
+    val (themeTile, themeOnTile) = when (index % 3) {
+        0 -> scheme.primary to scheme.onPrimary
+        1 -> scheme.tertiary to scheme.onTertiary
+        else -> scheme.secondary to scheme.onSecondary
+    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -237,7 +276,25 @@ private fun SettingsRow(
                     Modifier
                         .size(30.dp)
                         .clip(RoundedCornerShape(7.dp))
-                        .background(if (item.enabled) AppleTilePalette[index % AppleTilePalette.size] else disabledColor)
+                        .background(
+                            when {
+                                !item.enabled -> disabledColor
+                                wavlinLayout -> themeTile
+                                else -> AppleTilePalette[index % AppleTilePalette.size]
+                            },
+                        )
+                } else if (wavlinLayout) {
+                    Modifier
+                        .size(42.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(
+                            Brush.linearGradient(
+                                listOf(
+                                    scheme.primary.copy(alpha = if (item.isHighlighted) 0.38f else 0.28f),
+                                    scheme.tertiary.copy(alpha = if (item.isHighlighted) 0.24f else 0.14f),
+                                ),
+                            ),
+                        )
                 } else {
                     Modifier
                         .size(40.dp)
@@ -248,6 +305,7 @@ private fun SettingsRow(
                 }
             val iconTint =
                 when {
+                    apple && wavlinLayout && item.enabled -> themeOnTile
                     apple -> Color.White
                     !item.enabled -> disabledColor
                     else -> MaterialTheme.colorScheme.primary
@@ -295,7 +353,7 @@ private fun SettingsRow(
         if (trailing != null) {
             Spacer(Modifier.width(12.dp))
             trailing()
-        } else if (apple && item.onClick != null) {
+        } else if ((apple || wavlinLayout) && item.onClick != null) {
             Spacer(Modifier.width(8.dp))
             Icon(
                 painter = painterResource(com.wavlin.music.R.drawable.navigate_next),
