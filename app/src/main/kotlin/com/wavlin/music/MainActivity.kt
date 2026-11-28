@@ -1042,6 +1042,8 @@ class MainActivity : ComponentActivity() {
                 val wavlinShell = themeWavlinDesign && !appleStyle
                 // Motion, large titles and the shrinking dock follow the Wavlin design in every style; colors stay per style.
                 val wavlinAll = themeWavlinDesign
+                // The moving dynamic-theme light replaces the flat page colour; Secret Pink and pure black keep their own look.
+                val ambientBackdrop = wavlinAll && enableDynamicTheme && !pinkWallpaper && !pureBlack
                 // A WebView can't be recorded into the glass backdrop layer (it crashes the page or the app),
                 // so the screens that host one run without the liquid-glass backdrop.
                 val webViewRoute = currentRoute == "login" || currentRoute == "spotify_signin"
@@ -1438,6 +1440,9 @@ class MainActivity : ComponentActivity() {
                                 .fillMaxSize()
                                 .then(if (wavlinAll) Modifier.nestedScroll(dockScroll.connection) else Modifier),
                         ) {
+                        if (ambientBackdrop) {
+                            com.wavlin.music.ui.kit.AmbientBackdrop(Modifier.matchParentSize())
+                        }
                         Row(
                             Modifier
                                 .fillMaxSize()
@@ -1457,7 +1462,10 @@ class MainActivity : ComponentActivity() {
                                 ),
                         ) {
                             // Glass inside the screens can't sample the layer it is drawn into, so use the lite look there.
-                            CompositionLocalProvider(LocalGlassBackdrop provides null) {
+                            CompositionLocalProvider(
+                                LocalGlassBackdrop provides null,
+                                com.wavlin.music.ui.kit.LocalAmbientBackdrop provides ambientBackdrop,
+                            ) {
                             val onRailItemClick: (Screens, Boolean) -> Unit =
                                 remember(navController, coroutineScope, topAppBarScrollBehavior, playerBottomSheetState) {
                                     { screen: Screens, isSelected: Boolean ->

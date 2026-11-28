@@ -1521,6 +1521,7 @@ fun HomeScreen(
 
             val scrollFx = rememberScrollFx(lazylistState)
 
+            val ambientBackdrop = com.wavlin.music.ui.kit.LocalAmbientBackdrop.current
             val homeWashColor = MaterialTheme.colorScheme.primary
             val homeWashHeight = with(LocalDensity.current) { 520.dp.toPx() }
             LazyColumn(
@@ -1528,7 +1529,7 @@ fun HomeScreen(
                 modifier =
                     Modifier
                         .then(
-                            if (wavlinHome) {
+                            if (wavlinHome && !ambientBackdrop) {
                                 // One soft wash of the theme color behind the top bar and hero; it stays put while the list scrolls.
                                 Modifier.drawBehind {
                                     drawRect(

@@ -46,6 +46,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import coil3.compose.AsyncImage
+import com.kyant.backdrop.backdrops.layerBackdrop
+import com.kyant.backdrop.backdrops.rememberLayerBackdrop
 import com.wavlin.innertube.models.AlbumItem
 import com.wavlin.innertube.models.EpisodeItem
 import com.wavlin.innertube.models.PlaylistItem
@@ -56,6 +58,9 @@ import com.wavlin.music.R
 import com.wavlin.music.db.entities.Album
 import com.wavlin.music.db.entities.LocalItem
 import com.wavlin.music.db.entities.Song
+import com.wavlin.music.ui.kit.LocalInterfaceAppleMusic
+import com.wavlin.music.ui.kit.appleGlass
+import com.wavlin.music.ui.kit.appleGlassSupported
 import com.wavlin.music.ui.style.WavlinSpace
 import com.wavlin.music.ui.support.resize
 import kotlin.math.absoluteValue
@@ -202,14 +207,21 @@ private fun StageCard(
     isPlaying: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    // Apple Music style: the play button is liquid glass that refracts this card's own cover. The glass must be a
+    // sibling of the layer it samples, so the cover and scrim are recorded into [coverBackdrop] and the button sits beside them.
+    val glassPlay = LocalInterfaceAppleMusic.current && appleGlassSupported()
+    val coverBackdrop = rememberLayerBackdrop { drawContent() }
+
     Box(modifier = modifier.background(MaterialTheme.colorScheme.surfaceContainerHigh)) {
-        AsyncImage(
-            model = thumbnailUrl?.resize(720, 720),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize(),
-        )
-        Box(modifier = Modifier.fillMaxSize().background(CoverScrim))
+        Box(modifier = Modifier.fillMaxSize().then(if (glassPlay) Modifier.layerBackdrop(coverBackdrop) else Modifier)) {
+            AsyncImage(
+                model = thumbnailUrl?.resize(720, 720),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize(),
+            )
+            Box(modifier = Modifier.fillMaxSize().background(CoverScrim))
+        }
 
         Row(
             verticalAlignment = Alignment.Bottom,
@@ -238,20 +250,39 @@ private fun StageCard(
                     )
                 }
             }
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier =
-                    Modifier
-                        .size(56.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primary),
-            ) {
-                Icon(
-                    painter = painterResource(if (active && isPlaying) R.drawable.pause else R.drawable.play),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.size(28.dp),
-                )
+            val playIcon = if (active && isPlaying) R.drawable.pause else R.drawable.play
+            if (glassPlay) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier =
+                        Modifier
+                            .size(56.dp)
+                            .appleGlass(CircleShape, tintAlpha = 0.1f, backdrop = coverBackdrop)
+                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.26f), CircleShape),
+                ) {
+                    Icon(
+                        painter = painterResource(playIcon),
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(28.dp),
+                    )
+                }
+            } else {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier =
+                        Modifier
+                            .size(56.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primary),
+                ) {
+                    Icon(
+                        painter = painterResource(playIcon),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(28.dp),
+                    )
+                }
             }
         }
     }
