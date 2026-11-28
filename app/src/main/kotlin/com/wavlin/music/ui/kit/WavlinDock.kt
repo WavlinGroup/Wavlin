@@ -112,6 +112,7 @@ internal fun WavlinDock(
     compact: Boolean,
     onExpand: () -> Unit,
     onSearchLongClick: (() -> Unit)?,
+    searchSelected: Boolean = false,
 ) {
     val foundIndex = navigationItems.indexOfFirst { isRouteSelected(currentRoute, it.route, navigationItems) }
     val glide = rememberTabGlide(foundIndex)
@@ -161,6 +162,7 @@ internal fun WavlinDock(
                 glide = glide,
                 slimNav = slimNav,
                 pureBlack = pureBlack,
+                searchSelected = searchSelected,
                 modifier = Modifier
                     .requiredWidth(fullWidth)
                     .fillMaxHeight()
@@ -230,6 +232,7 @@ private fun DockTabs(
     glide: TabGlide,
     slimNav: Boolean,
     pureBlack: Boolean,
+    searchSelected: Boolean,
     modifier: Modifier,
 ) {
     val haptics = LocalHapticFeedback.current
@@ -241,13 +244,19 @@ private fun DockTabs(
         else -> colors.primaryContainer
     }
 
+    val indicatorAlpha = animateFloatAsState(
+        targetValue = if (searchSelected) 0f else 1f,
+        animationSpec = WavlinMotion.settleSpring(),
+        label = "dockIndicatorAlpha",
+    )
+
     Row(
         modifier = modifier
             .padding(6.dp)
             .drawBehind {
                 val tabWidth = size.width / count
                 drawRoundRect(
-                    color = indicatorColor,
+                    color = indicatorColor.copy(alpha = indicatorColor.alpha * indicatorAlpha.value),
                     topLeft = Offset(glide.pillPos.value * tabWidth, 0f),
                     size = Size(tabWidth, size.height),
                     cornerRadius = CornerRadius(size.height / 2f),
@@ -256,7 +265,7 @@ private fun DockTabs(
     ) {
         navigationItems.forEachIndexed { index, screen ->
             val routeSelected = isRouteSelected(currentRoute, screen.route, navigationItems)
-            val visuallySelected = index == glide.targetIndex
+            val visuallySelected = !searchSelected && index == glide.targetIndex
             val longClick = if (screen == Screens.Search) onSearchLongClick else null
             val tint by animateColorAsState(
                 targetValue = when {

@@ -209,31 +209,55 @@ fun AppNavigationBar(
     val hazeState = LocalHazeState.current
 
     if (LocalInterfaceAppleMusic.current) {
-        AppleFloatingTabBar(
+        DetachedSearchLayout(
             navigationItems = navigationItems,
             currentRoute = currentRoute,
             onItemClick = onItemClick,
+            onSearchLongClick = onSearchLongClick,
             modifier = modifier,
             slimNav = slimNav,
-            onSearchLongClick = onSearchLongClick,
-            compact = compact,
-            onExpand = onExpand,
-        )
+            apple = true,
+            pureBlack = pureBlack,
+        ) { tabs, searchSelected, dockModifier ->
+            AppleFloatingTabBar(
+                navigationItems = tabs,
+                currentRoute = currentRoute,
+                onItemClick = onItemClick,
+                modifier = dockModifier,
+                slimNav = slimNav,
+                onSearchLongClick = onSearchLongClick,
+                compact = compact,
+                onExpand = onExpand,
+                searchSelected = searchSelected,
+            )
+        }
         return
     }
 
     if (LocalWavlinDesign.current) {
-        WavlinDock(
+        DetachedSearchLayout(
             navigationItems = navigationItems,
             currentRoute = currentRoute,
             onItemClick = onItemClick,
-            modifier = modifier,
-            pureBlack = pureBlack,
-            slimNav = slimNav,
-            compact = compact,
-            onExpand = onExpand,
             onSearchLongClick = onSearchLongClick,
-        )
+            modifier = modifier,
+            slimNav = slimNav,
+            apple = false,
+            pureBlack = pureBlack,
+        ) { tabs, searchSelected, dockModifier ->
+            WavlinDock(
+                navigationItems = tabs,
+                currentRoute = currentRoute,
+                onItemClick = onItemClick,
+                modifier = dockModifier,
+                pureBlack = pureBlack,
+                slimNav = slimNav,
+                compact = compact,
+                onExpand = onExpand,
+                onSearchLongClick = onSearchLongClick,
+                searchSelected = searchSelected,
+            )
+        }
         return
     }
 
@@ -432,6 +456,7 @@ private fun AppleFloatingTabBar(
     onSearchLongClick: (() -> Unit)?,
     compact: Boolean,
     onExpand: () -> Unit,
+    searchSelected: Boolean = false,
 ) {
     val barHeight: Dp = if (slimNav) 52.dp else 60.dp
     val haptics = LocalHapticFeedback.current
@@ -470,11 +495,17 @@ private fun AppleFloatingTabBar(
                 val tabWidth = maxWidth / navigationItems.size.coerceAtLeast(1)
                 val indicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.14f)
 
+                val indicatorAlpha = animateFloatAsState(
+                    targetValue = if (searchSelected) 0f else 1f,
+                    animationSpec = com.wavlin.music.ui.style.WavlinMotion.settleSpring(),
+                    label = "appleIndicatorAlpha",
+                )
                 Box(
                     modifier = Modifier
                         .offset { IntOffset((glide.pillPos.value * tabWidth.toPx()).roundToInt(), 0) }
                         .width(tabWidth)
                         .fillMaxHeight()
+                        .graphicsLayer { alpha = indicatorAlpha.value }
                         .clip(CircleShape)
                         .background(indicatorColor),
                 )
@@ -482,7 +513,7 @@ private fun AppleFloatingTabBar(
                 Row(modifier = Modifier.fillMaxSize()) {
                     navigationItems.forEachIndexed { index, screen ->
                         val routeSelected = isRouteSelected(currentRoute, screen.route, navigationItems)
-                        val visuallySelected = index == glide.targetIndex
+                        val visuallySelected = !searchSelected && index == glide.targetIndex
                         val longClick = if (screen == Screens.Search) onSearchLongClick else null
                         val tint by animateColorAsState(
                             targetValue = if (visuallySelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
@@ -570,6 +601,97 @@ private fun AppleFloatingTabBar(
                     )
                 }
             }
+        }
+    }
+}
+
+/**
+ * Wavlin and Apple Music styles: Search leaves the tab capsule and becomes its own round glass button next to it.
+ * With no Search item (or nothing else to show) the dock is drawn as before.
+ */
+@OptIn(ExperimentalHazeMaterialsApi::class, androidx.compose.foundation.ExperimentalFoundationApi::class)
+@Composable
+private fun DetachedSearchLayout(
+    navigationItems: List<Screens>,
+    currentRoute: String?,
+    onItemClick: (Screens, Boolean) -> Unit,
+    onSearchLongClick: (() -> Unit)?,
+    modifier: Modifier,
+    slimNav: Boolean,
+    apple: Boolean,
+    pureBlack: Boolean,
+    dock: @Composable (tabs: List<Screens>, searchSelected: Boolean, dockModifier: Modifier) -> Unit,
+) {
+    val tabs = remember(navigationItems) { navigationItems.filter { it != Screens.Search } }
+    if (tabs.size == navigationItems.size || tabs.isEmpty()) {
+        dock(navigationItems, false, modifier)
+        return
+    }
+
+    val searchSelected = isRouteSelected(currentRoute, Screens.Search.route, navigationItems)
+    val size = if (slimNav) 52.dp else 60.dp
+    val haptics = LocalHapticFeedback.current
+    val colors = MaterialTheme.colorScheme
+    val pink = LocalPinkLilyTheme.current
+    val tint by animateColorAsState(
+        targetValue = if (searchSelected) colors.primary else colors.onSurfaceVariant,
+        animationSpec = tween(260),
+        label = "detachedSearchTint",
+    )
+    val fill by animateColorAsState(
+        targetValue = if (searchSelected) colors.onSurface.copy(alpha = 0.14f) else Color.Transparent,
+        animationSpec = tween(260),
+        label = "detachedSearchFill",
+    )
+    val label = stringResource(Screens.Search.titleId)
+
+    Row(modifier = modifier, verticalAlignment = Alignment.Top) {
+        Box(modifier = Modifier.weight(1f)) { dock(tabs, searchSelected, Modifier) }
+        Box(
+            modifier = Modifier
+                .padding(end = 16.dp, top = 6.dp)
+                .size(size)
+                .let { base ->
+                    when {
+                        pink -> base.pinkGlass(CircleShape)
+                        apple -> base.appleGlass(CircleShape, HazeMaterials.thin())
+                        else -> base
+                            .legacyGlassPanel(
+                                shape = CircleShape,
+                                style = if (pureBlack) pureBlackHazeStyle() else HazeMaterials.thin(),
+                                drawStroke = !LocalReduceGlass.current,
+                            )
+                            .background(
+                                if (pureBlack) Color.Transparent else colors.surfaceContainerHigh.copy(alpha = 0.5f),
+                                CircleShape,
+                            )
+                    }
+                }
+                .clip(CircleShape)
+                .background(fill)
+                .combinedClickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = { onItemClick(Screens.Search, searchSelected) },
+                    onLongClick = onSearchLongClick?.let { callback ->
+                        {
+                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                            callback()
+                        }
+                    },
+                )
+                .semantics {
+                    role = Role.Tab
+                    selected = searchSelected
+                },
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                painter = painterResource(Screens.Search.iconIdActive),
+                contentDescription = label,
+                modifier = Modifier.size(22.dp),
+                tint = tint,
+            )
         }
     }
 }
