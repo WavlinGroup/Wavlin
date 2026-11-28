@@ -312,13 +312,22 @@ inline fun ListItem(
         isSelected == true -> MaterialTheme.colorScheme.inversePrimary.copy(alpha = 0.4f)
         else -> null
     }
+    // Over the moving backdrop each row becomes a soft glass card, so text stays readable on any colour.
+    val glassRow = wavlinLayout && LocalAmbientBackdrop.current
+    val glassFill = MaterialTheme.colorScheme.surfaceContainerLow.copy(alpha = 0.42f)
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .height(ListItemHeight)
-            .padding(horizontal = 8.dp)
+            .padding(horizontal = 8.dp, vertical = if (glassRow) 2.dp else 0.dp)
             .then(
-                if (highlight != null) Modifier.clip(rowShape).background(highlight) else Modifier
+                if (highlight != null) {
+                    Modifier.clip(rowShape).background(highlight)
+                } else if (glassRow) {
+                    Modifier.clip(rowShape).background(glassFill)
+                } else {
+                    Modifier
+                }
             )
             .then(
                 if (wavlinLayout && isActive) {
