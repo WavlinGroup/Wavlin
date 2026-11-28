@@ -1050,8 +1050,9 @@ class MainActivity : ComponentActivity() {
                 // The moving dynamic-theme light replaces the flat page colour; Secret Pink and pure black keep their own look.
                 val ambientBackdrop = wavlinAll && enableDynamicTheme && !pinkWallpaper && !pureBlack
                 // Apple Music glass needs something to bend. With the dynamic theme off it bends a still, soft field of the
-                // chosen theme colour instead, so the glass does not depend on the moving backdrop.
-                val stillGlassBackdrop = wavlinAll && appleStyle && !enableDynamicTheme && !pinkWallpaper && !pureBlack
+                // chosen theme colour instead, so the glass does not depend on the moving backdrop. Pure black keeps the field very
+                // faint so the screen stays black but the glass still has something to bend.
+                val stillGlassBackdrop = wavlinAll && appleStyle && !pinkWallpaper && (!enableDynamicTheme || pureBlack)
                 val backdropVisible = ambientBackdrop || stillGlassBackdrop
                 // A WebView can't be recorded into the glass backdrop layer (it crashes the page or the app),
                 // so the screens that host one run without the liquid-glass backdrop.
@@ -1455,6 +1456,7 @@ class MainActivity : ComponentActivity() {
                             com.wavlin.music.ui.kit.AmbientBackdrop(
                                 modifier = Modifier.matchParentSize().layerBackdrop(ambientLayer),
                                 animated = !stillGlassBackdrop,
+                                dim = if (pureBlack) 0.6f else 1f,
                             )
                         }
                         Row(

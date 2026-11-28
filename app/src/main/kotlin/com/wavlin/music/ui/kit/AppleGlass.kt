@@ -60,7 +60,9 @@ fun Modifier.appleGlass(
     fallbackStyle: HazeStyle? = null,
     /** Dark/light tint laid over the glass. Big surfaces (dialogs) pass a higher value so text stays readable. */
     tintAlpha: Float? = null,
-    backdrop: LayerBackdrop? = LocalGlassBackdrop.current,
+    // Inside pages the shared backdrop is null (a page cannot sample itself), so glass there bends the page backdrop layer
+    // instead of dropping to the fake Haze look.
+    backdrop: LayerBackdrop? = LocalGlassBackdrop.current ?: LocalAmbientLayer.current,
     /** The lens is an AGSL shader that runs on every pixel of the surface, so big surfaces (the menu sheet) turn it off. */
     lensEnabled: Boolean = LocalLensEnabled.current,
 ): Modifier {

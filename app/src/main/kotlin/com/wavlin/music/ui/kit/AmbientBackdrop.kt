@@ -47,6 +47,8 @@ fun AmbientBackdrop(
     modifier: Modifier = Modifier,
     /** False draws one still frame, softer, as the surface for glass when the dynamic theme is off. */
     animated: Boolean = true,
+    /** Scales the colour strength, for themes that must stay near black. */
+    dim: Float = 1f,
 ) {
     val scheme = MaterialTheme.colorScheme
     val first by animateColorAsState(scheme.primaryContainer, tween(900), label = "ambientFirst")
@@ -57,7 +59,7 @@ fun AmbientBackdrop(
     val second by animateColorAsState(secondTarget, tween(900), label = "ambientSecond")
     val third by animateColorAsState(thirdTarget, tween(900), label = "ambientThird")
     val glow by animateColorAsState(scheme.primary, tween(900), label = "ambientGlow")
-    val strength = (if (scheme.background.luminance() < 0.5f) 1f else 0.7f) * (if (animated) 1f else 0.55f)
+    val strength = (if (scheme.background.luminance() < 0.5f) 1f else 0.7f) * (if (animated) 1f else 0.55f) * dim
     val phase by if (animated) {
         rememberInfiniteTransition(label = "ambientDrift").animateFloat(
             initialValue = 0f,
