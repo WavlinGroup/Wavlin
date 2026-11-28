@@ -1148,6 +1148,13 @@ class MainActivity : ComponentActivity() {
                                     }
                                     // On Home the bar has no surface of its own until the page scrolls under it.
                                     val blendTopBar = wavlinAll && currentRoute == Screens.Home.route
+                                    // The scroll state is shared by every screen; stale offset from another page would paint the bar solid.
+                                    LaunchedEffect(blendTopBar) {
+                                        if (blendTopBar) {
+                                            topAppBarScrollBehavior.state.contentOffset = 0f
+                                            topAppBarScrollBehavior.state.resetHeightOffset()
+                                        }
+                                    }
                                     TopAppBar(
                                         title = {
                                             androidx.compose.animation.Crossfade(
@@ -1160,10 +1167,8 @@ class MainActivity : ComponentActivity() {
                                                         text = titleRes?.let { stringResource(it) } ?: "",
                                                     )
                                                 } else if (wavlinAll) {
-                                                    // Home carries the app name; the dock already says where you are.
-                                                    val shownRes = if (titleRes == Screens.Home.titleId) R.string.app_name else titleRes
                                                     com.wavlin.music.ui.kit.WavlinTitle(
-                                                        text = shownRes?.let { stringResource(it) } ?: "",
+                                                        text = titleRes?.let { stringResource(it) } ?: "",
                                                     )
                                                 } else {
                                                     Text(
