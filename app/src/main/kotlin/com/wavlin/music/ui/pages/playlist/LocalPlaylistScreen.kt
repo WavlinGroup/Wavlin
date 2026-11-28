@@ -1510,7 +1510,7 @@ fun LocalPlaylistHeader(
                 }
             }
 
-            if (!LocalPinkLilyTheme.current) {
+            if (!LocalPinkLilyTheme.current && !com.wavlin.music.ui.kit.LocalAmbientBackdrop.current) {
             // Fade the cover into the page so the title stays readable
             Box(
                 modifier =

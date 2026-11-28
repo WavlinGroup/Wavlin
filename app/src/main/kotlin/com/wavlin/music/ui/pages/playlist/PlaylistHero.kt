@@ -87,7 +87,7 @@ internal fun heroTopIconTint(overlay: Boolean): Color =
  * wallpaper shows through with no seam. Other themes fade into a solid colour with a gradient instead.
  */
 @Composable
-internal fun Modifier.heroCoverFade(): Modifier = if (LocalPinkLilyTheme.current) fadingEdge(bottom = 220.dp) else this
+internal fun Modifier.heroCoverFade(): Modifier = if (LocalPinkLilyTheme.current || com.wavlin.music.ui.kit.LocalAmbientBackdrop.current) fadingEdge(bottom = 220.dp) else this
 
 /** Colour the cover fades into at its bottom edge, so it meets the page without a seam. */
 @Composable
@@ -163,7 +163,7 @@ internal fun PlaylistHeroHeader(
                     }
             }
             }
-            if (!LocalPinkLilyTheme.current) {
+            if (!LocalPinkLilyTheme.current && !com.wavlin.music.ui.kit.LocalAmbientBackdrop.current) {
             // Fade the cover into the page so the title stays readable
             Box(
                 Modifier

@@ -172,6 +172,12 @@ fun pinkTopBarColors(): androidx.compose.material3.TopAppBarColors =
             containerColor = Color.Transparent,
             scrolledContainerColor = Color(0xFFFBE4EC).copy(alpha = 0.92f),
         )
+    } else if (LocalAmbientBackdrop.current) {
+        // Over the moving backdrop the bar stays clear until content scrolls under it, then turns into soft glass.
+        androidx.compose.material3.TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent,
+            scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.88f),
+        )
     } else {
         androidx.compose.material3.TopAppBarDefaults.topAppBarColors()
     }
