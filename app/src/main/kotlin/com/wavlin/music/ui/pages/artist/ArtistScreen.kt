@@ -12,6 +12,15 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import com.wavlin.music.ui.kit.pageGlass
+import com.wavlin.music.ui.kit.pageGlassAvailable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -367,6 +376,24 @@ fun ArtistScreen(
                                     modifier = Modifier.padding(bottom = if (wavlinLayout) 20.dp else 16.dp),
                                 )
 
+                                if (wavlinLayout) {
+                                    val radioEndpoint = if (!showLocal && !isGuest) artistPage?.artist?.radioEndpoint else null
+                                    val shuffleEndpoint = if (!showLocal && !isGuest) artistPage?.artist?.shuffleEndpoint else null
+                                    ArtistControlBar(
+                                        subscribed = isChannelSubscribed,
+                                        onSubscribe = {
+                                            if (!isLoggedIn) {
+                                                Toast
+                                                    .makeText(context, R.string.login_required_to_subscribe, Toast.LENGTH_SHORT)
+                                                    .show()
+                                            } else {
+                                                viewModel.toggleChannelSubscription()
+                                            }
+                                        },
+                                        onRadio = radioEndpoint?.let { endpoint -> { playerConnection.playQueue(YouTubeQueue(endpoint)) } },
+                                        onShuffle = shuffleEndpoint?.let { endpoint -> { playerConnection.playQueue(YouTubeQueue(endpoint)) } },
+                                    )
+                                } else {
                                 // Buttons Row
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
@@ -465,6 +492,7 @@ fun ArtistScreen(
                                             }
                                         }
                                     }
+                                }
                                 }
                             }
                             Spacer(modifier = Modifier.height(16.dp))
@@ -1076,3 +1104,102 @@ fun ArtistScreen(
     )
 }
 
+
+/**
+ * Artist controls as one pill: Subscribe, Radio and Shuffle are segments of a single bar split by hairlines, instead of
+ * three loose buttons. In Apple Music style it is glass over the page backdrop; otherwise a tonal pill with a lit rim.
+ */
+@Composable
+private fun ArtistControlBar(
+    subscribed: Boolean,
+    onSubscribe: () -> Unit,
+    onRadio: (() -> Unit)?,
+    onShuffle: (() -> Unit)?,
+) {
+    val scheme = MaterialTheme.colorScheme
+    val shape = RoundedCornerShape(50)
+    val glass = pageGlassAvailable()
+    val rim = Brush.verticalGradient(listOf(scheme.onSurface.copy(alpha = 0.2f), scheme.onSurface.copy(alpha = 0.04f)))
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .then(if (glass) Modifier.pageGlass(shape, 0.1f) else Modifier)
+                .clip(shape)
+                .background(if (glass) scheme.onSurface.copy(alpha = 0.05f) else scheme.surfaceContainerHigh.copy(alpha = 0.62f))
+                .then(if (glass) Modifier else Modifier.border(0.75.dp, rim, shape)),
+    ) {
+        ArtistControlSegment(onClick = onSubscribe, modifier = Modifier.weight(1.2f)) {
+            Text(
+                text = stringResource(if (subscribed) R.string.subscribed else R.string.subscribe),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = if (subscribed) scheme.onSurface else scheme.error,
+            )
+        }
+        if (onRadio != null) {
+            ArtistControlDivider()
+            ArtistControlSegment(onClick = onRadio, modifier = Modifier.weight(1f)) {
+                Icon(
+                    painter = painterResource(R.drawable.radio),
+                    contentDescription = null,
+                    tint = scheme.onSurface,
+                    modifier = Modifier.size(20.dp),
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = stringResource(R.string.radio),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = scheme.onSurface,
+                )
+            }
+        }
+        if (onShuffle != null) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier =
+                    Modifier
+                        .padding(5.dp)
+                        .fillMaxHeight()
+                        .aspectRatio(1f)
+                        .clip(CircleShape)
+                        .background(scheme.primary)
+                        .clickable(onClick = onShuffle),
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.shuffle),
+                    contentDescription = stringResource(R.string.shuffle),
+                    tint = scheme.onPrimary,
+                    modifier = Modifier.size(20.dp),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ArtistControlSegment(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable RowScope.() -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
+        modifier = modifier.fillMaxHeight().clickable(onClick = onClick),
+        content = content,
+    )
+}
+
+@Composable
+private fun ArtistControlDivider() {
+    Box(
+        Modifier
+            .width(0.75.dp)
+            .height(24.dp)
+            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.14f)),
+    )
+}
