@@ -68,6 +68,10 @@ fun LibraryCategoryGrid(
 ) {
     val appleMusic = LocalInterfaceAppleMusic.current
     val wavlinLayout = com.wavlin.music.ui.style.LocalWavlinLayout.current
+    if (wavlinLayout && hasBentoLayout(categories)) {
+        LibraryBento(categories = categories, onSelect = onSelect, appleMusic = appleMusic, modifier = modifier)
+        return
+    }
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
         modifier = modifier
@@ -172,11 +176,19 @@ fun LibraryCollectionsRow(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             items(collections, key = { it.key }) { collection ->
-                LibraryCollectionCard(
-                    collection = collection,
-                    appleMusic = appleMusic,
-                    onClick = { onClick(collection) },
-                )
+                if (wavlinLayout) {
+                    LibrarySleeveCard(
+                        collection = collection,
+                        appleMusic = appleMusic,
+                        onClick = { onClick(collection) },
+                    )
+                } else {
+                    LibraryCollectionCard(
+                        collection = collection,
+                        appleMusic = appleMusic,
+                        onClick = { onClick(collection) },
+                    )
+                }
             }
         }
         Spacer(Modifier.height(8.dp))
