@@ -1146,6 +1146,8 @@ class MainActivity : ComponentActivity() {
                                                     .requiredSize(120.dp, 126.dp),
                                         )
                                     }
+                                    // On Home the bar has no surface of its own until the page scrolls under it.
+                                    val blendTopBar = wavlinAll && currentRoute == Screens.Home.route
                                     TopAppBar(
                                         title = {
                                             androidx.compose.animation.Crossfade(
@@ -1158,8 +1160,10 @@ class MainActivity : ComponentActivity() {
                                                         text = titleRes?.let { stringResource(it) } ?: "",
                                                     )
                                                 } else if (wavlinAll) {
+                                                    // Home carries the app name; the dock already says where you are.
+                                                    val shownRes = if (titleRes == Screens.Home.titleId) R.string.app_name else titleRes
                                                     com.wavlin.music.ui.kit.WavlinTitle(
-                                                        text = titleRes?.let { stringResource(it) } ?: "",
+                                                        text = shownRes?.let { stringResource(it) } ?: "",
                                                     )
                                                 } else {
                                                     Text(
@@ -1210,7 +1214,7 @@ class MainActivity : ComponentActivity() {
                                         colors =
                                             TopAppBarDefaults.topAppBarColors(
                                                 containerColor =
-                                                    if (pinkWallpaper) {
+                                                    if (pinkWallpaper || blendTopBar) {
                                                         Color.Transparent
                                                     } else if (pureBlack) {
                                                         Color.Black
@@ -1224,6 +1228,9 @@ class MainActivity : ComponentActivity() {
                                                 scrolledContainerColor =
                                                     if (pinkWallpaper) {
                                                         Color.Transparent
+                                                    } else if (blendTopBar) {
+                                                        // Nearly solid once content slides under it, same hue as the page.
+                                                        (if (pureBlack) Color.Black else MaterialTheme.colorScheme.background).copy(alpha = 0.96f)
                                                     } else if (pureBlack) {
                                                         Color.Black
                                                     } else if (wavlinShell) {
