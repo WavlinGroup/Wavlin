@@ -52,19 +52,27 @@ fun SpeedDialGridItem(
             modifier = Modifier.fillMaxSize()
         )
 
-        // Gradient Overlay for Text Readability and Icon Contrast
+        val wavlin = com.wavlin.music.ui.style.LocalWavlinLayout.current
+        // Scrim for text readability. Wavlin layout: only the lower part, much lighter, no top shade.
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color.Black.copy(alpha = 0.4f), // Top scrim for icon visibility on bright covers
-                            Color.Transparent,
-                            Color.Black.copy(alpha = 0.6f),
-                            Color.Black.copy(alpha = 0.9f)
+                    if (wavlin) {
+                        Brush.verticalGradient(
+                            0.55f to Color.Transparent,
+                            1f to Color.Black.copy(alpha = 0.7f),
                         )
-                    )
+                    } else {
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Black.copy(alpha = 0.4f), // Top scrim for icon visibility on bright covers
+                                Color.Transparent,
+                                Color.Black.copy(alpha = 0.6f),
+                                Color.Black.copy(alpha = 0.9f)
+                            )
+                        )
+                    }
                 )
         )
 
@@ -79,7 +87,7 @@ fun SpeedDialGridItem(
             Text(
                 text = item.title,
                 style = MaterialTheme.typography.titleSmall, // Smaller, punchier font
-                fontWeight = FontWeight.Bold,
+                fontWeight = if (wavlin) FontWeight.SemiBold else FontWeight.Bold,
                 color = Color.White,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -87,7 +95,7 @@ fun SpeedDialGridItem(
             )
             
             // Navigation Chevron for browsable items (Album, Playlist, Artist)
-            if (item !is SongItem) {
+            if (item !is SongItem && !wavlin) {
                 Icon(
                     painter = painterResource(R.drawable.navigate_next),
                     contentDescription = null,

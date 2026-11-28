@@ -82,15 +82,6 @@ fun NavigationTitle(
                 modifier = Modifier.size(24.dp),
             )
         }
-        if (wavlinLayout && !pinkLily && thumbnail == null) {
-            Box(
-                Modifier
-                    .width(3.dp)
-                    .height(22.dp)
-                    .clip(RoundedCornerShape(2.dp))
-                    .background(MaterialTheme.colorScheme.primary),
-            )
-        }
         thumbnail?.invoke()
 
         Column(
