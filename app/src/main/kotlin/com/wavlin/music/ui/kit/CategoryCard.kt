@@ -38,6 +38,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.wavlin.music.ui.style.LocalWavlinLayout
 
 private val CardShape = RoundedCornerShape(22.dp)
 
@@ -53,6 +54,10 @@ fun CategoryCard(
     modifier: Modifier = Modifier,
     accent: Color = MaterialTheme.colorScheme.primary,
 ) {
+    if (LocalWavlinLayout.current && !LocalPinkLilyTheme.current) {
+        WavlinCategoryCard(title, iconRes, onClick, modifier, accent)
+        return
+    }
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(
@@ -128,6 +133,55 @@ fun CategoryCard(
                     Modifier
                         .align(Alignment.BottomStart)
                         .padding(start = 14.dp, end = 14.dp, bottom = 12.dp),
+            )
+        }
+    }
+}
+
+/** Wavlin layout: flat card with a hairline edge, one bare accent icon and the title. No gradient, no ghost icon. */
+@Composable
+private fun WavlinCategoryCard(
+    title: String,
+    iconRes: Int,
+    onClick: () -> Unit,
+    modifier: Modifier,
+    accent: Color,
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressed by interactionSource.collectIsPressedAsState()
+    val scale by animateFloatAsState(
+        targetValue = if (pressed) 0.97f else 1f,
+        animationSpec = spring(dampingRatio = 0.75f, stiffness = 600f),
+        label = "wavlinCategoryScale",
+    )
+    val shape = RoundedCornerShape(18.dp)
+    Surface(
+        onClick = onClick,
+        interactionSource = interactionSource,
+        modifier = modifier
+            .height(88.dp)
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            },
+        shape = shape,
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)),
+    ) {
+        Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+            Icon(
+                painter = painterResource(iconRes),
+                contentDescription = null,
+                tint = accent,
+                modifier = Modifier.align(Alignment.TopStart).size(24.dp),
+            )
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.align(Alignment.BottomStart),
             )
         }
     }

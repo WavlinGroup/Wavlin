@@ -56,6 +56,8 @@ import androidx.compose.material3.BadgedBox
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import com.wavlin.music.ui.style.LocalWavlinLayout
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
@@ -260,14 +262,21 @@ private fun DrawerHeader(
     onClick: () -> Unit,
 ) {
     val accent = MaterialTheme.colorScheme.primary
+    val wavlin = LocalWavlinLayout.current
     Row(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .background(
-                    Brush.verticalGradient(
-                        listOf(accent.copy(alpha = 0.22f), accent.copy(alpha = 0f)),
-                    ),
+                .then(
+                    if (wavlin) {
+                        Modifier
+                    } else {
+                        Modifier.background(
+                            Brush.verticalGradient(
+                                listOf(accent.copy(alpha = 0.22f), accent.copy(alpha = 0f)),
+                            ),
+                        )
+                    },
                 ).clickable(onClick = onClick)
                 .statusBarsPadding()
                 .padding(start = 24.dp, end = 24.dp, top = 28.dp, bottom = 28.dp),
@@ -278,7 +287,7 @@ private fun DrawerHeader(
             modifier =
                 Modifier
                     .size(68.dp)
-                    .border(2.dp, accent.copy(alpha = 0.7f), CircleShape)
+                    .border(if (wavlin) 1.dp else 2.dp, accent.copy(alpha = if (wavlin) 0.5f else 0.7f), CircleShape)
                     .padding(4.dp)
                     .clip(CircleShape)
                     .background(accent.copy(alpha = 0.18f)),
@@ -303,7 +312,7 @@ private fun DrawerHeader(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = name,
-                style = MaterialTheme.typography.titleLarge,
+                style = if (wavlin) MaterialTheme.typography.headlineSmall else MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -323,14 +332,23 @@ private fun DrawerHeader(
 
 @Composable
 private fun DrawerGroup(content: @Composable ColumnScope.() -> Unit) {
+    val wavlin = LocalWavlinLayout.current
+    val shape = RoundedCornerShape(if (wavlin) 20.dp else 24.dp)
     Column(
         modifier =
             Modifier
                 .padding(horizontal = 16.dp, vertical = 6.dp)
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(24.dp))
-                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-                .padding(vertical = 6.dp),
+                .clip(shape)
+                .background(
+                    if (wavlin) MaterialTheme.colorScheme.surfaceContainerLow else MaterialTheme.colorScheme.surfaceContainerHigh,
+                ).then(
+                    if (wavlin) {
+                        Modifier.border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f), shape)
+                    } else {
+                        Modifier
+                    },
+                ).padding(vertical = 6.dp),
         content = content,
     )
 }
@@ -344,6 +362,7 @@ private fun DrawerItem(
     badge: Boolean = false,
 ) {
     val accent = MaterialTheme.colorScheme.primary
+    val wavlin = LocalWavlinLayout.current
     Row(
         modifier =
             Modifier
@@ -356,17 +375,17 @@ private fun DrawerItem(
         Box(
             modifier =
                 Modifier
-                    .size(42.dp)
+                    .size(if (wavlin) 30.dp else 42.dp)
                     .clip(RoundedCornerShape(14.dp))
-                    .background(accent.copy(alpha = 0.16f)),
+                    .background(if (wavlin) Color.Transparent else accent.copy(alpha = 0.16f)),
             contentAlignment = Alignment.Center,
         ) {
             BadgedBox(badge = { if (badge) Badge() }) {
                 Icon(
                     painter = painterResource(iconRes),
                     contentDescription = null,
-                    tint = accent,
-                    modifier = Modifier.size(22.dp),
+                    tint = if (wavlin) MaterialTheme.colorScheme.onSurfaceVariant else accent,
+                    modifier = Modifier.size(if (wavlin) 24.dp else 22.dp),
                 )
             }
         }

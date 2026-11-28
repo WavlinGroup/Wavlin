@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.wavlin.music.BuildConfig
 import com.wavlin.music.R
 import com.wavlin.music.ui.kit.LocalInterfaceAppleMusic
+import com.wavlin.music.ui.style.LocalWavlinLayout
 /** App identity card at the top of Settings: logo, name and version, opens the About page. */
 @Composable
 fun SettingsHeroCard(
@@ -42,16 +43,27 @@ fun SettingsHeroCard(
 ) {
     val appleMusic = LocalInterfaceAppleMusic.current
     val colors = MaterialTheme.colorScheme
-    val shape = RoundedCornerShape(if (appleMusic) 18.dp else 28.dp)
+    val wavlin = LocalWavlinLayout.current
+    val shape = RoundedCornerShape(if (wavlin) 20.dp else if (appleMusic) 18.dp else 28.dp)
+    val fg = if (wavlin) colors.onSurface else colors.onPrimaryContainer
+    val iconTint = if (wavlin) colors.primary else colors.onPrimaryContainer
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
             .clip(shape)
-            .background(Brush.linearGradient(listOf(colors.primaryContainer, colors.tertiaryContainer)))
             .then(
-                if (appleMusic) {
+                if (wavlin) {
+                    Modifier.background(colors.surfaceContainerLow)
+                } else {
+                    Modifier.background(Brush.linearGradient(listOf(colors.primaryContainer, colors.tertiaryContainer)))
+                },
+            )
+            .then(
+                if (wavlin) {
+                    Modifier.border(BorderStroke(1.dp, colors.outlineVariant.copy(alpha = 0.5f)), shape)
+                } else if (appleMusic) {
                     Modifier.border(BorderStroke(0.5.dp, colors.outlineVariant), shape)
                 } else {
                     Modifier
@@ -64,12 +76,12 @@ fun SettingsHeroCard(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .size(56.dp)
-                .background(colors.onPrimaryContainer.copy(alpha = 0.12f), CircleShape),
+                .background(fg.copy(alpha = 0.12f), CircleShape),
         ) {
             Icon(
                 painter = painterResource(R.drawable.music_note),
                 contentDescription = null,
-                tint = colors.onPrimaryContainer,
+                tint = iconTint,
                 modifier = Modifier.size(32.dp),
             )
         }
@@ -79,18 +91,18 @@ fun SettingsHeroCard(
                 text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
-                color = colors.onPrimaryContainer,
+                color = fg,
             )
             Text(
                 text = stringResource(R.string.version_format, BuildConfig.VERSION_NAME),
                 style = MaterialTheme.typography.bodyMedium,
-                color = colors.onPrimaryContainer.copy(alpha = 0.8f),
+                color = fg.copy(alpha = 0.8f),
             )
         }
         Icon(
             painter = painterResource(R.drawable.navigate_next),
             contentDescription = null,
-            tint = colors.onPrimaryContainer.copy(alpha = 0.7f),
+            tint = fg.copy(alpha = 0.7f),
         )
     }
 }
