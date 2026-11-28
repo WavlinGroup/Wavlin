@@ -96,6 +96,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -1118,9 +1119,25 @@ class MainActivity : ComponentActivity() {
                                 enter = fadeIn(animationSpec = tween(durationMillis = 300)),
                                 exit = fadeOut(animationSpec = tween(durationMillis = 200)),
                             ) {
+                                // On Home the bar has no surface of its own; a scrim fades in as the page scrolls under it.
+                                val blendTopBar = wavlinAll && currentRoute == Screens.Home.route
+                                val blendScrimColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.background
                                 Box(
                                     modifier =
-                                        if (pinkWallpaper) {
+                                        if (blendTopBar) {
+                                            Modifier.drawBehind {
+                                                val fade = topAppBarScrollBehavior.state.collapsedFraction.coerceIn(0f, 1f)
+                                                if (fade > 0f) {
+                                                    drawRect(
+                                                        Brush.verticalGradient(
+                                                            0f to blendScrimColor.copy(alpha = 0.94f * fade),
+                                                            0.7f to blendScrimColor.copy(alpha = 0.9f * fade),
+                                                            1f to blendScrimColor.copy(alpha = 0f),
+                                                        ),
+                                                    )
+                                                }
+                                            }
+                                        } else if (pinkWallpaper) {
                                             val scrimBase = MaterialTheme.colorScheme.surface
                                             Modifier.background(
                                                 Brush.verticalGradient(
@@ -1146,8 +1163,6 @@ class MainActivity : ComponentActivity() {
                                                     .requiredSize(120.dp, 126.dp),
                                         )
                                     }
-                                    // On Home the bar has no surface of its own until the page scrolls under it.
-                                    val blendTopBar = wavlinAll && currentRoute == Screens.Home.route
                                     // The scroll state is shared by every screen; stale offset from another page would paint the bar solid.
                                     LaunchedEffect(blendTopBar) {
                                         if (blendTopBar) {
@@ -1231,11 +1246,8 @@ class MainActivity : ComponentActivity() {
                                                         MaterialTheme.colorScheme.surfaceContainer
                                                     },
                                                 scrolledContainerColor =
-                                                    if (pinkWallpaper) {
+                                                    if (pinkWallpaper || blendTopBar) {
                                                         Color.Transparent
-                                                    } else if (blendTopBar) {
-                                                        // Nearly solid once content slides under it, same hue as the page.
-                                                        (if (pureBlack) Color.Black else MaterialTheme.colorScheme.background).copy(alpha = 0.96f)
                                                     } else if (pureBlack) {
                                                         Color.Black
                                                     } else if (wavlinShell) {
